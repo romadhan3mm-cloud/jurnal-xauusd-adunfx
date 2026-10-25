@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.adunfx.jurnal_xauusd.twa",
+    "sha256_cert_fingerprints": [
+      "E2:9E:47:43:92:44:19:B2:53:EE:57:77:34:FB:D2:5D:C8:F1:3B:9A:EE:F7:F8:22:59:E5:DF:ED:25:CD:60:96"
+    ]
+  }
+}]
