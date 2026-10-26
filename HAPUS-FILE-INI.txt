@@ -1,0 +1,5 @@
+Hapus dari project (sudah tidak dipakai):
+public/bg-splash.jpg
+public/bg-light.jpg
+public/bg-app.jpg
+public/splash/   (seluruh folder)
