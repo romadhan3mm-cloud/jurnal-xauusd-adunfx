@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <link rel="preload" as="image" href="/bg-light.jpg?v=1" />
+    <title>TraderLogs</title>
+
+    <link rel="icon" type="image/png" href="/favicon.png?v=9" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=9" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=9" />
+    <link rel="manifest" href="/manifest.json?v=9" />
+    <meta name="theme-color" content="#EBF2FB" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="TraderLogs" />
+    <script>
+      // Sebelum React termuat: warna awal & bar status mengikuti tema tersimpan (terang = bar terang teks gelap, gelap = gelap penuh).
+      (function () {
+        var dark = false;
+        try { dark = localStorage.getItem("tl-look") === "2" && localStorage.getItem("tl-theme") === "dark"; } catch (e) {}
+        var c = dark ? "#071832" : "#EBF2FB";
+        var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", c);
+        var s = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+        if (s) s.setAttribute("content", dark ? "black-translucent" : "default");
+        var st = document.createElement("style"); st.id = "boot-bg";
+        st.textContent = "html,body{background:" + c + "}";
+        document.head.appendChild(st);
+      })();
+    </script>
+  </head>
+  <body style="margin:0;">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
