@@ -40,6 +40,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
   const [menuPos, setMenuPos] = useState(null);
   const [confirmDeleteFor, setConfirmDeleteFor] = useState(null);
   const [newMonthOpen, setNewMonthOpen] = useState(false);
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
   const [newMonthBalance, setNewMonthBalance] = useState("100");
   const [selectedDate, setSelectedDate] = useState(() => fmtDayKey(new Date().toISOString()));
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -989,16 +990,16 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         <RiskGuardCard riskGuard={riskGuard} />
         {/* Cross-month comparison */}
         {(
-          <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 18, background: "linear-gradient(135deg, #061b3b 0%, #03122b 100%)", border: "1px solid #00aaff", boxShadow: "0 0 0 1px rgba(0,170,255,.18), 0 0 18px rgba(0,170,255,.12)" }}>
+          <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 18, background: "var(--surface-soft)", border: "1.5px solid #2A7BFF", boxShadow: "0 0 18px rgba(42,123,255,.20), inset 0 0 18px rgba(42,123,255,.07)" }}>
             <button
               onClick={() => setShowCompare((v) => !v)}
-              style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", background: "transparent", border: "none", borderBottom: showCompare ? "1px solid rgba(0,170,255,.55)" : "none", color: "#f4f8ff", textAlign: "left", cursor: "pointer" }}
+              style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", background: "transparent", border: "none", borderBottom: "1px solid rgba(42,123,255,.55)", color: "var(--text)", textAlign: "left", cursor: "pointer" }}
             >
               <span style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-                <span style={{ width: 44, height: 44, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "radial-gradient(circle, #073d7b, #031a3a)", border: "1px solid #087dff", boxShadow: "0 0 12px rgba(0,145,255,.3)" }}><TrendingUp size={23} /></span>
+                <span style={{ width: 44, height: 44, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "rgba(42,123,255,.14)", border: "1.5px solid rgba(42,123,255,.60)", boxShadow: "0 0 12px rgba(42,123,255,.18)" }}><TrendingUp size={23} /></span>
                 <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
-                  <span style={{ fontSize: 17, lineHeight: 1.2, fontWeight: 800, letterSpacing: "-.02em", textTransform: "none" }}>Perbandingan Antar Bulan</span>
-                  <span style={{ fontSize: 12, lineHeight: 1.35, color: "#60baff", fontWeight: 600, textTransform: "none", letterSpacing: 0 }}>Lihat performa trading kamu dari bulan ke bulan.</span>
+                  <span style={{ fontSize: 19, lineHeight: 1.15, fontWeight: 800, letterSpacing: "-.02em", textTransform: "none", color: "var(--text)" }}>Perbandingan Antar Bulan</span>
+                  <span style={{ fontSize: 12, lineHeight: 1.35, color: "var(--muted)", fontWeight: 600, textTransform: "none", letterSpacing: 0 }}>Lihat performa trading kamu dari bulan ke bulan.</span>
                 </span>
               </span>
               <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, flexShrink: 0, border: "2px solid #ffd400", color: "#ffd400", borderRadius: 24, padding: "8px 13px", fontSize: 12, fontWeight: 800, whiteSpace: "nowrap" }}><TrendingUp size={17} /> GRAFIK {showCompare ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</span>
@@ -1069,71 +1070,33 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
           </div>
         )}
 
-        {/* Month tabs */}
-        <div className="flex items-center gap-2 tj-scrollbar" style={{ overflowX: "auto", padding: "2px 0 10px", marginBottom: 8, gap: 10 }}>
-          {order.filter((key) => !months[key]?.archived).map((key) => (
-            <div key={key} style={{ position: "relative", display: "flex", alignItems: "stretch" }}>
-              <button
-                onClick={() => setActiveMonth(key)}
-                className="tj-mono"
-                style={{
-                  whiteSpace: "nowrap",
-                  padding: "7px 10px 7px 14px",
-                  borderRadius: "8px 0 0 8px",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  lineHeight: 1.2,
-                  border: `1.5px solid ${activeMonth === key ? "#ffd400" : "#075eb8"}`,
-                  borderRight: "none",
-                  background: activeMonth === key ? "linear-gradient(135deg, #08254a, #03142e)" : "#041831",
-                  color: activeMonth === key ? "#ffd400" : "#69baff",
-                  cursor: "pointer",
-                }}
-              >
-                {monthKeyToLabel(key)}
-              </button>
-              <button
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setMenuPos({ top: rect.bottom + 6, left: rect.left });
-                  setMenuOpenFor(menuOpenFor === key ? null : key);
-                  setConfirmDeleteFor(null);
-                }}
-                style={{
-                  padding: "7px 10px",
-                  borderRadius: "0 8px 8px 0",
-                  border: `1px solid ${activeMonth === key ? "var(--gold-dim)" : "var(--border)"}`,
-                  background: activeMonth === key ? "rgba(237,165,36,0.1)" : "var(--surface)",
-                  color: "var(--muted)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MoreVertical size={12} />
-              </button>
-            </div>
-          ))}
-          <button
-            onClick={() => setNewMonthOpen((v) => !v)}
-            style={{
-              whiteSpace: "nowrap",
-              padding: "7px 14px",
-              borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
-              border: "1.5px dashed #078cff",
-              background: "#041831",
-              color: "#69baff",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <Plus size={14} /> Bulan Baru
-          </button>
+        {/* Pemilih bulan aktif: kalender digabung dengan label bulan, tanpa mengubah data bulan. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+          <div style={{ position: "relative", flex: "0 1 280px", minWidth: 0 }}>
+            <button type="button" onClick={() => setMonthPickerOpen((v) => !v)} aria-expanded={monthPickerOpen}
+              style={{ width: "100%", minHeight: 46, display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 12, border: "1.5px solid var(--gold)", background: "var(--surface-soft)", color: "var(--gold)", boxShadow: "inset 0 0 14px rgba(42,123,255,.06)", fontSize: 15, fontWeight: 800, cursor: "pointer", textAlign: "left" }}>
+              <CalendarDays size={20} style={{ flexShrink: 0 }} />
+              <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{activeMonth ? monthKeyToLabel(activeMonth) : "Pilih Bulan"}</span>
+              <ChevronDown size={18} style={{ flexShrink: 0 }} />
+            </button>
+            {monthPickerOpen && <>
+              <div onClick={() => setMonthPickerOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 35 }} />
+              <div role="listbox" aria-label="Pilih bulan jurnal" style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, width: "100%", maxHeight: 260, overflowY: "auto", zIndex: 36, borderRadius: 12, padding: 5, background: "var(--surface-raised)", border: "1px solid rgba(42,123,255,.65)", boxShadow: "0 12px 28px rgba(0,0,0,.28)" }}>
+                {order.filter((key) => !months[key]?.archived).slice().reverse().map((key) => <div key={key} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <button type="button" role="option" aria-selected={activeMonth === key} onClick={() => { setActiveMonth(key); setMonthPickerOpen(false); }}
+                    style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "10px 11px", border: "none", borderRadius: 8, background: activeMonth === key ? "rgba(42,123,255,.14)" : "transparent", color: activeMonth === key ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: activeMonth === key ? 800 : 600, cursor: "pointer", textAlign: "left" }}>
+                    <span>{monthKeyToLabel(key)}</span>{activeMonth === key && <Check size={15} />}
+                  </button>
+                  <button type="button" aria-label={`Opsi ${monthKeyToLabel(key)}`} onClick={(e) => { const rect = e.currentTarget.getBoundingClientRect(); setMenuPos({ top: rect.bottom + 6, left: rect.left }); setMenuOpenFor(menuOpenFor === key ? null : key); setConfirmDeleteFor(null); setMonthPickerOpen(false); }}
+                    style={{ width: 32, height: 32, flexShrink: 0, display: "grid", placeItems: "center", border: "none", borderRadius: 7, background: "transparent", color: "var(--muted)", cursor: "pointer" }}><MoreVertical size={15} /></button>
+                </div>)}
+                {!order.some((key) => !months[key]?.archived) && <div style={{ padding: 12, color: "var(--muted)", fontSize: 12 }}>Belum ada bulan aktif.</div>}
+              </div>
+            </>}
+          </div>
+          {activeMonth && <button type="button" aria-label="Opsi bulan aktif" onClick={(e) => { const rect = e.currentTarget.getBoundingClientRect(); setMenuPos({ top: rect.bottom + 6, left: rect.left }); setMenuOpenFor(menuOpenFor === activeMonth ? null : activeMonth); setConfirmDeleteFor(null); }}
+            style={{ width: 42, height: 46, display: "grid", placeItems: "center", borderRadius: 12, border: "1px solid rgba(42,123,255,.45)", background: "var(--surface-soft)", color: "#35baff", cursor: "pointer" }}><MoreVertical size={19} /></button>}
+          <button onClick={() => setNewMonthOpen((v) => !v)} style={{ minHeight: 46, whiteSpace: "nowrap", padding: "9px 16px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "1.5px dashed #078cff", background: "rgba(42,123,255,.05)", color: "#69baff", cursor: "pointer", display: "flex", alignItems: "center", gap: 7 }}><Plus size={18} /> Bulan Baru</button>
         </div>
 
         {menuOpenFor && menuPos && (
@@ -1267,15 +1230,15 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         {m && (
           <>
             {/* Input entry (1 baris per tanggal) + tabel entries — di atas statistik */}
-            <div style={{ borderRadius: 17, overflow: "hidden", background: "linear-gradient(150deg, #041a39 0%, #03122a 100%)", border: "1px solid #00baff", boxShadow: "0 0 0 1px rgba(0,186,255,.15), 0 0 18px rgba(0,186,255,.12)", marginBottom: 20 }}>
-              <div style={{ padding: "15px 16px", background: "linear-gradient(110deg, rgba(0,130,255,.12), transparent)", borderBottom: "1px solid #078cff", position: "relative" }}>
+            <div style={{ borderRadius: 17, overflow: "hidden", background: "var(--surface-soft)", border: "1.5px solid #2A7BFF", boxShadow: "0 0 18px rgba(42,123,255,.20), inset 0 0 18px rgba(42,123,255,.07)", marginBottom: 20 }}>
+              <div style={{ padding: "15px 16px", background: "rgba(42,123,255,.06)", borderBottom: "1px solid rgba(42,123,255,.55)", position: "relative" }}>
                 {/* Judul + menu titik tiga (gaya sama dengan kartu Statistik): Export Excel, Backup Data (.json), Import Backup (.json) */}
                 <div style={{ position: "relative" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 34, minHeight: 48 }}>
-                    <span style={{ width: 46, height: 46, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "radial-gradient(circle, #073d7b, #031a3a)", border: "1px solid #087dff", boxShadow: "0 0 12px rgba(0,145,255,.25)" }}><List size={24} /></span>
+                    <span style={{ width: 46, height: 46, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "rgba(42,123,255,.14)", border: "1.5px solid rgba(42,123,255,.60)", boxShadow: "0 0 12px rgba(42,123,255,.18)" }}><List size={24} /></span>
                     <span style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                      <span style={{ color: "#f4f8ff", fontSize: 19, fontWeight: 800, lineHeight: 1.15 }}>Input Transaksi</span>
-                      <span style={{ color: "#60baff", fontSize: 12, fontWeight: 600, lineHeight: 1.35 }}>Tambah dan kelola data transaksi trading kamu.</span>
+                      <span style={{ color: "var(--text)", fontSize: 19, fontWeight: 800, lineHeight: 1.15 }}>Input Transaksi</span>
+                      <span style={{ color: "var(--muted)", fontSize: 12, fontWeight: 600, lineHeight: 1.35 }}>Tambah dan kelola data transaksi trading kamu.</span>
                     </span>
                   </div>
                   <button
@@ -1284,7 +1247,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-label="Export dan Backup"
                     aria-haspopup="menu"
                     aria-expanded={txMenuOpen}
-                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#041a39", border: "1px solid #075eb8", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
+                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "rgba(42,123,255,.08)", border: "1px solid rgba(42,123,255,.45)", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
                   >
                     <MoreHorizontal size={16} />
                   </button>
@@ -1508,7 +1471,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-label="Ubah tampilan grafik"
                     aria-haspopup="menu"
                     aria-expanded={balanceMenuOpen}
-                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#041a39", border: "1px solid #075eb8", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
+                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "rgba(42,123,255,.08)", border: "1px solid rgba(42,123,255,.45)", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
                   >
                     <MoreHorizontal size={16} />
                   </button>
