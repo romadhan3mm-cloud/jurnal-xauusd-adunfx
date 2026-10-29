@@ -1,21 +1,10 @@
 import React from "react";
 import { fmtMoney } from "./journalMath.js";
+import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
 
 // Tampilan kartu Statistik. Komponen ini HANYA menampilkan angka yang sudah dihitung di TradingJournal
 // (stats + persentase harian/mingguan/bulanan/tahunan); tidak ada perhitungan baru.
 // Warna teks/latar/garis memakai variabel tema supaya ikut tema terang/gelap seperti kartu lain.
-
-const BLUE = "#2A7BFF";
-const mix = (c, pct) => `color-mix(in srgb, ${c} ${pct}%, transparent)`;
-
-// Skala proporsional: ukuran mengikuti lebar kartu (container query unit `cqw`), acuan desain 560px.
-const s = (px, min) => {
-  const v = `min(${px}px, ${((px / 560) * 100).toFixed(2)}cqw)`;
-  return min ? `max(${min}px, ${v})` : v;
-};
-
-const INNER_BG = mix("var(--surface-raised)", 55);
-const INNER_BORDER = `1px solid ${mix(BLUE, 45)}`;
 
 function Svg({ size = 20, children, color = "currentColor", stroke = 2 }) {
   return (
@@ -90,29 +79,19 @@ export default function StatsCard({ stats, growth }) {
   const pctText = (p) => (p === null ? "—" : `${p >= 0 ? "+" : ""}${p.toFixed(2)}%`);
 
   return (
-    <div style={{ containerType: "inline-size", marginBottom: 20 }}>
-      <section
-        aria-label="Statistik"
-        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: "1px solid var(--border)" }}
-      >
-        {/* Header */}
-        <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: `1px solid ${mix(BLUE, 55)}` }}>
-          <span style={{ width: s(46, 24), height: s(46, 24), borderRadius: "50%", flex: "0 0 auto", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "var(--text)", background: mix(BLUE, 14), border: `1.5px solid ${mix(BLUE, 60)}` }}>
+    <CardShell ariaLabel="Statistik">
+        <CardHeader
+          icon={
             <Svg size="52%" stroke={0}>
               <rect x="4" y="12" width="4" height="8" rx="1" fill="currentColor" />
               <rect x="10" y="7" width="4" height="13" rx="1" fill="currentColor" />
               <rect x="16" y="3" width="4" height="17" rx="1" fill="currentColor" />
             </Svg>
-          </span>
-          <div style={{ flex: "1 1 0", minWidth: 0 }}>
-            <div style={{ fontSize: s(24, 13), fontWeight: 800, color: "var(--text)", lineHeight: 1.1 }}>Statistik</div>
-            <div style={{ fontSize: s(13, 8), color: "var(--muted)", marginTop: 3, lineHeight: 1.25 }}>Ringkasan performa trading Anda.</div>
-          </div>
-          <span style={{ flex: "0 0 auto", marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: s(7, 3), borderRadius: 999, padding: `${s(8, 3)} ${s(16, 7)}`, fontSize: s(14, 8.5), fontWeight: 800, letterSpacing: ".03em", whiteSpace: "nowrap", color: "var(--gold)", border: "1.5px solid var(--gold)" }}>
-            <Svg size={s(18, 10)} stroke={2.4}><path d="m3 17 6-6 4 4 8-8M15 7h6v6" /></Svg>
-            PERFORMA
-          </span>
-        </div>
+          }
+          title="Statistik"
+          subtitle="Ringkasan performa trading Anda."
+          badge={<HeaderBadge icon={<Svg size={s(18, 10)} stroke={2.4}><path d="m3 17 6-6 4 4 8-8M15 7h6v6" /></Svg>} label="PERFORMA" />}
+        />
 
         {/* Body: cincin winrate + 4 kartu angka */}
         <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "center", gap: s(12, 5) }}>
@@ -155,7 +134,6 @@ export default function StatsCard({ stats, growth }) {
             </div>
           ))}
         </div>
-      </section>
-    </div>
+    </CardShell>
   );
 }
