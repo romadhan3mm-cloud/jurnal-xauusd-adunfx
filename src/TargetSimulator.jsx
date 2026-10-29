@@ -82,7 +82,6 @@ function lotFor(balance, lossRatio, sl, maxLayers) {
 
 const card = {
   background: "var(--surface-soft)",
-  border: "1px solid var(--border)",
   borderRadius: 10,
   padding: 12,
   marginBottom: 14,

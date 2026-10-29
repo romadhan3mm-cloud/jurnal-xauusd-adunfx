@@ -93,7 +93,7 @@ export default function StatsCard({ stats, growth }) {
     <div style={{ containerType: "inline-size", marginBottom: 20 }}>
       <section
         aria-label="Statistik"
-        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: "1px solid var(--border)" }}
+        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${BLUE}`, boxShadow: `0 0 ${s(18, 8)} ${mix(BLUE, 30)}, inset 0 0 ${s(18, 8)} ${mix(BLUE, 10)}` }}
       >
         {/* Header */}
         <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: `1px solid ${mix(BLUE, 55)}` }}>

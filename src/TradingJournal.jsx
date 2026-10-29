@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 // TraderLogs — jurnal trading XAUUSD, versi dengan perbandingan bulan
-import { Plus, Download, Upload, Trash2, ChevronDown, ChevronUp, MoreVertical, MoreHorizontal, Check, Archive, ArchiveRestore, X, TrendingUp, TrendingDown, Sun, Moon, LogOut, LineChart as ChartIcon, BookOpen, RefreshCw, Target as TargetIcon, ChevronLeft, ChevronRight, CalendarDays, ShieldCheck, ShieldAlert, AlertTriangle, Newspaper } from "lucide-react";
+import { Plus, Download, Upload, Trash2, ChevronDown, ChevronUp, MoreVertical, MoreHorizontal, Check, Archive, ArchiveRestore, X, TrendingUp, TrendingDown, Sun, Moon, LogOut, LineChart as ChartIcon, BookOpen, RefreshCw, Target as TargetIcon, ChevronLeft, ChevronRight, CalendarDays, ShieldCheck, ShieldAlert, AlertTriangle, Newspaper, List } from "lucide-react";
 import TradingViewChart from "./TradingViewChart.jsx";
 import AINews from "./AINews.jsx";
 import TargetSimulator from "./TargetSimulator.jsx";
@@ -989,15 +989,19 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         <RiskGuardCard riskGuard={riskGuard} />
         {/* Cross-month comparison */}
         {(
-          <div style={{ borderRadius: 10, overflow: "hidden", marginBottom: 16, background: "var(--surface-soft)" }}>
+          <div style={{ borderRadius: 16, overflow: "hidden", marginBottom: 18, background: "linear-gradient(135deg, #061b3b 0%, #03122b 100%)", border: "1px solid #00aaff", boxShadow: "0 0 0 1px rgba(0,170,255,.18), 0 0 18px rgba(0,170,255,.12)" }}>
             <button
               onClick={() => setShowCompare((v) => !v)}
-              style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "transparent", border: "none", borderBottom: showCompare ? "1px solid var(--border)" : "none", color: "var(--gold)", fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer" }}
+              style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", background: "transparent", border: "none", borderBottom: showCompare ? "1px solid rgba(0,170,255,.55)" : "none", color: "#f4f8ff", textAlign: "left", cursor: "pointer" }}
             >
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <TrendingUp size={13} color="var(--gold)" /> Perbandingan Antar Bulan
+              <span style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+                <span style={{ width: 44, height: 44, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "radial-gradient(circle, #073d7b, #031a3a)", border: "1px solid #087dff", boxShadow: "0 0 12px rgba(0,145,255,.3)" }}><TrendingUp size={23} /></span>
+                <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+                  <span style={{ fontSize: 17, lineHeight: 1.2, fontWeight: 800, letterSpacing: "-.02em", textTransform: "none" }}>Perbandingan Antar Bulan</span>
+                  <span style={{ fontSize: 12, lineHeight: 1.35, color: "#60baff", fontWeight: 600, textTransform: "none", letterSpacing: 0 }}>Lihat performa trading kamu dari bulan ke bulan.</span>
+                </span>
               </span>
-              {showCompare ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, flexShrink: 0, border: "2px solid #ffd400", color: "#ffd400", borderRadius: 24, padding: "8px 13px", fontSize: 12, fontWeight: 800, whiteSpace: "nowrap" }}><TrendingUp size={17} /> GRAFIK {showCompare ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</span>
             </button>
             {showCompare && compareData.length === 0 && (
               <div style={{ padding: "22px 14px", textAlign: "center", fontSize: 13, color: "var(--muted)" }}>
@@ -1066,7 +1070,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {/* Month tabs */}
-        <div className="flex items-center gap-2 tj-scrollbar" style={{ overflowX: "auto", paddingBottom: 8, marginBottom: 6 }}>
+        <div className="flex items-center gap-2 tj-scrollbar" style={{ overflowX: "auto", padding: "2px 0 10px", marginBottom: 8, gap: 10 }}>
           {order.filter((key) => !months[key]?.archived).map((key) => (
             <div key={key} style={{ position: "relative", display: "flex", alignItems: "stretch" }}>
               <button
@@ -1079,10 +1083,10 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                   fontSize: 13,
                   fontWeight: 600,
                   lineHeight: 1.2,
-                  border: `1px solid ${activeMonth === key ? "var(--gold-dim)" : "var(--border)"}`,
+                  border: `1.5px solid ${activeMonth === key ? "#ffd400" : "#075eb8"}`,
                   borderRight: "none",
-                  background: activeMonth === key ? "rgba(237,165,36,0.1)" : "var(--surface)",
-                  color: activeMonth === key ? "var(--gold)" : "var(--muted)",
+                  background: activeMonth === key ? "linear-gradient(135deg, #08254a, #03142e)" : "#041831",
+                  color: activeMonth === key ? "#ffd400" : "#69baff",
                   cursor: "pointer",
                 }}
               >
@@ -1119,9 +1123,9 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               borderRadius: 8,
               fontSize: 13,
               fontWeight: 600,
-              border: "1px dashed var(--border)",
-              background: "transparent",
-              color: "var(--muted)",
+              border: "1.5px dashed #078cff",
+              background: "#041831",
+              color: "#69baff",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -1190,7 +1194,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {showArchive && (
-          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", borderRadius: 10, marginBottom: 16, overflow: "hidden" }}>
+          <div style={{ background: "var(--surface-soft)", borderRadius: 10, marginBottom: 16, overflow: "hidden" }}>
             {Object.entries(
               order
                 .filter((key) => months[key]?.archived)
@@ -1236,7 +1240,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {newMonthOpen && (
-          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", borderRadius: 10, padding: 14, marginBottom: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ background: "var(--surface-soft)", borderRadius: 10, padding: 14, marginBottom: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <span style={{ fontSize: 13, color: "var(--muted)" }}>Start Balance ($)</span>
             <input
               type="number"
@@ -1263,12 +1267,16 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         {m && (
           <>
             {/* Input entry (1 baris per tanggal) + tabel entries — di atas statistik */}
-            <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)", marginBottom: 20 }}>
-              <div style={{ padding: 12, background: "transparent", position: "relative" }}>
+            <div style={{ borderRadius: 17, overflow: "hidden", background: "linear-gradient(150deg, #041a39 0%, #03122a 100%)", border: "1px solid #00baff", boxShadow: "0 0 0 1px rgba(0,186,255,.15), 0 0 18px rgba(0,186,255,.12)", marginBottom: 20 }}>
+              <div style={{ padding: "15px 16px", background: "linear-gradient(110deg, rgba(0,130,255,.12), transparent)", borderBottom: "1px solid #078cff", position: "relative" }}>
                 {/* Judul + menu titik tiga (gaya sama dengan kartu Statistik): Export Excel, Backup Data (.json), Import Backup (.json) */}
                 <div style={{ position: "relative" }}>
-                  <div className="tj-title">
-                    Input Transaksi
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 34, minHeight: 48 }}>
+                    <span style={{ width: 46, height: 46, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#35baff", background: "radial-gradient(circle, #073d7b, #031a3a)", border: "1px solid #087dff", boxShadow: "0 0 12px rgba(0,145,255,.25)" }}><List size={24} /></span>
+                    <span style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <span style={{ color: "#f4f8ff", fontSize: 19, fontWeight: 800, lineHeight: 1.15 }}>Input Transaksi</span>
+                      <span style={{ color: "#60baff", fontSize: 12, fontWeight: 600, lineHeight: 1.35 }}>Tambah dan kelola data transaksi trading kamu.</span>
+                    </span>
                   </div>
                   <button
                     onClick={() => { setTxMenuOpen((v) => !v); setImportError(""); }}
@@ -1276,7 +1284,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-label="Export dan Backup"
                     aria-haspopup="menu"
                     aria-expanded={txMenuOpen}
-                    style={{ position: "absolute", right: 0, top: "calc(50% - 4px)", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: 6, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
+                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#041a39", border: "1px solid #075eb8", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
                   >
                     <MoreHorizontal size={16} />
                   </button>
@@ -1361,18 +1369,21 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 6,
-                      background: "var(--gold-grad)",
-                      border: "1px solid var(--gold)",
-                      color: "#0A1628",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: "6px 12px",
-                      borderRadius: 7,
+                      justifyContent: "center",
+                      gap: 9,
+                      width: "100%",
+                      minHeight: 48,
+                      background: "linear-gradient(110deg, rgba(255,212,0,.04), rgba(255,212,0,.01))",
+                      border: "1.5px solid #ffd400",
+                      color: "#ffd400",
+                      fontSize: 15,
+                      fontWeight: 800,
+                      padding: "10px 12px",
+                      borderRadius: 12,
                       cursor: "pointer",
                     }}
                   >
-                    <Plus size={12} /> Tambah Transaksi
+                    <Plus size={21} strokeWidth={3} /> Tambah Transaksi
                   </button>
                   {addNote && (
                     <span style={{ fontSize: 11, color: "var(--muted)", alignSelf: "center" }}>{addNote}</span>
@@ -1488,7 +1499,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
             {/* Balance growth chart */}
             {rows.length > 0 && (
-              <div style={{ border: "1px solid var(--border)", borderRadius: 12, background: "var(--surface-soft)", padding: "10px 14px 8px", marginBottom: 20 }}>
+              <div style={{ borderRadius: 12, background: "var(--surface-soft)", padding: "10px 14px 8px", marginBottom: 20 }}>
                 <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 22, paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid var(--border)" }}>
                   <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Pertumbuhan Saldo</span>
                   <button
@@ -1497,7 +1508,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-label="Ubah tampilan grafik"
                     aria-haspopup="menu"
                     aria-expanded={balanceMenuOpen}
-                    style={{ position: "absolute", right: 0, top: "calc(50% - 4px)", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: 6, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
+                    style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, background: "#041a39", border: "1px solid #075eb8", borderRadius: "50%", color: "#35baff", opacity: 1, cursor: "pointer", padding: 0 }}
                   >
                     <MoreHorizontal size={16} />
                   </button>
@@ -1598,7 +1609,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             )}
 
             {/* Capital lot reference */}
-            <div style={{ marginTop: 16, border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)" }}>
+            <div style={{ marginTop: 16, borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)" }}>
               {/* Rekomendasi live berdasarkan saldo berjalan saat ini */}
               {(() => {
                 const rec = computeLotRecommendation(endBalance);
