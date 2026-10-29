@@ -1514,9 +1514,10 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               );
 
               return (
-                <div style={{ background: "var(--surface-soft)", borderRadius: 12, padding: "10px 14px 16px", marginBottom: 20 }}>
-                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 22, paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid var(--border)" }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Statistik</span>
+                <div style={{ borderRadius: 18, background: "linear-gradient(145deg, rgba(7,28,58,0.96), rgba(10,36,70,0.88))", border: "1px solid rgba(38,132,225,0.62)", boxShadow: "0 10px 28px rgba(0,0,0,0.18), inset 0 1px 0 rgba(100,180,255,0.12)", padding: "14px 14px 16px", marginBottom: 20, overflow: "hidden" }}>
+                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 9, minHeight: 34, paddingBottom: 11, marginBottom: 14, borderBottom: "1px solid rgba(80,145,210,0.28)" }}>
+                    <div style={{ width: 32, height: 32, flex: "none", display: "grid", placeItems: "center", borderRadius: 10, color: "var(--gold)", background: "rgba(237,165,36,0.12)", border: "1px solid rgba(237,165,36,0.28)" }}><TrendingUp size={18} /></div>
+                    <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Statistik</span>
                     <button
                       onClick={() => setStatsMenuOpen((v) => !v)}
                       title="Ubah tampilan statistik"
@@ -1551,7 +1552,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
                   {statsStyle === "ring" ? (
                     <>
-                      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "4px 2px 2px" }}>
                         <StatRing
                           size={118}
                           pct={winratePct}
