@@ -14,9 +14,10 @@ export function formatMoneyInputValue(raw, prefix) {
   return `${prefix}${cleaned}`;
 }
 
-// Format input konsisten: titik (.) adalah satu-satunya pemisah desimal; tidak ada pemisah ribuan.
+// Format input konsisten: titik (.) adalah satu-satunya pemisah desimal (koma otomatis jadi titik); tidak ada pemisah ribuan.
 export function parseMoneyInputValue(text) {
-  const raw = String(text ?? "");
+  // Keyboard iPhone berbahasa Indonesia hanya punya koma: koma diperlakukan sebagai titik desimal.
+  const raw = String(text ?? "").replace(/,/g, ".");
   const cleaned = raw.replace(/[^0-9.]/g, "");
   const firstDot = cleaned.indexOf(".");
   if (firstDot === -1) return cleaned;

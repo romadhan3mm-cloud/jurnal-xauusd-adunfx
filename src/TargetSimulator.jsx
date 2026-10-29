@@ -148,7 +148,7 @@ const tileValue = { fontSize: s(22, 16), fontWeight: 800, letterSpacing: "-.03em
 // Kotak isian vertikal (seperti kartu angka di Statistik): ikon di atas, label di bawah ikon, nilai di paling bawah; semua rata tengah.
 function Tile({ icon, bg, label, suffix, focused, as: Tag = "label", children }) {
   return (
-    <Tag style={{ minWidth: 0, boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(10, 5)}`, background: INNER_BG, border: focused ? "1px solid var(--gold)" : INNER_BORDER }}>
+    <Tag style={{ flex: "1 1 0", width: "100%", minWidth: 0, boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(10, 5)}`, background: INNER_BG, border: focused ? "1px solid var(--gold)" : INNER_BORDER }}>
       <IconBadge bg={bg}>{icon}</IconBadge>
       <span style={{ ...tileLabel, marginTop: s(8, 4) }}>{label}</span>
       <span style={{ position: "relative", display: "block", width: "100%", minWidth: 0, marginTop: "auto", paddingTop: s(5, 3) }}>
