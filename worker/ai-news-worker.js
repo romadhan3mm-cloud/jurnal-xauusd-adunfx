@@ -13,7 +13,7 @@ const concat = (...parts) => { const out = new Uint8Array(parts.reduce((n,p)=>n+
 const slug = (s) => String(s||"event").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,80)||"event";
 function normalizeEvent(e) { const d=new Date(e?.scheduledAt); if(!e?.eventName||Number.isNaN(d.getTime())) return null; return {id:String(e.id||`${slug(e.eventName)}-${d.toISOString()}`),eventName:String(e.eventName),scheduledAt:d.toISOString(),importance:String(e.importance||"unknown"),previous:e.previous??null,forecast:e.forecast??e.consensus??null,actual:e.actual??null,unit:e.unit??null,periodLabel:e.periodLabel??null,source:String(e.source||"XOOMAR"),sourceUrl:"https://xoomar.com/markets/api/calendar"}; }
 function calendarRequest(env){
-  const headers={accept:"application/json","user-agent":"TraderLogs-AINews/1.9.43"};
+  const headers={accept:"application/json","user-agent":"TraderLogs-AINews/1.9.44"};
   let url=CALENDAR_URL;const key=env?.XOOMAR_API_KEY;
   if(key){
     const mode=String(env.XOOMAR_KEY_MODE||"x-api-key").trim();
@@ -112,37 +112,48 @@ async function runSchedule(env){if(!env.ALERTS_KV)throw new Error("Missing ALERT
   const meta={status:"ok",checkedAt:new Date().toISOString(),eventsReceived:events.length,relevantEvents:checked,alertsProcessed:queued,duplicatesSkipped:duplicates,pushSent,pushFailed,calendar:cal.stale?"stale":cal.fromCache?"cache":"live",warning:cal.warning||null};await putLastRun(env,meta,queued>0||pushFailed>0);return meta;
 }
 function safeText(v,max=300){return String(v??"").replace(/[<>\u0000-\u001f]/g," ").slice(0,max);}
-const FF_URLS=["https://cdn-nfs.faireconomy.media/ff_calendar_thisweek.json","https://cdn-nfs.faireconomy.media/ff_calendar_nextweek.json"];
+const FF_HOSTS=["nfs.faireconomy.media","cdn-nfs.faireconomy.media"],FF_FILES=["ff_calendar_thisweek.json","ff_calendar_nextweek.json"];
 const FF_FRESH_MS=30*60000,FF_STALE_MS=12*3600000,FF_MATCH_MS=10*60000;
 const blank=(v)=>v===null||v===undefined||String(v).trim()==="";
 function normalizeFF(r){const ts=Date.parse(r?.date);if(!r?.title||Number.isNaN(ts))return null;return{title:String(r.title),country:String(r.country||"").toUpperCase(),ts,forecast:blank(r.forecast)?null:String(r.forecast).trim(),previous:blank(r.previous)?null:String(r.previous).trim(),actual:blank(r.actual)?null:String(r.actual).trim()};}
-async function fetchFFLive(){
-  const rows=[];
-  for(let i=0;i<FF_URLS.length;i++){
+async function fetchFFFile(file){
+  const errors=[];
+  for(const host of FF_HOSTS){
     try{
-      const r=await fetch(FF_URLS[i],{headers:{accept:"application/json","user-agent":"TraderLogs-AINews/1.9.43"},signal:AbortSignal.timeout(10000)});
-      if(!r.ok){const snip=(await r.text().catch(()=>"")).replace(/\s+/g," ").trim().slice(0,120);throw new Error(`Forex Factory HTTP ${r.status}${snip?`: ${snip}`:""}`);}
-      const p=await r.json();if(!Array.isArray(p))throw new Error("Format Forex Factory tidak dikenali");
-      for(const x of p){const n=normalizeFF(x);if(n&&n.country==="USD")rows.push(n);}
+      const r=await fetch(`https://${host}/${file}`,{headers:{accept:"application/json","user-agent":"TraderLogs-AINews/1.9.44"},signal:AbortSignal.timeout(10000)});
+      if(!r.ok){const snip=(await r.text().catch(()=>"")).replace(/\s+/g," ").trim().slice(0,100);throw new Error(`HTTP ${r.status}${snip?`: ${snip}`:""}`);}
+      const p=await r.json();if(!Array.isArray(p))throw new Error("format tidak dikenali");
+      return{host,items:p};
+    }catch(e){errors.push(`${host}: ${String(e?.message||e)}`);}
+  }
+  throw new Error(`semua alamat feed gagal — ${errors.join(" | ")}`);
+}
+async function fetchFFLive(){
+  const rows=[];let host=null;
+  for(let i=0;i<FF_FILES.length;i++){
+    try{
+      const f=await fetchFFFile(FF_FILES[i]);host=host||f.host;
+      for(const x of f.items){const n=normalizeFF(x);if(n&&n.country==="USD")rows.push(n);}
     }catch(e){if(i===0)throw e;}
   }
-  return rows;
+  return{rows,host};
 }
 async function fetchFF(env){
   const kv=env?.ALERTS_KV;
   const cached=kv?await kv.get("cache:ff","json"):null;
   const age=cached?Date.now()-Date.parse(cached.fetchedAt):Infinity;
-  if(cached&&age<FF_FRESH_MS)return{rows:cached.rows,fromCache:true,stale:false};
+  if(cached&&age<FF_FRESH_MS)return{rows:cached.rows,host:cached.host||null,fromCache:true,stale:false};
   const cooling=kv?await kv.get("cooldown:ff"):null;
-  const fallback=(warning)=>{if(cached&&age<FF_STALE_MS)return{rows:cached.rows,fromCache:true,stale:true,warning};throw new Error(warning)};
+  const fallback=(warning)=>{if(cached&&age<FF_STALE_MS)return{rows:cached.rows,host:cached.host||null,fromCache:true,stale:true,warning};throw new Error(warning)};
   if(cooling)return fallback(`Forex Factory gagal: ${cooling} (jeda 2 menit sebelum dicoba lagi)`);
   try{
-    const rows=await fetchFFLive();
-    if(kv)await kv.put("cache:ff",JSON.stringify({fetchedAt:new Date().toISOString(),rows}),{expirationTtl:86400});
-    return{rows,fromCache:false,stale:false};
+    const live=await fetchFFLive();
+    if(kv)await kv.put("cache:ff",JSON.stringify({fetchedAt:new Date().toISOString(),rows:live.rows,host:live.host}),{expirationTtl:86400});
+    return{rows:live.rows,host:live.host,fromCache:false,stale:false};
   }catch(e){
-    if(kv)await kv.put("cooldown:ff",String(e?.message||e).slice(0,300),{expirationTtl:120});
-    return fallback(String(e?.message||e));
+    const msg=String(e?.message||e).slice(0,400);
+    if(kv)await kv.put("cooldown:ff",msg,{expirationTtl:120});
+    return fallback(`Forex Factory gagal: ${msg}`);
   }
 }
 const FF_STOP=new Set(["the","of","and","us","for","in","to","a","s","change","situation","index"]);
@@ -187,8 +198,8 @@ async function analyze(request,env){if(!env.AI) return json({error:"AI binding b
  try{const result=await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast",{messages:[{role:"system",content:"Jangan mengarang data. Pisahkan fakta, interpretasi, dan reaksi aktual. Output JSON valid saja."},{role:"user",content:prompt}],max_tokens:700,temperature:0.2});let output=result?.response||result?.output_text||"";let parsed;try{parsed=JSON.parse(output.replace(/^```json\s*/i,"").replace(/```$/,""))}catch{parsed={ringkasan_fakta:output,konteks_fundamental:"",kemungkinan_dampak_emas:"",reaksi_pasar_aktual:"Data reaksi pasar aktual tidak tersedia.",data_yang_belum_tersedia:"Respons AI tidak dalam JSON yang diharapkan; tinjau ringkasan secara hati-hati.",risiko_volatilitas:"Rilis ekonomi dapat meningkatkan volatilitas, spread, dan slippage.",sumber:event.sourceUrl||"Tidak tersedia"}}return json({analysis:parsed,generatedAt:new Date().toISOString(),model:"@cf/meta/llama-3.3-70b-instruct-fp8-fast",disclaimer:"Analisis edukatif, bukan saran investasi atau sinyal trading."});}catch(e){return json({error:"Analisis AI gagal: "+String(e?.message||e)},502)} }
 export default {
  async fetch(request,env){const url=new URL(request.url);if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-methods":"GET,POST,OPTIONS","access-control-allow-headers":"Content-Type"}});if(url.pathname.startsWith("/api/ai-news/")){const p=url.pathname;const origin=request.headers.get("origin");if(request.method==="POST"&&origin&&origin!==url.origin)return json({error:"Origin tidak diizinkan"},403);try{
-   if(p==="/api/ai-news/health"&&request.method==="GET"){const lastRun=await env.ALERTS_KV?.get("meta:last-run","json");return json({service:"TraderLogs AI News",status:"online",version:"1.9.43",scheduler:!!env.ALERTS_KV,ai:!!env.AI,push:!!(env.VAPID_PRIVATE_KEY&&env.VAPID_PUBLIC_KEY&&env.VAPID_SUBJECT),calendarKey:!!env.XOOMAR_API_KEY,timezone:TZ,lastRun});}
-   if(p==="/api/ai-news/events"&&request.method==="GET"){const cal=await fetchEvents(env);let events=cal.events,enrichment={source:"Forex Factory",status:"unavailable",matched:0,unmatched:[],warning:null};try{const ff=await fetchFF(env);const r=enrichEvents(events,ff.rows);events=r.events;enrichment={source:"Forex Factory",status:ff.stale?"stale":ff.fromCache?"cache":"live",matched:r.matched,unmatched:r.unmatched,warning:ff.warning||null};}catch(e){enrichment.warning=String(e?.message||e)}return json({events,cached:cal.fromCache,stale:cal.stale,updatedAt:new Date().toISOString(),source:"XOOMAR",enrichment,note:"Jadwal dari XOOMAR. Forecast/Previous yang kosong dilengkapi dari Forex Factory bila cocok; tidak ada angka yang dikarang."});}
+   if(p==="/api/ai-news/health"&&request.method==="GET"){const lastRun=await env.ALERTS_KV?.get("meta:last-run","json");return json({service:"TraderLogs AI News",status:"online",version:"1.9.44",scheduler:!!env.ALERTS_KV,ai:!!env.AI,push:!!(env.VAPID_PRIVATE_KEY&&env.VAPID_PUBLIC_KEY&&env.VAPID_SUBJECT),calendarKey:!!env.XOOMAR_API_KEY,timezone:TZ,lastRun});}
+   if(p==="/api/ai-news/events"&&request.method==="GET"){const cal=await fetchEvents(env);let events=cal.events,enrichment={source:"Forex Factory",status:"unavailable",matched:0,unmatched:[],warning:null};try{const ff=await fetchFF(env);const r=enrichEvents(events,ff.rows);events=r.events;enrichment={source:"Forex Factory",host:ff.host||null,status:ff.stale?"stale":ff.fromCache?"cache":"live",matched:r.matched,unmatched:r.unmatched,warning:ff.warning||null};}catch(e){enrichment.warning=String(e?.message||e)}return json({events,cached:cal.fromCache,stale:cal.stale,updatedAt:new Date().toISOString(),source:"XOOMAR",enrichment,note:"Jadwal dari XOOMAR. Forecast/Previous yang kosong dilengkapi dari Forex Factory bila cocok; tidak ada angka yang dikarang."});}
    if(p==="/api/ai-news/analyze"&&request.method==="POST")return analyze(request,env);
    if(p==="/api/ai-news/push-key"&&request.method==="GET")return env.VAPID_PUBLIC_KEY?json({publicKey:env.VAPID_PUBLIC_KEY}):json({error:"VAPID public key belum dikonfigurasi"},503);
    if(p==="/api/ai-news/subscribe"&&request.method==="POST"){if(!env.ALERTS_KV)return json({error:"KV belum dikonfigurasi"},503);const sub=await request.json();if(!sub?.endpoint||!sub?.keys?.p256dh||!sub?.keys?.auth||!/^https:\/\//.test(sub.endpoint)||!PUSH_HOSTS.test(new URL(sub.endpoint).hostname)||String(sub.endpoint).length>600)return json({error:"Push subscription tidak valid"},400);const id=await sha(sub.endpoint);await env.ALERTS_KV.put(`sub:${id}`,JSON.stringify(sub),{expirationTtl:180*86400});return json({ok:true,message:"Perangkat terdaftar untuk pengingat AI News."});}
