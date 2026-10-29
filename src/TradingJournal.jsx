@@ -1094,10 +1094,41 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               </div>
             </>}
           </div>
+          {activeMonth && <button type="button" aria-label={`Kalender transaksi ${monthKeyToLabel(activeMonth)}`} title={`Kalender ${monthKeyToLabel(activeMonth)}`} onClick={() => { setCalendarMonth(activeMonth); setSelectedDate((prev) => prev && prev.slice(0, 7) === activeMonth ? prev : `${activeMonth}-01`); setCalendarOpen((open) => !open); }}
+            style={{ width: 46, height: 46, display: "grid", placeItems: "center", borderRadius: 12, border: `1.5px solid ${calendarOpen ? "var(--gold)" : "rgba(42,123,255,.65)"}`, background: "var(--surface-soft)", color: calendarOpen ? "var(--gold)" : "#35baff", cursor: "pointer" }}><CalendarDays size={20} /></button>}
           {activeMonth && <button type="button" aria-label="Opsi bulan aktif" onClick={(e) => { const rect = e.currentTarget.getBoundingClientRect(); setMenuPos({ top: rect.bottom + 6, left: rect.left }); setMenuOpenFor(menuOpenFor === activeMonth ? null : activeMonth); setConfirmDeleteFor(null); }}
             style={{ width: 42, height: 46, display: "grid", placeItems: "center", borderRadius: 12, border: "1px solid rgba(42,123,255,.45)", background: "var(--surface-soft)", color: "#35baff", cursor: "pointer" }}><MoreVertical size={19} /></button>}
           <button onClick={() => setNewMonthOpen((v) => !v)} style={{ minHeight: 46, whiteSpace: "nowrap", padding: "9px 16px", borderRadius: 12, fontSize: 14, fontWeight: 700, border: "1.5px dashed #078cff", background: "rgba(42,123,255,.05)", color: "#69baff", cursor: "pointer", display: "flex", alignItems: "center", gap: 7 }}><Plus size={18} /> Bulan Baru</button>
         </div>
+
+        {calendarOpen && <>
+                    <div onClick={() => setCalendarOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 39 }} />
+                    <div role="dialog" aria-label="Kalender pilih tanggal" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(360px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 12, borderRadius: 16, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 12 }}>
+                        <button type="button" onClick={() => changeCalendarMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={17} /></button>
+                        <strong style={{ fontSize: 14, color: "var(--text)" }}>{calendarFirstDay.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
+                        <button type="button" onClick={() => changeCalendarMonth(1)} aria-label="Bulan berikutnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={17} /></button>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4, marginBottom: 5 }}>
+                        {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((day, index) => <div key={day} style={{ textAlign: "center", padding: "5px 0", color: index >= 5 ? "#A33A3A" : "var(--muted)", fontSize: 10, fontWeight: 700 }}>{day}</div>)}
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 3 }}>
+                        {calendarCells.map((key, i) => {
+                          if (!key) return <div key={`empty-${i}`} style={{ minHeight: 35 }} />;
+                          const isSelected = key === selectedDate;
+                          const hasEntry = transactionDateKeys.has(key);
+                          const isToday = key === todayKey;
+                          const dayNum = Number(key.slice(-2));
+                          const weekday = new Date(`${key}T12:00:00`).getDay();
+                          const isWeekend = weekday === 0 || weekday === 6;
+                          return <button key={key} type="button" onClick={() => chooseCalendarDate(key)} aria-label={`${dayNum} ${calendarFirstDay.toLocaleDateString("id-ID", { month: "long" })}`} aria-pressed={isSelected} style={{ minWidth: 0, minHeight: 42, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, border: isSelected ? "1px solid var(--gold)" : isToday ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: 9, background: isSelected ? "var(--gold-grad)" : "var(--surface)", color: isSelected ? "#0A1628" : isWeekend ? "#A33A3A" : "var(--text)", fontSize: 12, fontWeight: isSelected ? 800 : 600, cursor: "pointer", padding: 0 }}>
+                            {dayNum}<span style={{ width: 4, height: 4, borderRadius: "50%", background: hasEntry ? (isSelected ? "#686868" : "#8B8B85") : "transparent" }} />
+                          </button>;
+                        })}
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)", color: "var(--muted)", fontSize: 10 }}><span><span style={{ color: "#8B8B85" }}>●</span> sudah ada transaksi</span><span>▢ terpilih = emas</span></div>
+                    </div>
+                  </>}
 
         {menuOpenFor && menuPos && (
           <>
@@ -1282,47 +1313,6 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       </div>
                     </>
                   )}
-                </div>
-                <div style={{ position: "relative", marginBottom: 12 }}>
-                  <button
-                    type="button"
-                    className="tj-input tj-mono"
-                    onClick={() => { setCalendarMonth(activeMonth || selectedDate.slice(0, 7)); setCalendarOpen((open) => !open); }}
-                    aria-label="Pilih tanggal transaksi"
-                    aria-expanded={calendarOpen}
-                    style={{ width: "100%", minHeight: 42, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, textAlign: "center", cursor: "pointer", border: calendarOpen ? "1px solid var(--gold)" : undefined, color: selectedDateIsWeekend ? "#EF5B50" : "var(--text)", position: "relative" }}
-                  >
-                    <span>{selectedDate ? new Date(`${selectedDate}T12:00:00`).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" }) : "Pilih tanggal"}</span>
-                    <CalendarDays size={17} style={{ flexShrink: 0, color: "var(--gold)", position: "absolute", right: 12 }} />
-                  </button>
-                  {calendarOpen && <>
-                    <div onClick={() => setCalendarOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 39 }} />
-                    <div role="dialog" aria-label="Kalender pilih tanggal" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(360px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 12, borderRadius: 16, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 12 }}>
-                        <button type="button" onClick={() => changeCalendarMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={17} /></button>
-                        <strong style={{ fontSize: 14, color: "var(--text)" }}>{calendarFirstDay.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
-                        <button type="button" onClick={() => changeCalendarMonth(1)} aria-label="Bulan berikutnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={17} /></button>
-                      </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4, marginBottom: 5 }}>
-                        {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((day, index) => <div key={day} style={{ textAlign: "center", padding: "5px 0", color: index >= 5 ? "#A33A3A" : "var(--muted)", fontSize: 10, fontWeight: 700 }}>{day}</div>)}
-                      </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 3 }}>
-                        {calendarCells.map((key, i) => {
-                          if (!key) return <div key={`empty-${i}`} style={{ minHeight: 35 }} />;
-                          const isSelected = key === selectedDate;
-                          const hasEntry = transactionDateKeys.has(key);
-                          const isToday = key === todayKey;
-                          const dayNum = Number(key.slice(-2));
-                          const weekday = new Date(`${key}T12:00:00`).getDay();
-                          const isWeekend = weekday === 0 || weekday === 6;
-                          return <button key={key} type="button" onClick={() => chooseCalendarDate(key)} aria-label={`${dayNum} ${calendarFirstDay.toLocaleDateString("id-ID", { month: "long" })}`} aria-pressed={isSelected} style={{ minWidth: 0, minHeight: 42, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, border: isSelected ? "1px solid var(--gold)" : isToday ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: 9, background: isSelected ? "var(--gold-grad)" : "var(--surface)", color: isSelected ? "#0A1628" : isWeekend ? "#A33A3A" : "var(--text)", fontSize: 12, fontWeight: isSelected ? 800 : 600, cursor: "pointer", padding: 0 }}>
-                            {dayNum}<span style={{ width: 4, height: 4, borderRadius: "50%", background: hasEntry ? (isSelected ? "#686868" : "#8B8B85") : "transparent" }} />
-                          </button>;
-                        })}
-                      </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)", color: "var(--muted)", fontSize: 10 }}><span><span style={{ color: "#8B8B85" }}>●</span> sudah ada transaksi</span><span>▢ terpilih = emas</span></div>
-                    </div>
-                  </>}
                 </div>
 
                 <div className="flex items-center gap-8" style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
