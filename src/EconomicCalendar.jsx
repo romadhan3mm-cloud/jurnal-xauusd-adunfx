@@ -183,7 +183,7 @@ export default function EconomicCalendar({ theme = "dark" }) {
         <span>Data: <a href="https://xoomar.com/markets/api/calendar" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>XOOMAR</a> · jadwal sumber resmi AS</span>
         <span>{updatedAt ? `Diperbarui ${formatEventTime(updatedAt)}` : ""}</span>
       </div>
-      <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
+      <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}{enrichment?.status === "stale" ? `Angka FF berasal dari salinan lama (${formatEventTime(enrichment.fetchedAt)} WIB) karena sumber sedang membatasi permintaan. ` : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
     </div>
   );
 }
