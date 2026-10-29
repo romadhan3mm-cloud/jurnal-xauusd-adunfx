@@ -55,7 +55,7 @@ function IconBadge({ bg, children }) {
 // Isi tiga kartu angka dipusatkan: ikon, label, dan nilai.
 function StatCard({ icon, bg, label, value, valueColor }) {
   return (
-    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(9, 4)}`, background: INNER_BG, border: "1px solid var(--border)" }}>
+    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(9, 4)}`, background: INNER_BG, border: "1px solid var(--border-inner)" }}>
       <IconBadge bg={bg}>{icon}</IconBadge>
       <div style={{ fontSize: s(13, 8.5), lineHeight: 1.2, color: "var(--muted)", marginTop: s(9, 4), minHeight: "2.4em", overflowWrap: "anywhere", textAlign: "center" }}>{label}</div>
       <div className="tj-mono" style={{ fontSize: "max(9px, min(24px, 3.3cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: s(3, 2), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" }}>{value}</div>
@@ -74,7 +74,7 @@ function Ring({ riskGuard, tone }) {
   const shown = hasLimit ? `${Math.min(999, riskGuard.usedPct).toFixed(0)}%` : "—";
   const gid = `rg-ring-${React.useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
-    <div role="img" aria-label={hasLimit ? `${shown} dari batas rugi harian terpakai` : "Batas rugi harian belum tersedia"} style={{ position: "relative", width: s(140, 64), height: s(140, 64), flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: INNER_BG, border: "1px solid var(--border)" }}>
+    <div role="img" aria-label={hasLimit ? `${shown} dari batas rugi harian terpakai` : "Batas rugi harian belum tersedia"} style={{ position: "relative", width: s(140, 64), height: s(140, 64), flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: INNER_BG, border: "1px solid var(--border-inner)" }}>
       <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "86%", height: "86%", transform: "rotate(-90deg)", filter: `drop-shadow(0 0 5px ${tone.glow})` }} aria-hidden="true">
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
@@ -151,7 +151,7 @@ export default function RiskGuardCard({ riskGuard }) {
           </div>
 
           {/* P/L hari ini */}
-          <div style={{ borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: "1px solid var(--border)" }}>
+          <div style={{ borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: "1px solid var(--border-inner)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: s(8, 4), fontSize: s(12.5, 8.5), color: "var(--muted)" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: s(8, 4), minWidth: 0 }}>
                 <span style={{ width: s(26, 16), height: s(26, 16), borderRadius: "50%", background: mix(pnlColor, 16), color: pnlColor, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}>
@@ -173,7 +173,7 @@ export default function RiskGuardCard({ riskGuard }) {
       </div>
 
       {/* Catatan */}
-      <div style={{ display: "flex", alignItems: "center", gap: s(12, 6), marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: "1px solid var(--border)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: s(12, 6), marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: "1px solid var(--border-inner)" }}>
         <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid #3AA0E0", color: "#3AA0E0", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Svg size="60%" stroke={2.4}><path d="M12 11v6M12 7.2v.1" /></Svg>
         </span>

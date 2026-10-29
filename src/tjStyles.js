@@ -9,6 +9,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --surface-raised: #162A47;
   --surface-soft: color-mix(in srgb, var(--surface) 50%, transparent); /* latar kartu 50% transparan */
   --border: #223A5E;
+  --border-inner: var(--border); /* garis kotak dalam Risk Guard (tema gelap: sama dengan --border) */
   --text: #F2F5FA;
   --muted: #8A9BB5;
   --gold: #EDA524;
@@ -69,6 +70,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --surface: #FFFFFF;
   --surface-raised: #EDF1F7;
   --border: #DCE3EE;
+  --border-inner: color-mix(in srgb, var(--text) 20%, var(--border)); /* tema terang: garis kotak dalam dipertegas ~20% */
   --text: #0F2A47;
   --muted: #6B7C93;
   --gold: #C98708;
