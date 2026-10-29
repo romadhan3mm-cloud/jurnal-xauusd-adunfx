@@ -15,7 +15,7 @@ const s = (px, min) => {
 };
 
 const INNER_BG = mix("var(--surface-raised)", 55);
-const INNER_BORDER = `1px solid ${mix(BLUE, 45)}`;
+const INNER_BORDER = "1px solid var(--border-inner)";
 
 function Svg({ size = 20, children, color = "currentColor", stroke = 2 }) {
   return (
@@ -93,11 +93,11 @@ export default function StatsCard({ stats, growth }) {
     <div style={{ containerType: "inline-size", marginBottom: 20 }}>
       <section
         aria-label="Statistik"
-        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${BLUE}`, boxShadow: `0 0 ${s(18, 8)} ${mix(BLUE, 30)}, inset 0 0 ${s(18, 8)} ${mix(BLUE, 10)}` }}
+        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: "1px solid var(--border-inner)" }}
       >
         {/* Header */}
-        <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: `1px solid ${mix(BLUE, 55)}` }}>
-          <span style={{ width: s(46, 24), height: s(46, 24), borderRadius: "50%", flex: "0 0 auto", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "var(--text)", background: mix(BLUE, 14), border: `1.5px solid ${mix(BLUE, 60)}` }}>
+        <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: "1px solid var(--border)" }}>
+          <span style={{ width: s(46, 24), height: s(46, 24), borderRadius: "50%", flex: "0 0 auto", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "var(--text)", background: mix(BLUE, 14), border: "1px solid var(--border-inner)" }}>
             <Svg size="52%" stroke={0}>
               <rect x="4" y="12" width="4" height="8" rx="1" fill="currentColor" />
               <rect x="10" y="7" width="4" height="13" rx="1" fill="currentColor" />
@@ -149,7 +149,7 @@ export default function StatsCard({ stats, growth }) {
         {/* Persentase harian / mingguan / bulanan / tahunan */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(12, 6)} 0`, background: INNER_BG, border: INNER_BORDER }}>
           {growth.map(([label, pct], i) => (
-            <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}`, borderLeft: i === 0 ? "none" : `1px solid ${mix(BLUE, 45)}` }}>
+            <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}`, borderLeft: i === 0 ? "none" : "1px solid var(--border-inner)" }}>
               <div style={{ fontSize: s(13, 7.5), color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".03em" }}>{label}</div>
               <div className="tj-mono" style={{ fontSize: s(21, 9.5), fontWeight: 800, color: pctColor(pct), marginTop: s(3, 2), whiteSpace: "nowrap", letterSpacing: "-.03em" }}>{pctText(pct)}</div>
             </div>
