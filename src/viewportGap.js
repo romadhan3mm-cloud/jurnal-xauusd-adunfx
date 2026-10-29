@@ -56,6 +56,11 @@ export function installViewportGap() {
   window.addEventListener("orientationchange", () => setTimeout(update, 250));
   window.addEventListener("pageshow", update);
   document.addEventListener("visibilitychange", update);
+  // iPhone: setelah keyboard ditutup (mis. habis mengetik di kolom input), iOS kadang tidak mengirim
+  // event resize sehingga --vgap tertinggal 0 dan muncul pita gelap di bawah tab bar. Hitung ulang
+  // beberapa kali setelah kolom input kehilangan fokus dan saat visual viewport berubah.
+  window.addEventListener("focusout", () => { [100, 400, 900, 1600].forEach((ms) => setTimeout(update, ms)); });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", update);
   setTimeout(update, 300);
   setTimeout(update, 1200);
 }
