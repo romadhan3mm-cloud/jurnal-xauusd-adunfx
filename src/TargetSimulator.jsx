@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, SlidersHorizontal, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info } from "lucide-react";
-import { CardShell, CardHeader, HeaderBadge, BLUE, mix, s, INNER_BG, INNER_BORDER } from "./CardHeader.jsx";
+import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info } from "lucide-react";
+import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER } from "./CardHeader.jsx";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
 
@@ -145,16 +145,16 @@ const tileIcon = { width: "55%", height: "55%", display: "block" };
 const tileLabel = { fontSize: s(13, 8.5), color: "var(--muted)", lineHeight: 1.2, minWidth: 0, overflowWrap: "anywhere", textAlign: "center" };
 const tileValue = { fontSize: s(22, 16), fontWeight: 800, letterSpacing: "-.03em", color: "var(--text)", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" };
 
-// Kotak isian: ikon bulat di kiri, label di atas, nilai di bawah (rata tengah), satuan di kanan.
+// Kotak isian vertikal (seperti kartu angka di Statistik): ikon di atas, label di bawah ikon, nilai di paling bawah; semua rata tengah.
 function Tile({ icon, bg, label, suffix, focused, as: Tag = "label", children }) {
   return (
-    <Tag style={{ minWidth: 0, boxSizing: "border-box", display: "flex", alignItems: "center", gap: s(8, 4), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(10, 5)}`, background: INNER_BG, border: focused ? "1px solid var(--gold)" : INNER_BORDER }}>
+    <Tag style={{ minWidth: 0, boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(10, 5)}`, background: INNER_BG, border: focused ? "1px solid var(--gold)" : INNER_BORDER }}>
       <IconBadge bg={bg}>{icon}</IconBadge>
-      <span style={{ flex: "1 1 0", minWidth: 0, alignSelf: "stretch", display: "flex", flexDirection: "column", alignItems: "stretch", textAlign: "center" }}>
-        <span style={tileLabel}>{label}</span>
-        <span style={{ marginTop: "auto", paddingTop: s(4, 2), display: "block", minWidth: 0 }}>{children}</span>
+      <span style={{ ...tileLabel, marginTop: s(8, 4) }}>{label}</span>
+      <span style={{ position: "relative", display: "block", width: "100%", minWidth: 0, marginTop: "auto", paddingTop: s(5, 3) }}>
+        {children}
+        {suffix && <span style={{ position: "absolute", right: s(4, 2), bottom: s(2, 1), fontSize: s(14, 9), fontWeight: 700, color: "var(--muted)", lineHeight: 1.2, pointerEvents: "none" }}>{suffix}</span>}
       </span>
-      {suffix && <span style={{ flex: "0 0 auto", alignSelf: "flex-end", fontSize: s(14, 9), fontWeight: 700, color: "var(--muted)", lineHeight: 1.2, paddingBottom: s(2, 1) }}>{suffix}</span>}
     </Tag>
   );
 }
@@ -171,14 +171,14 @@ function Field({ label, value, onChange, suffix, formatThousands = false, icon, 
       <input
         className="tj-input tj-mono tj-sim-input"
         type="text"
-        inputMode={formatThousands ? "numeric" : "decimal"}
+        inputMode="decimal"
         autoComplete="off"
         value={displayValue}
         onChange={handleChange}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         aria-label={label}
-        style={{ ...tileValue, height: "auto", padding: 0, border: "none", borderRadius: 0, background: "transparent" }}
+        style={{ ...tileValue, width: "100%", boxSizing: "border-box", height: "auto", padding: `0 ${s(20, 12)}`, border: "none", borderRadius: 0, background: "transparent" }}
       />
     </Tile>
   );
@@ -226,9 +226,9 @@ function DateField({ label, value, onChange, icon, bg }) {
     <div ref={anchorRef} style={{ minWidth: 0, display: "flex" }}>
       <Tile as="div" icon={icon} bg={bg} label={label} focused={open}>
         <button type="button" onClick={() => { setMonthKey((value || today).slice(0, 7)); setOpen((v) => !v); }} aria-label="Pilih tanggal mulai" aria-expanded={open}
-          style={{ ...tileValue, width: "100%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: `0 ${s(24, 14)} 0 0`, border: "none", background: "transparent", cursor: "pointer", fontFamily: "inherit", boxSizing: "border-box" }}>
+          style={{ ...tileValue, width: "100%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: `0 ${s(20, 12)}`, border: "none", background: "transparent", cursor: "pointer", fontFamily: "inherit", boxSizing: "border-box" }}>
           <span>{value ? new Date(`${value}T12:00:00`).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" }) : "Pilih tanggal"}</span>
-          <CalendarDays style={{ position: "absolute", right: 0, width: s(18, 11), height: s(18, 11), color: "var(--gold)" }} />
+          <CalendarDays style={{ position: "absolute", right: s(4, 2), width: s(16, 10), height: s(16, 10), color: "var(--gold)" }} />
         </button>
       </Tile>
       {popup && (portalTarget ? createPortal(popup, portalTarget) : popup)}
@@ -529,7 +529,6 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
           icon={<Settings size="52%" strokeWidth={2.2} style={{ display: "block" }} />}
           title="Pengaturan Asumsi Simulasi"
           subtitle="Atur parameter simulasi sesuai strategi Anda."
-          badge={<HeaderBadge icon={<SlidersHorizontal style={{ width: s(18, 10), height: s(18, 10), display: "block" }} strokeWidth={2.2} />} label="ATUR" />}
         />
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: s(10, 4) }}>
