@@ -25,11 +25,11 @@ function IconBadge({ bg, children }) {
 function MetricCard({ icon, bg, label, value, valueColor }) {
   return (
     <div style={{ minWidth: 0, borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: INNER_BORDER }}>
-      <div style={{ display: "flex", alignItems: "center", gap: s(9, 4) }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: s(9, 4) }}>
         <IconBadge bg={bg}>{icon}</IconBadge>
-        <span style={{ fontSize: s(14, 8.5), color: "var(--muted)", lineHeight: 1.15, minWidth: 0, overflowWrap: "anywhere" }}>{label}</span>
+        <span style={{ fontSize: s(14, 8.5), color: "var(--muted)", lineHeight: 1.15, minWidth: 0, overflowWrap: "anywhere", textAlign: "center" }}>{label}</span>
       </div>
-      <div className="tj-mono" style={{ fontSize: "max(10px, min(30px, 5cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: s(6, 3), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>{value}</div>
+      <div className="tj-mono" style={{ fontSize: "max(10px, min(30px, 5cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: s(6, 3), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" }}>{value}</div>
     </div>
   );
 }

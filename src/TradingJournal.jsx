@@ -1342,7 +1342,9 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     <CalendarDays size={16} style={{ flex: "0 0 auto" }} />
                     <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{monthKeyToLabel(activeMonth)}</span>
                   </button>
-                  {/* Kanan (dipisah garis vertikal seperti di kartu Statistik): daftar bulan dan arsip */}
+                  {/* Garis pemisah vertikal (warna seperti di kartu Statistik), diberi jarak dari garis tepi atas dan bawah */}
+                  <span aria-hidden="true" style={{ flex: "0 0 1px", width: 1, alignSelf: "stretch", margin: "9px 0", background: mix(BLUE, 45) }} />
+                  {/* Kanan: daftar bulan dan arsip */}
                   <button
                     onClick={(e) => {
                       const rect = e.currentTarget.parentElement.getBoundingClientRect();
@@ -1353,7 +1355,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-haspopup="listbox"
                     aria-expanded={monthDdOpen}
                     aria-label="Daftar bulan dan arsip"
-                    style={{ flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px", background: "transparent", border: "none", borderLeft: INNER_LINE, color: "var(--gold)", cursor: "pointer" }}
+                    style={{ flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px", background: "transparent", border: "none", color: "var(--gold)", cursor: "pointer" }}
                   >
                     <ChevronDown size={16} style={{ transform: monthDdOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
                   </button>
