@@ -117,7 +117,7 @@ export default function RiskGuardCard({ riskGuard }) {
           <div style={{ fontSize: s(22, 13), fontWeight: 800, color: "var(--text)", lineHeight: 1.1 }}>Risk Guard</div>
           <div style={{ fontSize: s(11.5, 8), color: "var(--muted)", marginTop: 3, lineHeight: 1.25 }}>Kelola Risiko. Lindungi Modal. Konsisten di Pasar.</div>
         </div>
-        <span style={{ flex: "0 0 auto", marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: s(8, 4), borderRadius: 999, padding: `${s(7, 3)} ${s(14, 7)}`, fontSize: s(13, 8.5), fontWeight: 800, letterSpacing: ".04em", whiteSpace: "nowrap", color: tone.main, background: mix(tone.main, 18), border: `2px solid ${tone.main}` }}>
+        <span style={{ flex: "0 0 auto", marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: s(8, 4), borderRadius: 999, padding: `${s(7, 3)} ${s(14, 7)}`, fontSize: s(13, 8.5), fontWeight: 800, letterSpacing: ".04em", whiteSpace: "nowrap", color: tone.main, background: mix(tone.main, 15), border: `1.5px solid ${tone.main}` }}>
           <span style={{ width: s(10, 6), height: s(10, 6), borderRadius: "50%", background: tone.main, boxShadow: `0 0 6px ${tone.glow}` }} />
           {tone.label}
         </span>
