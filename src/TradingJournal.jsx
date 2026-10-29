@@ -81,6 +81,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
   }, [activeView]);
   const [customTagline, setCustomTagline] = useState("");
   const [addNote, setAddNote] = useState("");
+  const [riskGuardStyle, setRiskGuardStyle] = useState(() => { try { return "horizontal"; } catch { return "horizontal"; } });
   const [statsMenuOpen, setStatsMenuOpen] = useState(false);
   const [statsStyle, setStatsStyle] = useState("grup"); // "grup" (grup berlabel + ring) | "ring" (ring winrate besar)
   const [balanceChartType, setBalanceChartType] = useState("line"); // "line" | "bar" | "area"
@@ -983,30 +984,41 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
         {activeView === "journal" && (
         <>
-        {/* Risk Guard: pemantauan P/L harian yang sudah tercatat, memakai batas existing 4%. */}
-        <section aria-label="Risk Guard" style={{ borderRadius: 12, overflow: "hidden", marginBottom: 16, padding: 14, background: "var(--surface-soft)", border: `1px solid ${riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--border)"}` }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--text)", fontWeight: 800, fontSize: 13 }}>
-              {riskGuard.status === "limit" ? <ShieldAlert size={17} color="var(--red)" /> : riskGuard.status === "warning" ? <AlertTriangle size={17} color="var(--gold)" /> : <ShieldCheck size={17} color="var(--green)" />}
-              Risk Guard
+        {/* Risk Guard: presentation-only options; all calculations remain in computeDailyRiskGuard. */}
+        <section aria-label="Risk Guard" style={{ borderRadius: 18, overflow: "visible", position: "relative", marginBottom: 16, padding: riskGuardStyle === "horizontal" ? 16 : 14, background: "var(--surface-soft)", border: `1px solid ${riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--border)"}`, boxShadow: riskGuardStyle === "horizontal" ? "0 8px 24px rgba(0,90,190,.12)" : "none" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9, color: "var(--text)", fontWeight: 850, fontSize: 16 }}>
+              {riskGuard.status === "limit" ? <ShieldAlert size={22} color="var(--red)" /> : riskGuard.status === "warning" ? <AlertTriangle size={22} color="var(--gold)" /> : <ShieldCheck size={22} color="var(--green)" />}
+              <div><div>Risk Guard</div>{riskGuardStyle === "horizontal" && <div style={{ fontSize: 11, fontWeight: 500, color: "var(--muted)", marginTop: 2 }}>Kelola Risiko. Lindungi Modal. Konsisten di Pasar.</div>}</div>
             </div>
-            <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: ".04em", borderRadius: 20, padding: "4px 8px", color: riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--green)", background: "var(--surface-raised)" }}>
-              {riskGuard.status === "limit" ? "BATAS TERCAPAI" : riskGuard.status === "warning" ? "WASPADA" : riskGuard.status === "unavailable" ? "BELUM ADA MODAL" : "AMAN"}
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 10, fontWeight: 850, letterSpacing: ".04em", borderRadius: 20, padding: "5px 10px", color: riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--green)", background: "var(--surface-raised)" }}>
+                {riskGuard.status === "limit" ? "BATAS TERCAPAI" : riskGuard.status === "warning" ? "WASPADA" : riskGuard.status === "unavailable" ? "BELUM ADA MODAL" : "AMAN"}
+              </span>
+
+            </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10 }}>
-            <div><div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}>Batas rugi harian · 4%</div><div className="tj-mono" style={{ fontSize: 17, fontWeight: 800, color: "var(--text)" }}>{riskGuard.limit > 0 ? fmtMoney(riskGuard.limit) : "—"}</div></div>
-            <div><div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}>Kerugian bersih tercatat</div><div className="tj-mono" style={{ fontSize: 17, fontWeight: 800, color: riskGuard.lossUsed > 0 ? "var(--red)" : "var(--text)" }}>{riskGuard.lossUsed > 0 ? `-${fmtMoney(riskGuard.lossUsed).slice(1)}` : fmtMoney(0)}</div></div>
-            <div><div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}>Sisa batas</div><div className="tj-mono" style={{ fontSize: 17, fontWeight: 800, color: riskGuard.status === "limit" ? "var(--red)" : "var(--text)" }}>{riskGuard.limit > 0 ? fmtMoney(riskGuard.remaining) : "—"}</div></div>
+          {riskGuardStyle === "horizontal" ? <>
+            <div style={{ display:"grid", gridTemplateColumns:"minmax(105px, .8fr) minmax(0, 2.2fr)", gap:12, alignItems:"center" }}>
+              <div style={{ display:"grid", placeItems:"center", minWidth:0 }}>
+                <div style={{ width:"min(34vw, 150px)", minWidth:100, aspectRatio:"1", borderRadius:"50%", display:"grid", placeItems:"center", background:`conic-gradient(${riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--green)"} ${Math.min(100, Math.max(0, riskGuard.usedPct))}%, var(--border) 0)`, position:"relative", boxShadow:"0 0 0 5px color-mix(in srgb, var(--green) 8%, transparent)" }}>
+                  <div style={{ position:"absolute", inset:8, borderRadius:"50%", background:"var(--surface-soft)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", border:"1px solid var(--border)" }}><strong className="tj-mono" style={{ fontSize:"clamp(19px, 5vw, 30px)", lineHeight:1.15 }}>{riskGuard.limit > 0 ? `${Math.min(999, riskGuard.usedPct).toFixed(0)}%` : "—"}</strong><span style={{ fontSize:10, color:"var(--muted)", marginTop:3 }}>terpakai</span></div>
+                </div>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(3, minmax(0, 1fr))", gap:8, minWidth:0, alignSelf:"stretch" }}>
+                {[{label:"Batas rugi harian · 4%",value:riskGuard.limit>0?fmtMoney(riskGuard.limit):"—",color:"var(--text)",icon:"calendar"},{label:"Kerugian bersih tercatat",value:riskGuard.lossUsed>0?`-${fmtMoney(riskGuard.lossUsed).slice(1)}`:fmtMoney(0),color:riskGuard.lossUsed>0?"var(--red)":"var(--text)",icon:"shield"},{label:"Sisa batas",value:riskGuard.limit>0?fmtMoney(riskGuard.remaining):"—",color:riskGuard.status==="limit"?"var(--red)":"var(--text)",icon:"database"}].map((item,i)=><div key={item.label} style={{ display:"flex", flexDirection:"column", justifyContent:"space-between", alignItems:"flex-start", gap:8, padding:"12px 11px", borderRadius:14, background:"linear-gradient(145deg, var(--surface-raised), var(--surface-soft))", border:"1px solid color-mix(in srgb, var(--blue, #1677d2) 32%, var(--border))", minWidth:0, minHeight:112 }}><span style={{fontSize:11,color:"var(--muted)",lineHeight:1.3}}>{item.label}</span><strong className="tj-mono" style={{fontSize:"clamp(12px, 2.7vw, 20px)",fontWeight:850,color:item.color,whiteSpace:"nowrap",letterSpacing:"-.03em"}}>{item.value}</strong></div>)}
+              </div>
+            </div>
+          </> : <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(130px, 1fr))", gap:10 }}>
+            <div><div style={{ fontSize:11, color:"var(--muted)", marginBottom:4 }}>Batas rugi harian · 4%</div><div className="tj-mono" style={{ fontSize:17, fontWeight:800, color:"var(--text)" }}>{riskGuard.limit>0?fmtMoney(riskGuard.limit):"—"}</div></div>
+            <div><div style={{ fontSize:11, color:"var(--muted)", marginBottom:4 }}>Kerugian bersih tercatat</div><div className="tj-mono" style={{ fontSize:17, fontWeight:800, color:riskGuard.lossUsed>0?"var(--red)":"var(--text)" }}>{riskGuard.lossUsed>0?`-${fmtMoney(riskGuard.lossUsed).slice(1)}`:fmtMoney(0)}</div></div>
+            <div><div style={{ fontSize:11, color:"var(--muted)", marginBottom:4 }}>Sisa batas</div><div className="tj-mono" style={{ fontSize:17, fontWeight:800, color:riskGuard.status==="limit"?"var(--red)":"var(--text)" }}>{riskGuard.limit>0?fmtMoney(riskGuard.remaining):"—"}</div></div>
+          </div>}
+          <div style={{ marginTop:12, padding: riskGuardStyle === "horizontal" ? "10px 11px" : 0, borderRadius:10, background:riskGuardStyle === "horizontal" ? "var(--surface-raised)" : "transparent" }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, color:"var(--muted)", fontSize:11, marginBottom:7 }}><span>{riskGuard.tradeDaysLogged?`P/L hari ini: ${riskGuard.netPnl>=0?"+":"−"}${fmtMoney(Math.abs(riskGuard.netPnl)).slice(1)}`:"Belum ada P/L tercatat hari ini"}</span><span className="tj-mono">{riskGuard.limit>0?`${Math.min(999,riskGuard.usedPct).toFixed(0)}% terpakai`:"—"}</span></div>
+            <div style={{ height:7, borderRadius:10, overflow:"hidden", background:"var(--border)" }}><div style={{ height:"100%", width:`${Math.min(100,Math.max(0,riskGuard.usedPct))}%`, borderRadius:10, background:riskGuard.status==="limit"?"var(--red)":riskGuard.status==="warning"?"var(--gold)":"var(--green)", transition:"width .2s ease" }} /></div>
           </div>
-          <div style={{ height: 6, borderRadius: 10, overflow: "hidden", background: "var(--border)", marginTop: 12 }}>
-            <div style={{ height: "100%", width: `${Math.min(100, Math.max(0, riskGuard.usedPct))}%`, borderRadius: 10, background: riskGuard.status === "limit" ? "var(--red)" : riskGuard.status === "warning" ? "var(--gold)" : "var(--green)", transition: "width .2s ease" }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 7, color: "var(--muted)", fontSize: 11 }}>
-            <span>{riskGuard.tradeDaysLogged ? `P/L hari ini: ${riskGuard.netPnl >= 0 ? "+" : "−"}${fmtMoney(Math.abs(riskGuard.netPnl)).slice(1)}` : "Belum ada P/L tercatat hari ini"}</span>
-            <span className="tj-mono">{riskGuard.limit > 0 ? `${Math.min(999, riskGuard.usedPct).toFixed(0)}% terpakai` : "—"}</span>
-          </div>
-          <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 8 }}>Menghitung profit, loss, dan komisi yang tercatat hari ini. Penarikan tidak dihitung sebagai kerugian trading. Floating P/L broker belum termasuk.</div>
+          <div style={{ fontSize:11, color:"var(--muted)", marginTop:10, lineHeight:1.5 }}>Menghitung profit, loss, dan komisi yang tercatat hari ini. Penarikan tidak dihitung sebagai kerugian trading. Floating P/L broker belum termasuk.</div>
         </section>
         {/* Cross-month comparison */}
         {(

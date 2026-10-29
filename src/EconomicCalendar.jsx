@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-const WORKER_URL = "/api/ai-news/events";
-const XOOMAR_URL = "https://xoomar.com/api/markets/calendar";
+const API_URL = "https://xoomar.com/api/markets/calendar";
 const REFRESH_MS = 15 * 60 * 1000;
 const ZONE = "Asia/Jakarta";
 
@@ -19,25 +18,6 @@ function formatEventTime(value) {
     minute: "2-digit",
     hour12: false,
   }).format(date).replace("pukul", "");
-}
-
-function FFTag() {
-  return <span title="Sumber: Forex Factory" style={{ marginLeft: 4, fontSize: 8, fontWeight: 800, opacity: 0.65 }}>FF</span>;
-}
-
-// Prefer the Worker (merged XOOMAR + Forex Factory, cached, API key). Fall back to XOOMAR directly.
-async function loadPayload() {
-  try {
-    const viaWorker = await fetch(WORKER_URL);
-    if (viaWorker.ok) {
-      const body = await viaWorker.json();
-      if (Array.isArray(body?.events)) return { data: body.events, updatedAt: body.updatedAt, enrichment: body.enrichment || null };
-    }
-  } catch (err) { /* fall through to the direct source */ }
-  const response = await fetch(XOOMAR_URL);
-  if (!response.ok) throw new Error(response.status === 429 ? "Batas permintaan kalender tercapai. Coba lagi beberapa menit." : `Kalender gagal dimuat (HTTP ${response.status}).`);
-  const payload = await response.json();
-  return { data: payload?.data, updatedAt: payload?.updatedAt, enrichment: null };
 }
 
 function formatFigure(value, unit) {
@@ -66,7 +46,6 @@ export default function EconomicCalendar({ theme = "dark" }) {
   const [error, setError] = useState("");
   const [updatedAt, setUpdatedAt] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [enrichment, setEnrichment] = useState(null);
   const isLight = theme === "light";
   const colors = {
     panel: isLight ? "#FFFFFF" : "#10213B",
@@ -80,7 +59,9 @@ export default function EconomicCalendar({ theme = "dark" }) {
     if (!quiet) setLoading(true);
     setError("");
     try {
-      const payload = await loadPayload();
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error(response.status === 429 ? "Batas permintaan kalender tercapai. Coba lagi beberapa menit." : `Kalender gagal dimuat (HTTP ${response.status}).`);
+      const payload = await response.json();
       if (!Array.isArray(payload?.data)) throw new Error("Format data kalender tidak dikenali.");
       setEvents(payload.data
         .filter((event) => normalizedImpact(event.importance) !== "low")
@@ -90,7 +71,6 @@ export default function EconomicCalendar({ theme = "dark" }) {
           return impactOrder || (new Date(a.scheduledAt) - new Date(b.scheduledAt));
         }));
       setUpdatedAt(payload.updatedAt || new Date().toISOString());
-      setEnrichment(payload.enrichment || null);
     } catch (err) {
       setError(err?.message || "Tidak dapat memuat kalender ekonomi. Periksa koneksi internet.");
     } finally {
@@ -163,15 +143,15 @@ export default function EconomicCalendar({ theme = "dark" }) {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginTop: 11 }}>
                 <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
                   <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>PREVIOUS</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.previous, event.previousSource ? "" : event.unit)}{event.previousSource && <FFTag />}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.previous, event.unit)}</div>
                 </div>
                 <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
                   <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>FORECAST</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.forecast ?? event.consensus ?? event.estimate, event.forecastSource ? "" : event.unit)}{event.forecastSource && <FFTag />}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.forecast ?? event.consensus ?? event.estimate, event.unit)}</div>
                 </div>
                 <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
                   <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>ACTUAL {isReleased ? "· DIRILIS" : "· MENUNGGU"}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: isReleased ? impact.color : colors.text, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.actual, event.actualSource ? "" : event.unit)}{event.actualSource && <FFTag />}</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: isReleased ? impact.color : colors.text, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.actual, event.unit)}</div>
                 </div>
               </div>
             </article>
@@ -183,7 +163,7 @@ export default function EconomicCalendar({ theme = "dark" }) {
         <span>Data: <a href="https://xoomar.com/markets/api/calendar" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>XOOMAR</a> · jadwal sumber resmi AS</span>
         <span>{updatedAt ? `Diperbarui ${formatEventTime(updatedAt)}` : ""}</span>
       </div>
-      <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}{enrichment?.status === "stale" ? `Angka FF berasal dari salinan lama (${formatEventTime(enrichment.fetchedAt)} WIB) karena sumber sedang membatasi permintaan. ` : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
+      <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast hanya muncul jika disediakan oleh sumber; nilai yang tidak tersedia ditandai —. Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
     </div>
   );
 }
