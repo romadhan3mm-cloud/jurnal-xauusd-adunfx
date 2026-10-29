@@ -868,6 +868,30 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
     ? { grid: "#DCE3EE", tick: "#6B7C93", tooltipBg: "#FFFFFF", tooltipBorder: "#DCE3EE", tooltipLabel: "#6B7C93", dotFill: "#F4F6FA", refLine: "#6B7C93" }
     : { grid: "#223A5E", tick: "#8A9BB5", tooltipBg: "#162A47", tooltipBorder: "#223A5E", tooltipLabel: "#8A9BB5", dotFill: "#0A1628", refLine: "#8A9BB5" };
 
+  const archivedKeys = order.filter((k) => months?.[k]?.archived).sort((a, b) => b.localeCompare(a));
+  const archiveItems = archivedKeys.map((key) => (
+    <div key={key} style={{ padding: "8px 12px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <span className="tj-mono" style={{ fontSize: 13, color: "var(--muted)" }}>{monthKeyToLabel(key)}</span>
+        <div style={{ display: "flex", gap: 12 }}>
+          <button onClick={() => { restoreMonth(key); setMonthDdOpen(false); }} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", color: "var(--gold)", fontSize: 11, cursor: "pointer", padding: 0 }}>
+            <ArchiveRestore size={12} /> Aktifkan
+          </button>
+          <button onClick={() => setConfirmDeleteFor(confirmDeleteFor === key ? null : key)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", color: "var(--red)", fontSize: 11, cursor: "pointer", padding: 0 }}>
+            <Trash2 size={12} /> Hapus
+          </button>
+        </div>
+      </div>
+      {confirmDeleteFor === key && (
+        <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, color: "var(--text)" }}>Hapus permanen? Data tidak bisa dikembalikan.</span>
+          <button onClick={() => deleteMonthPermanent(key)} style={{ background: "var(--red)", color: "#fff", border: "none", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Ya</button>
+          <button onClick={() => setConfirmDeleteFor(null)} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Batal</button>
+        </div>
+      )}
+    </div>
+  ));
+
   const newMonthForm = newMonthOpen ? (
         <div style={{ background: INNER_BG, border: INNER_LINE, borderRadius: s(14, 8), padding: 12, marginBottom: 10, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <span style={{ fontSize: 13, color: "var(--muted)" }}>Start Balance ($)</span>
@@ -1180,7 +1204,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             <div
               role="listbox"
               aria-label="Pilih bulan"
-              style={{ position: "fixed", top: monthDdPos.top, left: monthDdPos.left, minWidth: Math.max(monthDdPos.width, 200), maxWidth: "calc(100vw - 24px)", maxHeight: "50vh", overflowY: "auto", zIndex: 37, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}
+              style={{ position: "fixed", top: monthDdPos.top, left: monthDdPos.left, minWidth: Math.max(monthDdPos.width, 260), maxWidth: "calc(100vw - 24px)", maxHeight: "50vh", overflowY: "auto", zIndex: 37, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}
             >
               {order.filter((key) => !months[key]?.archived).map((key) => {
                 const isActive = activeMonth === key;
@@ -1212,63 +1236,16 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                   </div>
                 );
               })}
+              {archivedKeys.length > 0 && (
+                <div style={{ borderTop: "1px solid var(--border)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 12px 2px", fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
+                    <Archive size={11} /> Arsip ({archivedKeys.length})
+                  </div>
+                  {archiveItems}
+                </div>
+              )}
             </div>
           </>
-        )}
-
-        {order.some((key) => months[key]?.archived) && (
-          <button
-            onClick={() => setShowArchive((v) => !v)}
-            style={{ fontSize: 11, color: "var(--muted)", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, marginBottom: 14, padding: 0 }}
-          >
-            <Archive size={11} /> Arsip ({order.filter((k) => months[k]?.archived).length}) {showArchive ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
-          </button>
-        )}
-
-        {showArchive && (
-          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", borderRadius: 10, marginBottom: 16, overflow: "hidden" }}>
-            {Object.entries(
-              order
-                .filter((key) => months[key]?.archived)
-                .reduce((groups, key) => {
-                  const year = key.split("-")[0];
-                  (groups[year] = groups[year] || []).push(key);
-                  return groups;
-                }, {})
-            )
-              .sort((a, b) => Number(b[0]) - Number(a[0]))
-              .map(([year, keys], gi, garr) => (
-                <div key={year} style={{ borderBottom: gi < garr.length - 1 ? "none" : "none" }}>
-                  <div style={{ padding: "8px 14px", background: "transparent", fontSize: 11, color: "var(--gold)", letterSpacing: "0.05em", fontWeight: 600 }}>
-                    {year} <span style={{ color: "var(--muted)", fontWeight: 400 }}>({keys.length} bulan)</span>
-                  </div>
-                  {keys
-                    .sort((a, b) => a.localeCompare(b))
-                    .map((key, i, arr) => (
-                      <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderTop: "none" }}>
-                        <span className="tj-mono" style={{ fontSize: 13, color: "var(--muted)" }}>{monthKeyToLabel(key)}</span>
-                        <div style={{ display: "flex", gap: 10 }}>
-                          <button onClick={() => restoreMonth(key)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", color: "var(--gold)", fontSize: 11, cursor: "pointer" }}>
-                            <ArchiveRestore size={12} /> Aktifkan
-                          </button>
-                          <button onClick={() => setConfirmDeleteFor(confirmDeleteFor === key ? null : key)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", color: "var(--red)", fontSize: 11, cursor: "pointer" }}>
-                            <Trash2 size={12} /> Hapus
-                          </button>
-                        </div>
-                        {confirmDeleteFor === key && (
-                          <div style={{ position: "absolute", marginTop: 30, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 8, padding: 10, zIndex: 10 }}>
-                            <div style={{ fontSize: 11, marginBottom: 8 }}>Hapus permanen?</div>
-                            <div style={{ display: "flex", gap: 6 }}>
-                              <button onClick={() => deleteMonthPermanent(key)} style={{ background: "var(--red)", color: "#fff", border: "none", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Ya</button>
-                              <button onClick={() => setConfirmDeleteFor(null)} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Batal</button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-              ))}
-          </div>
         )}
 
         {!m && (
@@ -1283,6 +1260,14 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               </button>
             </div>
             {newMonthForm && <div style={{ marginTop: 14, textAlign: "left" }}>{newMonthForm}</div>}
+            {archivedKeys.length > 0 && (
+              <div style={{ marginTop: 14, textAlign: "left", border: "1px solid var(--border)", borderRadius: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 12px 2px", fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
+                  <Archive size={11} /> Arsip ({archivedKeys.length})
+                </div>
+                {archiveItems}
+              </div>
+            )}
           </div>
         )}
 
@@ -1344,22 +1329,35 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
               {/* Bulan aktif (dropdown, kiri) + Bulan Baru (kanan) */}
               <div style={{ display: "flex", alignItems: "stretch", gap: 8, marginBottom: 10 }}>
-                <button
-                  onClick={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setMonthDdPos({ top: rect.bottom + 6, left: rect.left, width: rect.width });
-                    setMonthDdOpen((v) => !v);
-                  }}
-                  aria-haspopup="listbox"
-                  aria-expanded={monthDdOpen}
-                  aria-label="Pilih bulan aktif"
-                  className="tj-mono"
-                  style={{ flex: "1 1 0", minWidth: 0, minHeight: 42, display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", borderRadius: s(14, 8), border: "1.5px solid var(--gold)", background: "transparent", color: "var(--gold)", fontSize: 13, fontWeight: 800, cursor: "pointer" }}
-                >
-                  <CalendarDays size={16} style={{ flex: "0 0 auto" }} />
-                  <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{monthKeyToLabel(activeMonth)}</span>
-                  <ChevronDown size={16} style={{ flex: "0 0 auto" }} />
-                </button>
+                <div style={{ flex: "1 1 0", minWidth: 0, minHeight: 42, display: "flex", alignItems: "stretch", borderRadius: s(14, 8), border: "1.5px solid var(--gold)", overflow: "hidden" }}>
+                  {/* Kiri: tampilkan kalender bulan aktif */}
+                  <button
+                    onClick={() => { setCalendarMonth(activeMonth); setCalendarOpen((v) => !v); setMonthDdOpen(false); }}
+                    aria-haspopup="dialog"
+                    aria-expanded={calendarOpen}
+                    aria-label="Buka kalender bulan aktif"
+                    className="tj-mono"
+                    style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", background: "transparent", border: "none", color: "var(--gold)", fontSize: 13, fontWeight: 800, cursor: "pointer" }}
+                  >
+                    <CalendarDays size={16} style={{ flex: "0 0 auto" }} />
+                    <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{monthKeyToLabel(activeMonth)}</span>
+                  </button>
+                  {/* Kanan (dipisah garis vertikal seperti di kartu Statistik): daftar bulan dan arsip */}
+                  <button
+                    onClick={(e) => {
+                      const rect = e.currentTarget.parentElement.getBoundingClientRect();
+                      setMonthDdPos({ top: rect.bottom + 6, left: rect.left, width: rect.width });
+                      setMonthDdOpen((v) => !v);
+                      setCalendarOpen(false);
+                    }}
+                    aria-haspopup="listbox"
+                    aria-expanded={monthDdOpen}
+                    aria-label="Daftar bulan dan arsip"
+                    style={{ flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px", background: "transparent", border: "none", borderLeft: INNER_LINE, color: "var(--gold)", cursor: "pointer" }}
+                  >
+                    <ChevronDown size={16} style={{ transform: monthDdOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
+                  </button>
+                </div>
                 <button
                   onClick={() => setNewMonthOpen((v) => !v)}
                   style={{ whiteSpace: "nowrap", padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, border: "1px dashed var(--border)", background: "transparent", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
