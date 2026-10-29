@@ -989,7 +989,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         <RiskGuardCard riskGuard={riskGuard} />
         {/* Cross-month comparison */}
         {(
-          <div style={{ borderRadius: 10, overflow: "hidden", marginBottom: 16, background: "var(--surface-soft)", border: "1px solid var(--border-inner)" }}>
+          <div style={{ borderRadius: 10, overflow: "hidden", marginBottom: 16, background: "var(--surface-soft)" }}>
             <button
               onClick={() => setShowCompare((v) => !v)}
               style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "transparent", border: "none", borderBottom: showCompare ? "1px solid var(--border)" : "none", color: "var(--gold)", fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer" }}
@@ -1190,7 +1190,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {showArchive && (
-          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border-inner)", borderRadius: 10, marginBottom: 16, overflow: "hidden" }}>
+          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", borderRadius: 10, marginBottom: 16, overflow: "hidden" }}>
             {Object.entries(
               order
                 .filter((key) => months[key]?.archived)
@@ -1236,7 +1236,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {newMonthOpen && (
-          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border-inner)", borderRadius: 10, padding: 14, marginBottom: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", borderRadius: 10, padding: 14, marginBottom: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <span style={{ fontSize: 13, color: "var(--muted)" }}>Start Balance ($)</span>
             <input
               type="number"
@@ -1263,7 +1263,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         {m && (
           <>
             {/* Input entry (1 baris per tanggal) + tabel entries — di atas statistik */}
-            <div style={{ borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)", border: "1px solid var(--border-inner)", marginBottom: 20 }}>
+            <div style={{ border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)", marginBottom: 20 }}>
               <div style={{ padding: 12, background: "transparent", position: "relative" }}>
                 {/* Judul + menu titik tiga (gaya sama dengan kartu Statistik): Export Excel, Backup Data (.json), Import Backup (.json) */}
                 <div style={{ position: "relative" }}>
@@ -1488,7 +1488,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
             {/* Balance growth chart */}
             {rows.length > 0 && (
-              <div style={{ borderRadius: 12, background: "var(--surface-soft)", border: "1px solid var(--border-inner)", padding: "10px 14px 8px", marginBottom: 20 }}>
+              <div style={{ border: "1px solid var(--border)", borderRadius: 12, background: "var(--surface-soft)", padding: "10px 14px 8px", marginBottom: 20 }}>
                 <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 22, paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid var(--border)" }}>
                   <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Pertumbuhan Saldo</span>
                   <button
@@ -1598,7 +1598,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             )}
 
             {/* Capital lot reference */}
-            <div style={{ marginTop: 16, borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)", border: "1px solid var(--border-inner)" }}>
+            <div style={{ marginTop: 16, border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)" }}>
               {/* Rekomendasi live berdasarkan saldo berjalan saat ini */}
               {(() => {
                 const rec = computeLotRecommendation(endBalance);
