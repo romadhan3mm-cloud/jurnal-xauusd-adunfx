@@ -23,18 +23,17 @@ function IconBadge({ bg, children }) {
 }
 
 function MetricCard({ icon, bg, label, value, valueColor }) {
+  // Susunan vertikal seperti kartu Risk Guard: ikon di atas, label di bawahnya, angka di paling bawah; semua rata tengah.
   return (
-    <div style={{ minWidth: 0, borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: INNER_BORDER }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: s(9, 4) }}>
-        <IconBadge bg={bg}>{icon}</IconBadge>
-        <span style={{ fontSize: s(14, 8.5), color: "var(--muted)", lineHeight: 1.15, minWidth: 0, overflowWrap: "anywhere", textAlign: "center" }}>{label}</span>
-      </div>
-      <div className="tj-mono" style={{ fontSize: "max(10px, min(30px, 5cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: s(6, 3), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" }}>{value}</div>
+    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(10, 5)}`, background: INNER_BG, border: INNER_BORDER }}>
+      <IconBadge bg={bg}>{icon}</IconBadge>
+      <div style={{ fontSize: s(14, 8.5), color: "var(--muted)", lineHeight: 1.2, marginTop: s(8, 4), minWidth: 0, overflowWrap: "anywhere", textAlign: "center" }}>{label}</div>
+      <div className="tj-mono" style={{ fontSize: "max(10px, min(30px, 5cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: "auto", paddingTop: s(5, 3), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" }}>{value}</div>
     </div>
   );
 }
 
-// Cincin winrate: busur emas = porsi menang (mulai dari atas, searah jarum jam), sisanya biru.
+// Cincin winrate: busur hijau = porsi menang (mulai dari atas, searah jarum jam), sisanya merah (porsi kalah).
 function WinRing({ winratePct, winrateText, winTrades, lossTrades }) {
   const size = 132; // koordinat viewBox; ukuran tampil diskalakan lewat CSS
   const stroke = 15;
@@ -45,14 +44,14 @@ function WinRing({ winratePct, winrateText, winTrades, lossTrades }) {
   const gid = `st-ring-${React.useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <div role="img" aria-label={has ? `Winrate ${winrateText}, ${winTrades} menang ${lossTrades} kalah` : "Winrate belum tersedia"} style={{ position: "relative", width: s(170, 80), height: s(170, 80), flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "100%", height: "100%", transform: "rotate(-90deg)", filter: `drop-shadow(0 0 6px ${mix("var(--gold)", 35)})` }} aria-hidden="true">
+      <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "100%", height: "100%", transform: "rotate(-90deg)", filter: `drop-shadow(0 0 6px ${mix("var(--green)", 35)})` }} aria-hidden="true">
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" style={{ stopColor: "var(--gold)" }} />
-            <stop offset="100%" style={{ stopColor: "color-mix(in srgb, var(--gold) 70%, #FFD23F)" }} />
+            <stop offset="0%" style={{ stopColor: "var(--green)" }} />
+            <stop offset="100%" style={{ stopColor: "color-mix(in srgb, var(--green) 75%, #38D6F0)" }} />
           </linearGradient>
         </defs>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={has ? BLUE : "var(--border)"} strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={has ? "var(--red)" : "var(--border)"} strokeWidth={stroke} />
         {frac > 0 && (
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={`url(#${gid})`} strokeWidth={stroke} strokeLinecap={frac >= 1 ? "butt" : "round"} strokeDasharray={`${c * frac} ${c}`} />
         )}
