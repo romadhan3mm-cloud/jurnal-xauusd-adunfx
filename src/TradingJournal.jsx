@@ -6,6 +6,7 @@ import AINews from "./AINews.jsx";
 import TargetSimulator from "./TargetSimulator.jsx";
 import RiskGuardCard from "./RiskGuardCard.jsx";
 import StatsCard from "./StatsCard.jsx";
+import RecommendationCard from "./RecommendationCard.jsx";
 import { CardShell, CardHeader, HeaderBadge, BLUE, mix, s, INNER_LINE, INNER_BG } from "./CardHeader.jsx";
 import Splash from "./Splash.jsx";
 import { LogoLockup, PageBackdrop, saveThemeLocal, getThemeLocal, hasThemeLocal, needsLookReset } from "./Brand.jsx";
@@ -1527,40 +1528,51 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
             {/* Balance growth chart */}
             {rows.length > 0 && (
-              <div style={{ border: "1px solid var(--border)", borderRadius: 12, background: "var(--surface-soft)", padding: "10px 14px 8px", marginBottom: 20 }}>
-                <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 22, paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid var(--border)" }}>
-                  <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Pertumbuhan Saldo</span>
-                  <button
-                    onClick={() => setBalanceMenuOpen((v) => !v)}
-                    title="Ubah tampilan grafik"
-                    aria-label="Ubah tampilan grafik"
-                    aria-haspopup="menu"
-                    aria-expanded={balanceMenuOpen}
-                    style={{ position: "absolute", right: 0, top: "calc(50% - 4px)", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: 6, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
-                  >
-                    <MoreHorizontal size={16} />
-                  </button>
-                  {balanceMenuOpen && (
-                    <>
-                      <div onClick={() => setBalanceMenuOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 20 }} />
-                      <div role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 30, minWidth: 170, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
-                        <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "6px 10px 4px" }}>Tampilan grafik</div>
-                        {[["line", "Garis"], ["bar", "Batang"], ["area", "Area"]].map(([key, label]) => (
-                          <button
-                            key={key}
-                            role="menuitemradio"
-                            aria-checked={balanceChartType === key}
-                            onClick={() => { setBalanceChartType(key); setBalanceMenuOpen(false); }}
-                            style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: balanceChartType === key ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: 6, color: balanceChartType === key ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left" }}
-                          >
-                            {label}
-                            {balanceChartType === key && <Check size={13} />}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
+              <CardShell ariaLabel="Pertumbuhan Saldo">
+                <CardHeader
+                  icon={
+                    <svg width="52%" height="52%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block" }} aria-hidden="true" focusable="false">
+                      <path d="M4 20v-6M10 20v-9M16 20v-5" />
+                      <path d="m3 9 5-4 4 3 7-5" />
+                      <path d="M15 3h4v4" />
+                    </svg>
+                  }
+                  title="Pertumbuhan Saldo"
+                  subtitle="Perkembangan saldo akun dari waktu ke waktu."
+                  badge={
+                    <div style={{ position: "relative", flex: "0 0 auto", marginLeft: "auto" }}>
+                      {/* GRAFIK: membuka menu tampilan grafik (Garis / Batang / Area) */}
+                      <HeaderBadge
+                        onClick={() => setBalanceMenuOpen((v) => !v)}
+                        active={balanceMenuOpen}
+                        ariaExpanded={balanceMenuOpen}
+                        ariaLabel="Ubah tampilan grafik"
+                        icon={<TrendingUp strokeWidth={2.4} style={{ width: s(18, 10), height: s(18, 10), display: "block" }} />}
+                        label="GRAFIK"
+                      />
+                      {balanceMenuOpen && (
+                        <>
+                          <div onClick={() => setBalanceMenuOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 20 }} />
+                          <div role="menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 170, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
+                            <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "6px 10px 4px" }}>Tampilan grafik</div>
+                            {[["line", "Garis"], ["bar", "Batang"], ["area", "Area"]].map(([key, label]) => (
+                              <button
+                                key={key}
+                                role="menuitemradio"
+                                aria-checked={balanceChartType === key}
+                                onClick={() => { setBalanceChartType(key); setBalanceMenuOpen(false); }}
+                                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: balanceChartType === key ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: 6, color: balanceChartType === key ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left" }}
+                              >
+                                {label}
+                                {balanceChartType === key && <Check size={13} />}
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  }
+                />
                 <ResponsiveContainer width="100%" height={190}>
                   {balanceChartType === "bar" ? (
                     <BarChart
@@ -1633,74 +1645,11 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     </LineChart>
                   )}
                 </ResponsiveContainer>
-              </div>
+              </CardShell>
             )}
 
-            {/* Capital lot reference */}
-            <div style={{ marginTop: 16, border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--surface-soft)" }}>
-              {/* Rekomendasi live berdasarkan saldo berjalan saat ini */}
-              {(() => {
-                const rec = computeLotRecommendation(endBalance);
-                return (
-                  <div style={{ padding: "12px 14px", background: "transparent" }}>
-                    <div className="tj-title">
-                      Rekomendasi Untuk Saldo Saat Ini · {fmtMoney(endBalance)}
-                    </div>
-                    <div style={{ display: "flex", gap: 0 }}>
-                      <div style={{ flex: 1, textAlign: "center" }}>
-                        <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 3 }}>Lot / Layer</div>
-                        <div className="tj-mono" style={{ fontSize: 15, fontWeight: 600 }}>{rec.lot}</div>
-                      </div>
-                      <div style={{ flex: 1, textAlign: "center" }}>
-                        <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 3 }}>Max Layer</div>
-                        <div className="tj-mono" style={{ fontSize: 15, fontWeight: 600 }}>{rec.layers}</div>
-                      </div>
-                      <div style={{ flex: 1, textAlign: "center" }}>
-                        <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 3 }}>Budget Rugi/Hari</div>
-                        <div className="tj-mono" style={{ fontSize: 15, fontWeight: 600, color: "var(--red)" }}>{fmtMoney(-rec.riskBudget)}</div>
-                      </div>
-                    </div>
-                    {rec.underMinimum && (
-                      <div style={{ fontSize: 11, color: "var(--red)", textAlign: "center", marginTop: 8 }}>
-                        ⚠ Modal terlalu kecil untuk 1 layer penuh sesuai jatah rugi 4% — pakai 0.01 lot dengan ekstra hati-hati, atau pertimbangkan tunggu modal pulih dulu.
-                      </div>
-                    )}
-                    <div style={{ fontSize: 11, color: "var(--muted)", textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
-                      Asumsi: SL rata-rata ${SL_DISTANCE_USD}, jatah rugi {(RISK_PCT_PER_DAY * 100).toFixed(0)}%/hari, target maks {TARGET_MAX_LAYERS} layer, 0.01 lot ≈ $1 per $1 pergerakan harga. Sesuaikan lagi kalau beda dengan gaya trading/broker kamu.
-                    </div>
-                  </div>
-                );
-              })()}
-              <button
-                onClick={() => setShowCapitalRef((v) => !v)}
-                style={{ width: "100%", position: "relative", display: "flex", justifyContent: "center", alignItems: "center", padding: "10px 14px", background: "transparent", border: "none", color: "var(--gold)", fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer" }}
-              >
-                <span>Capital Lot Reference</span>
-                <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", display: "inline-flex" }}>
-                  {showCapitalRef ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                </span>
-              </button>
-              {showCapitalRef && (
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      {["Capital ($)", "Lot Size", "Max Layers"].map((h) => (
-                        <th key={h} style={{ padding: "7px 12px", fontSize: 11, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--muted)", textAlign: "center" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {CAPITAL_LOT_REF_TIERS.map((row) => (
-                      <tr key={row.capital} className="tj-mono" style={{ background: Math.abs(row.capital - endBalance) < 50 ? "rgba(237,165,36,0.18)" : "transparent" }}>
-                        <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>${row.capital}</td>
-                        <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.lot}</td>
-                        <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.layers}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
+            {/* Rekomendasi Lot: kartu berjudul standar; angka dari computeLotRecommendation berdasarkan saldo berjalan */}
+            <RecommendationCard rec={computeLotRecommendation(endBalance)} endBalance={endBalance} showRef={showCapitalRef} onToggleRef={() => setShowCapitalRef((v) => !v)} />
           </>
         )}
         </>
