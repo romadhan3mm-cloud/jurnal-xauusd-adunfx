@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
 
@@ -223,6 +223,18 @@ function DateField({ label, value, onChange }) {
   );
 }
 
+// Tanda status harian: lingkaran hijau dengan centang (tercapai) atau lingkaran merah dengan X (tidak tercapai).
+function StatusMark({ kind, active, onClick, label }) {
+  const color = kind === "done" ? "var(--green)" : "var(--red)";
+  const Icon = kind === "done" ? Check : X;
+  return (
+    <button type="button" role="checkbox" aria-checked={active} aria-label={label} onClick={onClick}
+      style={{ width: 22, height: 22, padding: 0, borderRadius: "50%", display: "inline-grid", placeItems: "center", verticalAlign: "middle", cursor: "pointer", border: `1.5px solid ${active ? color : "var(--border)"}`, background: active ? color : "transparent", color: active ? "#FFFFFF" : "transparent" }}>
+      <Icon size={14} strokeWidth={3} />
+    </button>
+  );
+}
+
 function Stat({ label, value, sub, accent }) {
   return (
     <div
@@ -246,12 +258,12 @@ function Stat({ label, value, sub, accent }) {
   );
 }
 
-export default function TargetSimulator({ theme = "dark" }) {
+export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
   const [form, setForm] = useState(DEFAULTS);
   const [loaded, setLoaded] = useState(false);
   const [logScale, setLogScale] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const [progress, setProgress] = useState({ done: {}, notDone: {}, notes: {} });
+  const [progress, setProgress] = useState({ done: {}, notDone: {}, notes: {}, auto: {} });
   const [progressLoaded, setProgressLoaded] = useState(false);
 
   // Muat pengaturan tersimpan
@@ -283,7 +295,7 @@ export default function TargetSimulator({ theme = "dark" }) {
         const r = window.storage ? await window.storage.get(PROGRESS_KEY) : null;
         if (alive && r?.value) {
           const saved = typeof r.value === "string" ? JSON.parse(r.value) : r.value;
-          setProgress({ done: saved.done || {}, notDone: saved.notDone || {}, notes: saved.notes || {} });
+          setProgress({ done: saved.done || {}, notDone: saved.notDone || {}, notes: saved.notes || {}, auto: saved.auto || {} });
         }
       } catch {
         /* abaikan */
@@ -420,6 +432,41 @@ export default function TargetSimulator({ theme = "dark" }) {
       endDate: dateOf(dayCount),
     };
   }, [form]);
+
+  // Sinkron dari Jurnal: cocokkan tanggal baris simulasi dengan transaksi di Jurnal.
+  // - net harian (profit - loss - komisi) >= Target 3% baris Jurnal itu -> tercapai (centang hijau)
+  // - net di bawah target pada tanggal yang sudah lewat -> tidak tercapai (X merah)
+  // - tanggal hari ini yang belum capai target dibiarkan kosong (hari belum selesai)
+  // Hanya berubah saat hasil Jurnal untuk tanggal itu berubah, jadi koreksi manual tidak ditimpa.
+  const journalSig = JSON.stringify(journalDays || {});
+  useEffect(() => {
+    if (!progressLoaded || !sim.rows) return;
+    const todayKey = toInputDate(new Date());
+    setProgress((p) => {
+      const done = { ...p.done };
+      const notDone = { ...p.notDone };
+      const auto = { ...(p.auto || {}) };
+      let changed = false;
+      sim.rows.forEach((r) => {
+        const key = toInputDate(r.date);
+        const j = journalDays[key];
+        let status = null;
+        if (j) {
+          if (j.net + 1e-9 >= j.target) status = "done";
+          else if (key < todayKey) status = "notDone";
+        }
+        if ((auto[key] || null) === status) return;
+        delete done[r.day];
+        delete notDone[r.day];
+        if (status === "done") done[r.day] = true;
+        if (status === "notDone") notDone[r.day] = true;
+        if (status) auto[key] = status;
+        else delete auto[key];
+        changed = true;
+      });
+      return changed ? { ...p, done, notDone, auto } : p;
+    });
+  }, [journalSig, sim.rows, progressLoaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const exportExcel = () => {
     if (sim.errors.length) return;
@@ -664,7 +711,7 @@ export default function TargetSimulator({ theme = "dark" }) {
               <span className="tj-mono" style={{ color: "var(--gold)", fontWeight: 600 }}>
                 {sim.rows.filter((r) => progress.done[r.day]).length} / {sim.rows.length}
               </span>{" "}
-              hari. Centang dan catatan tersimpan otomatis per nomor hari.
+              hari. Status terisi otomatis dari transaksi di Jurnal (sesuai tanggal) dan tetap bisa diubah manual. Status dan catatan tersimpan otomatis.
             </div>
             <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -694,13 +741,11 @@ export default function TargetSimulator({ theme = "dark" }) {
                         <td className="tj-mono" style={td}>{fmtUsd(r.end)}</td>
                         <td className="tj-mono" style={td}>{fmtRp(r.endRp)}</td>
                         <td className="tj-mono" style={td}>{r.lot.toFixed(2)} × {r.layers}</td>
-                        <td style={{ ...td, padding: "7px 3px", width: 28 }}>
-                          <input type="checkbox" checked={done} onChange={() => toggleDone(r.day)} aria-label={`Hari ke-${r.day} tercapai`}
-                            style={{ width: 17, height: 17, accentColor: "var(--green)", cursor: "pointer", verticalAlign: "middle" }} />
+                        <td style={{ ...td, padding: "7px 3px", width: 34 }}>
+                          <StatusMark kind="done" active={done} onClick={() => toggleDone(r.day)} label={`Hari ke-${r.day} tercapai`} />
                         </td>
-                        <td style={{ ...td, padding: "7px 3px", width: 28 }}>
-                          <input type="checkbox" checked={!!progress.notDone[r.day]} onChange={() => toggleNotDone(r.day)} aria-label={`Hari ke-${r.day} tidak tercapai`}
-                            style={{ width: 17, height: 17, accentColor: "var(--red)", cursor: "pointer", verticalAlign: "middle" }} />
+                        <td style={{ ...td, padding: "7px 3px", width: 34 }}>
+                          <StatusMark kind="notDone" active={!!progress.notDone[r.day]} onClick={() => toggleNotDone(r.day)} label={`Hari ke-${r.day} tidak tercapai`} />
                         </td>
                         <td style={{ ...td, minWidth: 170 }}>
                           <input

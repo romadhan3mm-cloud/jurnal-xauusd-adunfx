@@ -796,6 +796,16 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
     const day = i - calendarOffset + 1;
     return day < 1 || day > calendarDaysCount ? null : `${calendarMonthKey}-${String(day).padStart(2, "0")}`;
   });
+  // Hasil harian dari semua bulan (untuk disinkronkan ke Tabel harian di tab Simulasi):
+  // net = profit - loss - komisi (withdraw tidak dihitung), dibandingkan dengan Target 3% baris itu.
+  const journalDayResults = {};
+  Object.values(months || {}).forEach((monthData) => {
+    if (!monthData) return;
+    computeRows(monthData.entries || [], monthData.initialBalance).forEach((r) => {
+      const net = Math.round(((Number(r.profit) || 0) - (Number(r.loss) || 0) - (Number(r.komisi) || 0) + Number.EPSILON) * 100) / 100;
+      journalDayResults[fmtDayKey(r.date)] = { net, target: r.target };
+    });
+  });
   const transactionDateKeys = new Set(Object.values(months || {}).flatMap((monthData) => (monthData?.entries || []).map((entry) => fmtDayKey(entry.date))));
   const changeCalendarMonth = (delta) => {
     const d = new Date(calYear, calMonthNum - 1 + delta, 1);
@@ -1019,7 +1029,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         </div>
 
         <div ref={slideRef} onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd} style={{ paddingTop: 4 }}>
-        {activeView === "simulasi" && <TargetSimulator theme={theme} />}
+        {activeView === "simulasi" && <TargetSimulator theme={theme} journalDays={journalDayResults} />}
 
         {activeView === "ai-news" && <AINews theme={theme} />}
 
