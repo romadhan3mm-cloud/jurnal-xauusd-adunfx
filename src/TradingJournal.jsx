@@ -5,6 +5,7 @@ import TradingViewChart from "./TradingViewChart.jsx";
 import AINews from "./AINews.jsx";
 import TargetSimulator from "./TargetSimulator.jsx";
 import RiskGuardCard from "./RiskGuardCard.jsx";
+import StatsCard from "./StatsCard.jsx";
 import Splash from "./Splash.jsx";
 import { LogoLockup, PageBackdrop, saveThemeLocal, getThemeLocal, hasThemeLocal, needsLookReset } from "./Brand.jsx";
 import { ResponsiveContainer, LineChart, Line, BarChart, Bar, AreaChart, Area, Cell, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
@@ -1474,141 +1475,16 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               </div>
             </div>
 
-            {/* Statistik: satu kartu, 2 mode (Grup berlabel / Ring winrate); menu titik tiga di judul untuk ganti mode */}
-            {(() => {
-              const pctColor = (p) => (p === null ? "var(--muted)" : p >= 0 ? "var(--green)" : "var(--red)");
-              const pctText = (p) => (p === null ? "—" : `${p >= 0 ? "+" : ""}${p.toFixed(2)}%`);
-
-              // Porsi profit = profit / (profit + loss)
-              const gross = stats.totalProfit + stats.totalLoss;
-              const profitShare = gross > 0 ? (stats.totalProfit / gross) * 100 : null;
-              const winrateText = stats.winrate === null ? "—" : `${(stats.winrate * 100).toFixed(0)}%`;
-              const winratePct = stats.winrate === null ? null : stats.winrate * 100;
-              const lossText = stats.totalLoss > 0 ? `-${fmtMoney(stats.totalLoss).slice(1)}` : fmtMoney(0);
-              const komisiText = stats.totalKomisi > 0 ? `-${fmtMoney(stats.totalKomisi).slice(1)}` : fmtMoney(0);
-              const rrText = stats.rr === null ? "—" : `${stats.rr.toFixed(2)}x`;
-
-              const growthItems = [
+            {/* Statistik: kartu bergaya baru (cincin winrate + 4 kartu angka + persentase periode). Hanya tampilan; angka dari stats & growthPct di atas */}
+            <StatsCard
+              stats={stats}
+              growth={[
                 ["Harian", dailyGrowthPct],
                 ["Mingguan", weeklyGrowthPct],
                 ["Bulanan", monthlyGrowthPct],
                 ["Tahunan", yearlyGrowthPct],
-              ];
-
-              const growthGrid = (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 8px", textAlign: "center" }}>
-                  {growthItems.map(([label, pct]) => (
-                    <div key={label}>
-                      <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
-                      <div className="tj-mono" style={{ fontSize: 15, fontWeight: 600, color: pctColor(pct) }}>{pctText(pct)}</div>
-                    </div>
-                  ))}
-                </div>
-              );
-
-              const sectionTitle = (text) => (
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, fontSize: 11, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: ["Hasil", "Performa"].includes(text) ? "var(--muted)" : "var(--gold)" }}>
-                  {text}
-                  <span style={{ flex: 1, height: 1, background: "var(--border)" }} />
-                </div>
-              );
-
-              return (
-                <div style={{ borderRadius: 18, background: "linear-gradient(145deg, rgba(7,28,58,0.96), rgba(10,36,70,0.88))", border: "1px solid rgba(38,132,225,0.62)", boxShadow: "0 10px 28px rgba(0,0,0,0.18), inset 0 1px 0 rgba(100,180,255,0.12)", padding: "14px 14px 16px", marginBottom: 20, overflow: "hidden" }}>
-                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "flex-start", gap: 9, minHeight: 34, paddingBottom: 11, marginBottom: 14, borderBottom: "1px solid rgba(80,145,210,0.28)" }}>
-                    <div style={{ width: 32, height: 32, flex: "none", display: "grid", placeItems: "center", borderRadius: 10, color: "var(--gold)", background: "rgba(237,165,36,0.12)", border: "1px solid rgba(237,165,36,0.28)" }}><TrendingUp size={18} /></div>
-                    <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--gold)" }}>Statistik</span>
-                    <button
-                      onClick={() => setStatsMenuOpen((v) => !v)}
-                      title="Ubah tampilan statistik"
-                      aria-label="Ubah tampilan statistik"
-                      aria-haspopup="menu"
-                      aria-expanded={statsMenuOpen}
-                      style={{ position: "absolute", right: 0, top: "calc(50% - 4px)", transform: "translateY(-50%)", display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: 6, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
-                    >
-                      <MoreHorizontal size={16} />
-                    </button>
-                    {statsMenuOpen && (
-                      <>
-                        <div onClick={() => setStatsMenuOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 20 }} />
-                        <div role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 30, minWidth: 170, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
-                          <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "6px 10px 4px" }}>Tampilan statistik</div>
-                          {[["grup", "Grup berlabel"], ["ring", "Ring winrate"]].map(([key, label]) => (
-                            <button
-                              key={key}
-                              role="menuitemradio"
-                              aria-checked={statsStyle === key}
-                              onClick={() => changeStatsStyle(key)}
-                              style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: statsStyle === key ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: 6, color: statsStyle === key ? "var(--gold)" : "var(--text)", fontSize: 13, cursor: "pointer", textAlign: "left" }}
-                            >
-                              {label}
-                              {statsStyle === key && <Check size={13} />}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {statsStyle === "ring" ? (
-                    <>
-                      <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "4px 2px 2px" }}>
-                        <StatRing
-                          size={118}
-                          pct={winratePct}
-                          center={winrateText}
-                          sub="Winrate"
-                          subNode={
-                            <div className="tj-mono" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
-                              <span style={{ color: "var(--green)" }}>{stats.winTrades}W</span> · <span style={{ color: "var(--red)" }}>{stats.lossTrades}L</span>
-                            </div>
-                          }
-                        />
-                        <StatRowList
-                          items={[
-                            ["Profit", fmtMoney(stats.totalProfit), "var(--green)"],
-                            ["Loss", lossText, "var(--red)"],
-                            ["Komisi", komisiText, "var(--red)"],
-                            ["RR", rrText, "var(--text)"],
-                          ]}
-                        />
-                      </div>
-                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "none" }}>{growthGrid}</div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        {sectionTitle("Hasil")}
-                        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                          <StatRing pct={profitShare} center={profitShare === null ? "—" : `${profitShare.toFixed(0)}%`} sub="Porsi profit" centerColor="var(--green)" />
-                          <StatRowList
-                            items={[
-                              ["Profit", fmtMoney(stats.totalProfit), "var(--green)"],
-                              ["Loss", lossText, "var(--red)"],
-                              ["Komisi", komisiText, "var(--red)"],
-                            ]}
-                          />
-                        </div>
-                      </div>
-                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "none" }}>
-                        {sectionTitle("Performa")}
-                        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                          <StatRing pct={winratePct} center={winrateText} sub="Winrate" />
-                          <StatRowList
-                            items={[
-                              ["Win", stats.winTrades, "var(--green)"],
-                              ["Loss", stats.lossTrades, "var(--red)"],
-                              ["RR", rrText, "var(--text)"],
-                            ]}
-                          />
-                        </div>
-                      </div>
-                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "none" }}>{growthGrid}</div>
-                    </>
-                  )}
-                </div>
-              );
-            })()}
+              ]}
+            />
 
             {/* Balance growth chart */}
             {rows.length > 0 && (
