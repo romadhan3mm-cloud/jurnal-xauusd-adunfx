@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronDown, ChevronUp, Calculator, Layers, ShieldAlert } from "lucide-react";
+import { ChevronDown, ChevronUp, Wallet, Layers, ShieldAlert } from "lucide-react";
 import { fmtMoney, SL_DISTANCE_USD, RISK_PCT_PER_DAY, TARGET_MAX_LAYERS, CAPITAL_LOT_REF_TIERS } from "./journalMath.js";
 import { mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
 
@@ -23,15 +23,13 @@ function IconBadge({ bg, children }) {
   );
 }
 
-// Kartu angka: ikon bulat di kiri, label di atas, nilai di bawahnya.
+// Kartu angka: susunan vertikal rata tengah (ikon di atas, label di bawah ikon, nilai di paling bawah), sama seperti Statistik & Risk Guard.
 function RecoStat({ icon, bg, label, value, valueColor }) {
   return (
-    <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: s(9, 4), borderRadius: s(14, 8), padding: `${s(11, 5)} ${s(10, 5)}`, background: INNER_BG, border: INNER_BORDER }}>
+    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(9, 4)}`, background: INNER_BG, border: INNER_BORDER }}>
       <IconBadge bg={bg}>{icon}</IconBadge>
-      <div style={{ minWidth: 0, flex: "1 1 0" }}>
-        <div style={{ fontSize: s(13, 8), color: "var(--muted)", lineHeight: 1.2, overflowWrap: "anywhere" }}>{label}</div>
-        <div className="tj-mono" style={{ fontSize: "max(10px, min(26px, 3.7cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: s(3, 2), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>{value}</div>
-      </div>
+      <div style={{ fontSize: s(13, 8.5), color: "var(--muted)", lineHeight: 1.2, marginTop: s(8, 4), minWidth: 0, overflowWrap: "anywhere", textAlign: "center" }}>{label}</div>
+      <div className="tj-mono" style={{ fontSize: "max(10px, min(26px, 3.7cqw))", letterSpacing: "-.03em", fontWeight: 800, color: valueColor || "var(--text)", marginTop: "auto", paddingTop: s(5, 3), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", textAlign: "center" }}>{value}</div>
     </div>
   );
 }
@@ -50,12 +48,8 @@ export default function RecommendationCard({ rec, endBalance, showRef, onToggleR
         subtitle="Berdasarkan saldo saat ini dan manajemen risiko."
         badge={
           <HeaderBadge
-            onClick={onToggleRef}
-            active={showRef}
-            ariaExpanded={showRef}
-            ariaLabel="Tampilkan atau sembunyikan Capital Lot Reference"
-            icon={<Calculator strokeWidth={2.2} style={{ width: s(18, 10), height: s(18, 10), display: "block" }} />}
-            label="CAPITAL LOT REF"
+            icon={<Wallet strokeWidth={2.2} style={{ width: s(18, 10), height: s(18, 10), display: "block" }} />}
+            label={fmtMoney(endBalance)}
           />
         }
       />
