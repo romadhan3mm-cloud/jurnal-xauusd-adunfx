@@ -83,7 +83,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --green: #1E8E56;
   --red: #C63B2E;
   --info: #3AA0E0; --weekend: #A33A3A; --amber: #D99A20; /* biru info, merah Sabtu/Minggu, amber MEDIUM IMPACT */
-  --warn: #0891B2;
+  --warn: #00B8D4;
   --navy-btn-bg: #18395F; --navy-btn-text: #FFFFFF;
   --navy-sel-bg: #18395F; --navy-sel-border: #18395F;
 }

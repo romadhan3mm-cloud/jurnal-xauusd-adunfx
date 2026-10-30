@@ -6,6 +6,24 @@ Aturan: perubahan baru ditambahkan di sini (bagian atas), bukan sebagai file ter
 
 ---
 
+## v1.9.86 — WASPADA di tema terang dibuat lebih hidup
+
+Hanya tampilan. Menyentuh `src/tjStyles.js` (satu nilai) dan versi di `package.json`.
+
+### Alasan
+Cyan WASPADA tema terang (`#0891B2`) terlihat biasa/meredup di atas latar biru muda; di tema gelap sudah jelas.
+
+### Perubahan
+- `--warn` tema terang: `#0891B2` → `#00B8D4` (lebih jenuh dan terang, hue tetap cyan sehingga masih jauh dari biru aksen, emas, hijau, dan merah).
+
+### Tidak berubah
+`--warn` tema gelap (`#38D0F0`), semua logic dan ambang status, serta semua file lain.
+
+### Pengujian
+Hanya dibandingkan lewat gambar uji; tampilan di HP belum diuji. Alternatif yang lebih mencolok di tema terang: ungu `#7C4DDB` (tetapi mirip ikon "Sisa batas"). Teks "WASPADA" berwarna cyan terang di atas lencana pucat kontrasnya lebih rendah; kalau kurang terbaca, pakai `#00A6C7`.
+
+---
+
 ## v1.9.85 — Warna status WASPADA Risk Guard dibedakan dari emas
 
 Hanya tampilan. Menyentuh `src/RiskGuardCard.jsx`, `src/tjStyles.js` (satu variabel baru), `README.md`, dan versi di `package.json`.
