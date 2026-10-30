@@ -93,40 +93,42 @@ export default function RecommendationCard({ rec, endBalance, showRef, onToggleR
         </div>
       </div>
 
-      {/* Tombol Capital Lot Reference + tabel */}
-      <button
-        type="button"
-        onClick={onToggleRef}
-        aria-expanded={showRef}
-        style={{ width: "100%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", marginTop: s(10, 5), padding: `${s(11, 6)} ${s(40, 24)}`, borderRadius: 999, border: "1.5px solid var(--gold)", background: showRef ? mix("var(--gold)", 15) : "transparent", color: "var(--gold)", fontSize: s(15, 9.5), fontWeight: 800, letterSpacing: ".02em", textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" }}
-      >
-        <span>Capital Lot Reference</span>
-        <span style={{ position: "absolute", right: s(16, 8), top: "50%", transform: "translateY(-50%)", display: "inline-flex" }}>
-          {showRef ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </span>
-      </button>
-      {showRef && (
-        <div style={{ marginTop: s(10, 5), borderRadius: s(14, 8), overflow: "hidden", background: INNER_BG, border: INNER_BORDER }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                {["Capital ($)", "Lot Size", "Max Layers"].map((h) => (
-                  <th key={h} style={{ padding: "7px 12px", fontSize: 11, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--muted)", textAlign: "center" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {CAPITAL_LOT_REF_TIERS.map((row) => (
-                <tr key={row.capital} className="tj-mono" style={{ background: Math.abs(row.capital - endBalance) < 50 ? "rgba(237,165,36,0.18)" : "transparent" }}>
-                  <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>${row.capital}</td>
-                  <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.lot}</td>
-                  <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.layers}</td>
+      {/* Satu kartu dalam: tombol Capital Lot Reference + tabel (seperti tombol periode + grafik di Statistik) */}
+      <div style={{ marginTop: s(10, 5), borderRadius: s(20, 12), padding: s(10, 5), background: INNER_BG, border: INNER_BORDER }}>
+        <button
+          type="button"
+          onClick={onToggleRef}
+          aria-expanded={showRef}
+          style={{ width: "100%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: `${s(11, 6)} ${s(40, 24)}`, borderRadius: s(10, 6), border: "1.5px solid var(--gold)", background: showRef ? mix("var(--gold)", 15) : "transparent", color: "var(--gold)", fontSize: s(15, 9.5), fontWeight: 800, letterSpacing: ".02em", textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" }}
+        >
+          <span>Capital Lot Reference</span>
+          <span style={{ position: "absolute", right: s(16, 8), top: "50%", transform: "translateY(-50%)", display: "inline-flex" }}>
+            {showRef ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </span>
+        </button>
+        {showRef && (
+          <div style={{ marginTop: s(8, 4), borderRadius: s(12, 8), overflow: "hidden" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {["Capital ($)", "Lot Size", "Max Layers"].map((h) => (
+                    <th key={h} style={{ padding: "7px 12px", fontSize: 11, fontWeight: 800, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--muted)", textAlign: "center" }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {CAPITAL_LOT_REF_TIERS.map((row) => (
+                  <tr key={row.capital} className="tj-mono" style={{ background: Math.abs(row.capital - endBalance) < 50 ? "rgba(237,165,36,0.18)" : "transparent" }}>
+                    <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>${row.capital}</td>
+                    <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.lot}</td>
+                    <td style={{ padding: "7px 12px", fontSize: 13, borderTop: "none", textAlign: "center" }}>{row.layers}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </CardShell>
   );
 }
