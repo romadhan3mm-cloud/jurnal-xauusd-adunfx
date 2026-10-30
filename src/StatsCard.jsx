@@ -1,4 +1,5 @@
 import React from "react";
+import { ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from "recharts";
 import { fmtMoney } from "./journalMath.js";
 import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
 
@@ -69,7 +70,130 @@ function WinRing({ winratePct, winrateText, winTrades, lossTrades }) {
   );
 }
 
-export default function StatsCard({ stats, growth }) {
+// ---- Grafik Profit vs Loss (kumulatif) ----
+// Hanya menjumlahkan profit & loss yang sudah ada di setiap entri (urutan entri sama seperti grafik Pertumbuhan Saldo).
+function shortDate(iso) {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("id-ID", { day: "2-digit", month: "short" });
+}
+
+const pad2 = (n) => String(n).padStart(2, "0");
+
+// Menyusun titik grafik kumulatif untuk periode terpilih.
+// Harian: sumbu X = jam (00:00-24:00) memakai jam entri; Tahunan: satu titik per bulan; lainnya: satu titik per entri.
+function buildSeries(period, list) {
+  const src = list || [];
+  let p = 0;
+  let l = 0;
+  const r2 = (n) => Math.round(n * 100) / 100;
+  if (period === "Tahunan") {
+    const pts = [{ x: 0, profit: 0, loss: 0, label: "Start" }];
+    src.forEach((mo, i) => {
+      p += Number(mo.profit) || 0;
+      l += Number(mo.loss) || 0;
+      pts.push({ x: i + 1, profit: r2(p), loss: r2(l), label: mo.fullLabel || mo.label || `#${i + 1}` });
+    });
+    return { pts, kind: "index", empty: src.length === 0 };
+  }
+  const sorted = period === "Bulanan" ? src : [...src].sort((a, b) => new Date(a.date) - new Date(b.date));
+  if (period === "Harian") {
+    const pts = [{ x: 0, profit: 0, loss: 0, label: "00:00" }];
+    sorted.forEach((r) => {
+      const d = new Date(r.date);
+      p += Number(r.profit) || 0;
+      l += Number(r.loss) || 0;
+      pts.push({ x: d.getHours() + d.getMinutes() / 60, profit: r2(p), loss: r2(l), label: `${pad2(d.getHours())}:${pad2(d.getMinutes())}` });
+    });
+    pts.push({ x: 24, profit: r2(p), loss: r2(l), label: "24:00" });
+    return { pts, kind: "hour", empty: src.length === 0 };
+  }
+  const pts = [{ x: 0, profit: 0, loss: 0, label: "Start" }];
+  sorted.forEach((r, i) => {
+    p += Number(r.profit) || 0;
+    l += Number(r.loss) || 0;
+    pts.push({ x: i + 1, profit: r2(p), loss: r2(l), label: shortDate(r.date) || `#${i + 1}` });
+  });
+  return { pts, kind: "index", empty: src.length === 0 };
+}
+
+// Maksimal 5 label sumbu-X, tersebar rata dan selalu memuat titik awal & akhir.
+function pickTicks(n) {
+  if (n <= 4) return Array.from({ length: n + 1 }, (_, i) => i);
+  const set = new Set([0, n]);
+  for (let k = 1; k < 4; k++) set.add(Math.round((n * k) / 4));
+  return [...set].sort((a, b) => a - b);
+}
+
+const moneyTick = (v) => (Number.isInteger(v) ? `$${v}` : `$${v.toFixed(2)}`);
+
+// Titik akhir profit + lencana nilai total (mis. $30.52) di atasnya, rata kanan agar tidak terpotong.
+function EndMarker({ cx, cy, text }) {
+  if (cx == null || cy == null) return null;
+  const w = text.length * 7.4 + 18;
+  const h = 22;
+  const bx = cx - w + 12;
+  const by = cy - h - 12;
+  return (
+    <g>
+      <rect x={bx} y={by} width={w} height={h} rx={7} style={{ fill: "color-mix(in srgb, var(--green) 18%, var(--surface))", stroke: "var(--green)", strokeWidth: 1.2 }} />
+      <text x={bx + w / 2} y={by + h / 2} textAnchor="middle" dominantBaseline="central" style={{ fill: "var(--green)", fontSize: 12, fontWeight: 800 }}>{text}</text>
+      <circle cx={cx} cy={cy} r={6.5} style={{ fill: "var(--green)", stroke: "#FFFFFF", strokeWidth: 2 }} />
+    </g>
+  );
+}
+
+function ProfitLossChart({ period, list }) {
+  const gid = `st-area-${React.useId().replace(/[^a-zA-Z0-9]/g, "")}`;
+  const { pts: data, kind, empty } = buildSeries(period, list);
+  const last = data[data.length - 1];
+  const totalProfit = last.profit;
+  const isHour = kind === "hour";
+  const ticks = isHour ? [0, 4, 8, 12, 16, 20, 24] : pickTicks(last.x);
+  const labelOf = isHour ? (x) => `${pad2(x)}:00` : (x) => (data[x] ? data[x].label : "");
+  const grid = mix(BLUE, 35);
+  if (empty) {
+    return (
+      <div style={{ marginTop: s(14, 7), height: 230, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", fontSize: s(14, 9.5), color: "var(--muted)" }}>
+        Belum ada entri pada periode {period.toLowerCase()} ini.
+      </div>
+    );
+  }
+  return (
+    <div style={{ marginTop: s(14, 7) }}>
+      <div role="img" aria-label={`Grafik profit dan loss kumulatif ${period.toLowerCase()}. Total profit ${fmtMoney(totalProfit)}.`}>
+        <ResponsiveContainer width="100%" height={230}>
+          <ComposedChart data={data} margin={{ top: 32, right: 14, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" style={{ stopColor: "var(--green)", stopOpacity: 0.55 }} />
+                <stop offset="100%" style={{ stopColor: "var(--green)", stopOpacity: 0.04 }} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke={grid} strokeDasharray="3 4" />
+            <XAxis dataKey="x" type="number" domain={[0, last.x]} ticks={ticks} tickFormatter={labelOf} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={{ stroke: mix(BLUE, 70) }} tickLine={{ stroke: mix(BLUE, 70) }} />
+            <YAxis type="number" domain={[0, "auto"]} tickFormatter={moneyTick} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={{ stroke: mix(BLUE, 70) }} tickLine={{ stroke: mix(BLUE, 70) }} width={44} />
+            <Tooltip
+              contentStyle={{ background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+              labelStyle={{ color: "var(--muted)", fontSize: 11 }}
+              formatter={(v, name) => [fmtMoney(Number(v)), name]}
+              labelFormatter={(_, payload) => payload?.[0]?.payload?.label || ""}
+            />
+            <Area type="monotone" dataKey="profit" name="Profit" stroke="var(--green)" strokeWidth={2.2} fill={`url(#${gid})`} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />
+            <Line type="monotone" dataKey="loss" name="Loss" stroke="var(--red)" strokeWidth={2.2} dot={false} activeDot={{ r: 4 }} isAnimationActive={false} />
+            <ReferenceDot x={last.x} y={last.profit} ifOverflow="visible" shape={<EndMarker text={fmtMoney(totalProfit)} />} />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: s(22, 12), marginTop: s(4, 2), fontSize: s(15, 9.5), color: "var(--muted)" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: s(7, 4) }}><span style={{ width: s(14, 9), height: s(14, 9), borderRadius: "50%", background: "var(--green)" }} />Profit</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: s(7, 4) }}><span style={{ width: s(14, 9), height: s(14, 9), borderRadius: "50%", background: "var(--red)" }} />Loss</span>
+      </div>
+    </div>
+  );
+}
+
+export default function StatsCard({ stats, growth, periodRows = {} }) {
+  const [period, setPeriod] = React.useState("Bulanan"); // grafik default = bulan aktif (sama seperti sebelumnya)
   const winrateText = stats.winrate === null ? "—" : `${(stats.winrate * 100).toFixed(0)}%`;
   const winratePct = stats.winrate === null ? null : stats.winrate * 100;
   const lossText = stats.totalLoss > 0 ? `-${fmtMoney(stats.totalLoss)}` : fmtMoney(0);
@@ -125,14 +249,28 @@ export default function StatsCard({ stats, growth }) {
         </div>
 
         {/* Persentase harian / mingguan / bulanan / tahunan */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(12, 6)} 0`, background: INNER_BG, border: INNER_BORDER }}>
-          {growth.map(([label, pct], i) => (
-            <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}`, borderLeft: i === 0 ? "none" : `1px solid ${mix(BLUE, 45)}` }}>
-              <div style={{ fontSize: s(13, 7.5), color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".03em" }}>{label}</div>
-              <div className="tj-mono" style={{ fontSize: s(21, 9.5), fontWeight: 800, color: pctColor(pct), marginTop: s(3, 2), whiteSpace: "nowrap", letterSpacing: "-.03em" }}>{pctText(pct)}</div>
-            </div>
-          ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(8, 4)} 0`, background: INNER_BG, border: INNER_BORDER }}>
+          {growth.map(([label, pct], i) => {
+            const active = label === period;
+            return (
+              <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}`, borderLeft: i === 0 ? "none" : `1px solid ${mix(BLUE, 45)}` }}>
+                <button
+                  type="button"
+                  onClick={() => setPeriod(label)}
+                  aria-pressed={active}
+                  aria-label={`Tampilkan grafik ${label.toLowerCase()}`}
+                  style={{ width: "100%", minWidth: 0, display: "block", padding: `${s(5, 3)} ${s(2, 1)}`, border: "none", borderRadius: s(10, 6), background: active ? "color-mix(in srgb, var(--gold) 14%, transparent)" : "transparent", boxShadow: active ? "inset 0 -2px 0 var(--gold)" : "none", fontFamily: "inherit", cursor: "pointer", textAlign: "center" }}
+                >
+                  <div style={{ fontSize: s(13, 7.5), color: active ? "var(--gold)" : "var(--muted)", fontWeight: active ? 700 : 400, textTransform: "uppercase", letterSpacing: ".03em" }}>{label}</div>
+                  <div className="tj-mono" style={{ fontSize: s(21, 9.5), fontWeight: 800, color: pctColor(pct), marginTop: s(3, 2), whiteSpace: "nowrap", letterSpacing: "-.03em" }}>{pctText(pct)}</div>
+                </button>
+              </div>
+            );
+          })}
         </div>
+
+        {/* Grafik profit & loss kumulatif untuk periode yang dipilih (tap Harian / Mingguan / Bulanan / Tahunan) */}
+        {Object.values(periodRows).some((l) => l && l.length > 0) && <ProfitLossChart period={period} list={periodRows[period]} />}
     </CardShell>
   );
 }

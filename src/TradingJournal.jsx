@@ -1518,6 +1518,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             {/* Statistik: kartu bergaya baru (cincin winrate + 4 kartu angka + persentase periode). Hanya tampilan; angka dari stats & growthPct di atas */}
             <StatsCard
               stats={stats}
+              periodRows={{ Harian: dailyRowsForStats, Mingguan: weeklyRowsForStats, Bulanan: rows, Tahunan: yearMonthsForStats }}
               growth={[
                 ["Harian", dailyGrowthPct],
                 ["Mingguan", weeklyGrowthPct],
