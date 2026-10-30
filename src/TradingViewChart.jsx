@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import EconomicCalendar from "./EconomicCalendar.jsx";
-import PriceChart from "./PriceChart.jsx";
 
 const TIMEFRAMES = [
   { label: "M5", value: "5" },
@@ -100,8 +99,8 @@ export default function TradingViewChart({ theme = "dark" }) {
 
   return (
     <section style={{ width: "100%", color: colors.text }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, padding: 5, borderRadius: 13, background: colors.panelAlt, border: `1px solid ${colors.border}`, marginBottom: 12 }}>
-        {[{ id: "chart", label: "Chart" }, { id: "price", label: "Harga" }, { id: "news", label: "Berita" }].map((tab) => (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: 5, borderRadius: 13, background: colors.panelAlt, border: `1px solid ${colors.border}`, marginBottom: 12 }}>
+        {[{ id: "chart", label: "Chart" }, { id: "news", label: "Berita" }].map((tab) => (
           <button
             key={tab.id}
             type="button"
@@ -114,9 +113,7 @@ export default function TradingViewChart({ theme = "dark" }) {
         ))}
       </div>
 
-      {activeTab === "price" ? (
-        <PriceChart colors={colors} isLight={isLight} />
-      ) : activeTab === "chart" ? (
+      {activeTab === "chart" ? (
         <div style={{ borderRadius: 16, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}`, boxShadow: "0 5px 18px rgba(0,0,0,.07)" }}>
           <div style={{ padding: "12px 12px 9px", background: colors.panel }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
