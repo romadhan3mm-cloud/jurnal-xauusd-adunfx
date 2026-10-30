@@ -253,18 +253,18 @@ export default function StatsCard({ stats, growth, periodRows = {} }) {
 
         {/* Persentase harian / mingguan / bulanan / tahunan */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", borderRadius: s(14, 8), padding: `${s(4, 2)} ${s(3, 2)}`, background: "transparent", border: INNER_BORDER }}>
-          {growth.map(([label, pct], i) => {
+          {growth.map(([label, pct]) => {
             const active = label === period;
             return (
-              <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}`, borderLeft: i === 0 || active || growth[i - 1][0] === period ? "none" : `1px solid ${mix(BLUE, 45)}` }}>
+              <div key={label} style={{ textAlign: "center", minWidth: 0, padding: `0 ${s(4, 2)}` }}>
                 <button
                   type="button"
                   onClick={() => setPeriod(label)}
                   aria-pressed={active}
                   aria-label={`Tampilkan grafik ${label.toLowerCase()}`}
-                  style={{ width: "100%", minWidth: 0, display: "block", padding: `${s(5, 3)} ${s(2, 1)}`, border: active ? "1.5px solid var(--green)" : "1.5px solid transparent", borderRadius: s(10, 6), background: active ? "color-mix(in srgb, var(--green) 16%, transparent)" : "transparent", boxShadow: active ? `0 0 8px ${mix("var(--green)", 35)}` : "none", fontFamily: "inherit", cursor: "pointer", textAlign: "center" }}
+                  style={{ width: "100%", minWidth: 0, display: "block", padding: `${s(5, 3)} ${s(2, 1)}`, border: active ? "1.5px solid var(--gold)" : "1.5px solid transparent", borderRadius: s(10, 6), background: active ? mix("var(--gold)", 16) : "transparent", boxShadow: active ? `0 0 8px ${mix("var(--gold)", 30)}` : "none", fontFamily: "inherit", cursor: "pointer", textAlign: "center" }}
                 >
-                  <div style={{ fontSize: s(13, 7.5), color: active ? "var(--text)" : "var(--muted)", fontWeight: active ? 700 : 400, textTransform: "uppercase", letterSpacing: ".03em" }}>{label}</div>
+                  <div style={{ fontSize: s(13, 7.5), color: active ? "var(--gold)" : "var(--muted)", fontWeight: active ? 700 : 400, textTransform: "uppercase", letterSpacing: ".03em" }}>{label}</div>
                   <div className="tj-mono" style={{ fontSize: s(21, 9.5), fontWeight: 800, color: pctColor(pct), marginTop: s(3, 2), whiteSpace: "nowrap", letterSpacing: "-.03em" }}>{pctText(pct)}</div>
                 </button>
               </div>
