@@ -143,7 +143,7 @@ function EndMarker({ cx, cy, text }) {
 }
 
 const CHART_OPTIONS = [
-  { id: "area", label: "Area Profit & Loss" },
+  { id: "area", label: "Area" },
   { id: "combo", label: "Garis + Batang" },
 ];
 
@@ -159,7 +159,7 @@ function ChartMenu({ value, onChange }) {
   }, [open]);
   const size = s(28, 22);
   return (
-    <div ref={ref} style={{ position: "absolute", top: s(7, 3), left: "calc(12.5% - 14px)", zIndex: 5 }}>
+    <div ref={ref} style={{ position: "absolute", top: s(7, 3), left: s(6, 3), zIndex: 30 }}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -171,13 +171,14 @@ function ChartMenu({ value, onChange }) {
         <svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2.2" /><circle cx="12" cy="12" r="2.2" /><circle cx="19" cy="12" r="2.2" /></svg>
       </button>
       {open && (
-        <div role="menu" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, minWidth: 176, padding: 4, borderRadius: 12, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
+        <div role="menu" style={{ position: "absolute", left: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 170, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
+          <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "6px 10px 4px" }}>Tampilan grafik</div>
           {CHART_OPTIONS.map((o) => {
             const on = o.id === value;
             return (
-              <button key={o.id} type="button" role="menuitemradio" aria-checked={on} onClick={() => { onChange(o.id); setOpen(false); }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "9px 10px", border: "none", borderRadius: 8, background: on ? mix("var(--gold)", 14) : "transparent", color: on ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: on ? 700 : 500, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
-                <span>{o.label}</span>
-                {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>}
+              <button key={o.id} type="button" role="menuitemradio" aria-checked={on} onClick={() => { onChange(o.id); setOpen(false); }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: on ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: 6, color: on ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
+                {o.label}
+                {on && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>}
               </button>
             );
           })}
