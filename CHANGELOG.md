@@ -14,15 +14,15 @@ Hanya tampilan. Menyentuh `src/RiskGuardCard.jsx`, `src/tjStyles.js` (satu varia
 Status WASPADA memakai `--gold`, warna yang sama dengan warna merek dan aksen di halaman (tagline, End Balance, garis tombol, badge Grafik, tombol Tambah Transaksi). Akibatnya kartu berstatus waspada tidak terbedakan dari elemen biasa.
 
 ### Perubahan
-- Variabel tema baru `--warn`: oranye `#FF7A2F` (gelap) dan `#E8590C` (terang).
-- Status WASPADA di `RiskGuardCard.jsx` (perisai, lencana, cincin dan glow, bar, garis luar kartu) memakai `--warn` menggantikan `--gold`. Gradasi bar menuju oranye muda.
-- Urutan status kini: AMAN hijau, WASPADA oranye, BATAS TERCAPAI merah. `README.md` mencatat bahwa emas bukan warna status.
+- Variabel tema baru `--warn`: cyan `#38D0F0` (gelap) dan `#0891B2` (terang). Oranye sempat dicoba tetapi terlalu dekat ke merah.
+- Status WASPADA di `RiskGuardCard.jsx` (perisai, lencana, cincin dan glow, bar, garis luar kartu) memakai `--warn` menggantikan `--gold`. Gradasi bar menuju cyan muda.
+- Urutan status kini: AMAN hijau, WASPADA cyan, BATAS TERCAPAI merah. `README.md` mencatat bahwa emas bukan warna status.
 
 ### Tidak berubah
 Semua logic dan ambang status (`journalMath.js`: 75% waspada, 100% batas), glow dan ukuran cincin per status, status AMAN, BATAS TERCAPAI, dan BELUM ADA MODAL, serta semua file lain.
 
 ### Pengujian
-Sintaks JSX dicek dengan tsc. Tampilan di HP belum diuji: perlu dicek apakah oranye cukup berbeda dari merah (BATAS TERCAPAI) di tema terang dan gelap. Kalau kurang, ubah nilai `--warn` di `tjStyles.js` saja.
+Sintaks JSX dicek dengan tsc. Tampilan di HP belum diuji: perlu dicek kontras cyan di tema terang dan gelap. Ikon "Kerugian bersih" di kartu yang sama juga tosca (mirip). Kalau kurang pas, ubah nilai `--warn` di `tjStyles.js` saja (alternatif: ungu `#7C4DDB`/`#A98BFF`, magenta `#C2185B`/`#FF5FA8`).
 
 ---
 

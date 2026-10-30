@@ -8,7 +8,7 @@ import { BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHea
 
 const TONES = {
   safe: { main: "var(--green)", from: "var(--green)", to: "color-mix(in srgb, var(--green) 65%, #38D6F0)", glow: mix("var(--green)", 40), ringGlow: mix("var(--green)", 40), ringBlur: 5, label: "AMAN" },
-  warning: { main: "var(--warn)", from: "var(--warn)", to: "color-mix(in srgb, var(--warn) 65%, #FFB27A)", glow: mix("var(--warn)", 40), ringGlow: mix("var(--warn)", 55), ringBlur: 7, label: "WASPADA" },
+  warning: { main: "var(--warn)", from: "var(--warn)", to: "color-mix(in srgb, var(--warn) 65%, #A5EAF7)", glow: mix("var(--warn)", 40), ringGlow: mix("var(--warn)", 55), ringBlur: 7, label: "WASPADA" },
   limit: { main: "var(--red)", from: "var(--red)", to: "color-mix(in srgb, var(--red) 65%, #FF9A8A)", glow: mix("var(--red)", 40), ringGlow: mix("var(--red)", 65), ringBlur: 9, label: "BATAS TERCAPAI" },
   unavailable: { main: "var(--muted)", from: "var(--muted)", to: "color-mix(in srgb, var(--muted) 65%, #9CC0F0)", glow: mix("var(--muted)", 30), ringGlow: mix("var(--muted)", 30), ringBlur: 5, label: "BELUM ADA MODAL" },
 };
