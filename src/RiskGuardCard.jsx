@@ -8,7 +8,7 @@ import { BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHea
 
 const TONES = {
   safe: { main: "var(--green)", from: "var(--green)", to: "color-mix(in srgb, var(--green) 65%, #38D6F0)", glow: mix("var(--green)", 40), ringGlow: mix("var(--green)", 40), ringBlur: 5, label: "AMAN" },
-  warning: { main: "var(--gold)", from: "var(--gold)", to: "color-mix(in srgb, var(--gold) 65%, #FFE08A)", glow: mix("var(--gold)", 40), ringGlow: mix("var(--gold)", 55), ringBlur: 7, label: "WASPADA" },
+  warning: { main: "var(--warn)", from: "var(--warn)", to: "color-mix(in srgb, var(--warn) 65%, #FFB27A)", glow: mix("var(--warn)", 40), ringGlow: mix("var(--warn)", 55), ringBlur: 7, label: "WASPADA" },
   limit: { main: "var(--red)", from: "var(--red)", to: "color-mix(in srgb, var(--red) 65%, #FF9A8A)", glow: mix("var(--red)", 40), ringGlow: mix("var(--red)", 65), ringBlur: 9, label: "BATAS TERCAPAI" },
   unavailable: { main: "var(--muted)", from: "var(--muted)", to: "color-mix(in srgb, var(--muted) 65%, #9CC0F0)", glow: mix("var(--muted)", 30), ringGlow: mix("var(--muted)", 30), ringBlur: 5, label: "BELUM ADA MODAL" },
 };
@@ -89,7 +89,7 @@ export default function RiskGuardCard({ riskGuard }) {
     <div style={{ containerType: "inline-size", marginBottom: 14 }}>
     <section
       aria-label="Risk Guard"
-      style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${status === "limit" ? "var(--red)" : status === "warning" ? "var(--gold)" : status === "safe" ? "var(--green)" : "var(--border)"}` }}
+      style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${status === "limit" ? "var(--red)" : status === "warning" ? "var(--warn)" : status === "safe" ? "var(--green)" : "var(--border)"}` }}
     >
       {/* Header */}
       <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: `1px solid ${mix(BLUE, 55)}` }}>

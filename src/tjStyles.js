@@ -18,6 +18,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --green: #3FC37E;
   --red: #EF5B50;
   --info: #3AA0E0; --weekend: #A33A3A; --amber: #D99A20; /* biru info, merah Sabtu/Minggu, amber MEDIUM IMPACT */
+  --warn: #FF7A2F; /* status WASPADA Risk Guard: oranye, dibedakan dari emas merek */
   --navy-btn-bg: #E8F1FF; --navy-btn-text: #18395F; /* tombol aktif: pilihan jangka waktu, Coba lagi */
   --navy-sel-bg: #263D5D; --navy-sel-border: #6686B3; /* tombol filter terpilih */
   --gold-grad: linear-gradient(180deg, #F7C766 0%, #E39A12 100%);
@@ -82,6 +83,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --green: #1E8E56;
   --red: #C63B2E;
   --info: #3AA0E0; --weekend: #A33A3A; --amber: #D99A20; /* biru info, merah Sabtu/Minggu, amber MEDIUM IMPACT */
+  --warn: #E8590C;
   --navy-btn-bg: #18395F; --navy-btn-text: #FFFFFF;
   --navy-sel-bg: #18395F; --navy-sel-border: #18395F;
 }

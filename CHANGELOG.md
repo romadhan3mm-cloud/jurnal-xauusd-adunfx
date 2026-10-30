@@ -6,6 +6,26 @@ Aturan: perubahan baru ditambahkan di sini (bagian atas), bukan sebagai file ter
 
 ---
 
+## v1.9.85 — Warna status WASPADA Risk Guard dibedakan dari emas
+
+Hanya tampilan. Menyentuh `src/RiskGuardCard.jsx`, `src/tjStyles.js` (satu variabel baru), `README.md`, dan versi di `package.json`.
+
+### Alasan
+Status WASPADA memakai `--gold`, warna yang sama dengan warna merek dan aksen di halaman (tagline, End Balance, garis tombol, badge Grafik, tombol Tambah Transaksi). Akibatnya kartu berstatus waspada tidak terbedakan dari elemen biasa.
+
+### Perubahan
+- Variabel tema baru `--warn`: oranye `#FF7A2F` (gelap) dan `#E8590C` (terang).
+- Status WASPADA di `RiskGuardCard.jsx` (perisai, lencana, cincin dan glow, bar, garis luar kartu) memakai `--warn` menggantikan `--gold`. Gradasi bar menuju oranye muda.
+- Urutan status kini: AMAN hijau, WASPADA oranye, BATAS TERCAPAI merah. `README.md` mencatat bahwa emas bukan warna status.
+
+### Tidak berubah
+Semua logic dan ambang status (`journalMath.js`: 75% waspada, 100% batas), glow dan ukuran cincin per status, status AMAN, BATAS TERCAPAI, dan BELUM ADA MODAL, serta semua file lain.
+
+### Pengujian
+Sintaks JSX dicek dengan tsc. Tampilan di HP belum diuji: perlu dicek apakah oranye cukup berbeda dari merah (BATAS TERCAPAI) di tema terang dan gelap. Kalau kurang, ubah nilai `--warn` di `tjStyles.js` saja.
+
+---
+
 ## v1.9.84 — Catatan penting keselarasan; radius, warna, jarak, judul, font diseragamkan
 
 Hanya tampilan dan dokumentasi. Hasil audit keselarasan (perkiraan awal 76%) dikerjakan per poin. Menyentuh `README.md`, `CHANGELOG.md`, `package.json`, `src/TradingJournal.jsx`, `src/tjStyles.js`, `src/journalWidgets.jsx`, `src/authStyles.js`, `src/CardHeader.jsx`, `src/RiskGuardCard.jsx`, `src/StatsCard.jsx`, `src/TargetSimulator.jsx`, `src/AINews.jsx`, `src/EconomicCalendar.jsx`, `src/TradingViewChart.jsx`, `src/RecommendationCard.jsx`, dan `worker/ai-news-worker.js` (hanya teks user-agent).
