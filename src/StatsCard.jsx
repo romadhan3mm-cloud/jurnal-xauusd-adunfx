@@ -1,5 +1,5 @@
 import React from "react";
-import { ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from "recharts";
+import { ResponsiveContainer, ComposedChart, Area, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from "recharts";
 import { fmtMoney } from "./journalMath.js";
 import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
 
@@ -142,7 +142,67 @@ function EndMarker({ cx, cy, text }) {
   );
 }
 
-function ProfitLossChart({ period, list }) {
+const CHART_OPTIONS = [
+  { id: "area", label: "Area Profit & Loss" },
+  { id: "combo", label: "Garis + Batang" },
+];
+
+// Menu titik 3: memilih jenis grafik. Hanya mengganti tampilan; data yang dipakai sama.
+function ChartMenu({ value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [open]);
+  const size = s(28, 22);
+  return (
+    <div ref={ref} style={{ position: "absolute", top: s(7, 3), left: "calc(12.5% - 14px)", zIndex: 5 }}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Pilih jenis grafik"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        style={{ width: size, height: size, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", border: `1px solid ${open ? "var(--gold)" : mix(BLUE, 45)}`, background: open ? mix("var(--gold)", 16) : INNER_BG, color: open ? "var(--gold)" : "var(--muted)", cursor: "pointer", padding: 0, fontFamily: "inherit" }}
+      >
+        <svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2.2" /><circle cx="12" cy="12" r="2.2" /><circle cx="19" cy="12" r="2.2" /></svg>
+      </button>
+      {open && (
+        <div role="menu" style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, minWidth: 176, padding: 4, borderRadius: 12, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 8px 24px rgba(0,0,0,.35)" }}>
+          {CHART_OPTIONS.map((o) => {
+            const on = o.id === value;
+            return (
+              <button key={o.id} type="button" role="menuitemradio" aria-checked={on} onClick={() => { onChange(o.id); setOpen(false); }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "9px 10px", border: "none", borderRadius: 8, background: on ? mix("var(--gold)", 14) : "transparent", color: on ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: on ? 700 : 500, fontFamily: "inherit", cursor: "pointer", textAlign: "left" }}>
+                <span>{o.label}</span>
+                {on && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Data untuk grafik "Garis + Batang": batang = profit & loss per titik (selisih dari titik sebelumnya),
+// garis = profit kumulatif. Titik awal buatan (Start / 00:00 / 24:00) dibuang agar batang tepat di tengah label.
+function buildComboData(pts, kind) {
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const core = kind === "hour" ? pts.slice(1, -1) : pts.slice(1);
+  let pp = 0;
+  let pl = 0;
+  return core.map((d, i) => {
+    const row = { k: i, label: d.label, cum: d.profit, dProfit: Math.max(0, r2(d.profit - pp)), dLoss: Math.max(0, r2(d.loss - pl)) };
+    pp = d.profit;
+    pl = d.loss;
+    return row;
+  });
+}
+
+function ProfitLossChart({ period, list, variant = "area" }) {
   const gid = `st-area-${React.useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   const { pts: data, kind, empty } = buildSeries(period, list);
   const last = data[data.length - 1];
@@ -157,6 +217,47 @@ function ProfitLossChart({ period, list }) {
         Belum ada entri pada periode {period.toLowerCase()} ini.
       </div>
     );
+  }
+  if (variant === "combo") {
+    const cd = buildComboData(data, kind);
+    if (cd.length > 0) {
+      const lastRow = cd[cd.length - 1];
+      const axis = { stroke: mix(BLUE, 70) };
+      return (
+        <div style={{ marginTop: s(14, 7) }}>
+          <div role="img" aria-label={`Grafik garis dan batang ${period.toLowerCase()}. Total profit ${fmtMoney(totalProfit)}.`}>
+            <ResponsiveContainer width="100%" height={230}>
+              <ComposedChart data={cd} margin={{ top: 32, right: 14, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id={`${gid}-c`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" style={{ stopColor: "var(--green)", stopOpacity: 0.4 }} />
+                    <stop offset="100%" style={{ stopColor: "var(--green)", stopOpacity: 0.03 }} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke={grid} strokeDasharray="3 4" vertical={false} />
+                <XAxis dataKey="k" type="category" interval="preserveStartEnd" minTickGap={6} tickFormatter={(k) => (cd[k] ? cd[k].label : "")} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={axis} tickLine={axis} />
+                <YAxis type="number" domain={[0, "auto"]} tickFormatter={moneyTick} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={axis} tickLine={axis} width={44} />
+                <Tooltip
+                  cursor={{ fill: mix(BLUE, 12) }}
+                  contentStyle={{ background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+                  labelStyle={{ color: "var(--muted)", fontSize: 11 }}
+                  formatter={(v, name) => [fmtMoney(Number(v)), name]}
+                  labelFormatter={(k) => (cd[k] ? cd[k].label : "")}
+                />
+                <Bar dataKey="dProfit" name="Profit" fill="var(--green)" fillOpacity={0.85} radius={[4, 4, 0, 0]} maxBarSize={22} isAnimationActive={false} />
+                <Bar dataKey="dLoss" name="Loss" fill="var(--red)" fillOpacity={0.9} radius={[4, 4, 0, 0]} maxBarSize={22} isAnimationActive={false} />
+                <Area type="monotone" dataKey="cum" name="Total Profit" stroke="var(--green)" strokeWidth={2.6} fill={`url(#${gid}-c)`} dot={{ r: 4, fill: "#FFFFFF", stroke: "var(--green)", strokeWidth: 1 }} activeDot={{ r: 5 }} isAnimationActive={false} />
+                <ReferenceDot x={lastRow.k} y={lastRow.cum} ifOverflow="visible" shape={<EndMarker text={fmtMoney(totalProfit)} />} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: s(22, 12), marginTop: s(4, 2), fontSize: s(15, 9.5), color: "var(--muted)" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: s(7, 4) }}><span style={{ width: s(14, 9), height: s(14, 9), borderRadius: "50%", background: "var(--green)" }} />Profit</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: s(7, 4) }}><span style={{ width: s(14, 9), height: s(14, 9), borderRadius: "50%", background: "var(--red)" }} />Loss</span>
+          </div>
+        </div>
+      );
+    }
   }
   return (
     <div style={{ marginTop: s(14, 7) }}>
@@ -194,6 +295,7 @@ function ProfitLossChart({ period, list }) {
 
 export default function StatsCard({ stats, growth, periodRows = {} }) {
   const [period, setPeriod] = React.useState("Bulanan"); // grafik default = bulan aktif (sama seperti sebelumnya)
+  const [chartType, setChartType] = React.useState("area"); // jenis grafik: "area" (bawaan) atau "combo" (garis + batang)
   const winrateText = stats.winrate === null ? "—" : `${(stats.winrate * 100).toFixed(0)}%`;
   const winratePct = stats.winrate === null ? null : stats.winrate * 100;
   const lossText = stats.totalLoss > 0 ? `-${fmtMoney(stats.totalLoss)}` : fmtMoney(0);
@@ -273,7 +375,12 @@ export default function StatsCard({ stats, growth, periodRows = {} }) {
         </div>
 
         {/* Grafik profit & loss kumulatif untuk periode yang dipilih (tap Harian / Mingguan / Bulanan / Tahunan) */}
-        {Object.values(periodRows).some((l) => l && l.length > 0) && <ProfitLossChart period={period} list={periodRows[period]} />}
+        {Object.values(periodRows).some((l) => l && l.length > 0) && (
+          <div style={{ position: "relative", display: "flow-root" }}>
+            <ChartMenu value={chartType} onChange={setChartType} />
+            <ProfitLossChart period={period} list={periodRows[period]} variant={chartType} />
+          </div>
+        )}
         </div>
     </CardShell>
   );
