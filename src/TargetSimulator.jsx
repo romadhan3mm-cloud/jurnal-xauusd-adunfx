@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info, BarChart3, FileText, Flag, DollarSign } from "lucide-react";
-import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER } from "./CardHeader.jsx";
+import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHeader.jsx";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
 
@@ -120,14 +120,6 @@ function formatThousandsInput(value) {
   const digits = String(value ?? "").replace(/\D/g, "");
   if (!digits) return "";
   return Number(digits).toLocaleString("id-ID", { maximumFractionDigits: 0 });
-}
-
-function IconBadge({ bg, children }) {
-  return (
-    <span style={{ width: s(40, 22), height: s(40, 22), borderRadius: "50%", background: bg, color: "#FFFFFF", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.22)", flex: "0 0 auto" }}>
-      {children}
-    </span>
-  );
 }
 
 const tileIcon = { width: "55%", height: "55%", display: "block" };
@@ -511,21 +503,21 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: s(10, 4) }}>
           <DateField label="Tanggal Mulai" value={form.startDate} onChange={set("startDate")}
-            bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<CalendarDays strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.blue} icon={<CalendarDays strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Modal Awal" value={form.capital} onChange={set("capital")} suffix="$"
-            bg="linear-gradient(135deg,#19D39A,#0EA574)" icon={<Coins strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.green} icon={<Coins strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Target" value={form.targetRp} onChange={set("targetRp")} suffix="Rp" formatThousands
-            bg="linear-gradient(135deg,#9B6BF5,#6A3FD6)" icon={<Target strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.purple} icon={<Target strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Kurs USD/IDR" value={form.rate} onChange={set("rate")} suffix="Rp" formatThousands
-            bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<Percent strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.blue} icon={<Percent strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Target Profit Harian" value={form.targetPct} onChange={set("targetPct")} suffix="%"
-            bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<TrendingUp strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.blue} icon={<TrendingUp strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Batas Loss Harian" value={form.lossPct} onChange={set("lossPct")} suffix="%"
-            bg="linear-gradient(135deg,#FF4A5E,#D12038)" icon={<ShieldAlert strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.red} icon={<ShieldAlert strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Jarak SL Rata-Rata" value={form.sl} onChange={set("sl")} suffix="$"
-            bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<ArrowLeftRight strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.blue} icon={<ArrowLeftRight strokeWidth={2.2} style={tileIcon} />} />
           <Field label="Max Layer" value={form.maxLayers} onChange={set("maxLayers")} suffix="x"
-            bg="linear-gradient(135deg,#7A6BF5,#5340D6)" icon={<Layers strokeWidth={2.2} style={tileIcon} />} />
+            bg={GRAD.indigo} icon={<Layers strokeWidth={2.2} style={tileIcon} />} />
         </div>
 
         {/* Catatan */}
@@ -577,10 +569,10 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
           <CardShell ariaLabel="Hasil simulasi" marginBottom={14}>
             <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Hasil (Semua Hari Profit)" />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: s(10, 4) }}>
-              <ResultTile bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<DollarSign strokeWidth={2.2} style={tileIcon} />} label="Target dalam dolar" value={fmtUsd(sim.targetUsd)} sub={`${String(Math.round(sim.targetUsd / sim.capital))}x modal`} />
-              <ResultTile bg="linear-gradient(135deg,#19D39A,#0EA574)" icon={<CalendarDays strokeWidth={2.2} style={tileIcon} />} label="Hari trading" value={String(sim.dayCount)} sub={`≈ ${(sim.dayCount / DAYS_PER_MONTH).toFixed(1)} bulan`} />
-              <ResultTile bg="linear-gradient(135deg,#9B6BF5,#6A3FD6)" icon={<Target strokeWidth={2.2} style={tileIcon} />} label="Perkiraan tercapai" value={fmtDate(sim.endDate)} valueSize={s(18, 11)} />
-              <ResultTile bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<TrendingUp strokeWidth={2.2} style={tileIcon} />} label="Target profit hari ke-1" value={fmtUsd(sim.rows[0].target)} sub={fmtRp(sim.rows[0].target * sim.rate)} />
+              <ResultTile bg={GRAD.blue} icon={<DollarSign strokeWidth={2.2} style={tileIcon} />} label="Target dalam dolar" value={fmtUsd(sim.targetUsd)} sub={`${String(Math.round(sim.targetUsd / sim.capital))}x modal`} />
+              <ResultTile bg={GRAD.green} icon={<CalendarDays strokeWidth={2.2} style={tileIcon} />} label="Hari trading" value={String(sim.dayCount)} sub={`≈ ${(sim.dayCount / DAYS_PER_MONTH).toFixed(1)} bulan`} />
+              <ResultTile bg={GRAD.purple} icon={<Target strokeWidth={2.2} style={tileIcon} />} label="Perkiraan tercapai" value={fmtDate(sim.endDate)} valueSize={s(18, 11)} />
+              <ResultTile bg={GRAD.blue} icon={<TrendingUp strokeWidth={2.2} style={tileIcon} />} label="Target profit hari ke-1" value={fmtUsd(sim.rows[0].target)} sub={fmtRp(sim.rows[0].target * sim.rate)} />
             </div>
             {!sim.reached && (
               <div style={{ fontSize: s(12, 9), color: "var(--red)", marginTop: s(10, 5), textAlign: "center" }}>

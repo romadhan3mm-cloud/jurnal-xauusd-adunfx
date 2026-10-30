@@ -1,7 +1,7 @@
 {
   "name": "traderlogs",
   "private": true,
-  "version": "1.9.73",
+  "version": "1.9.75",
   "type": "module",
   "scripts": {
     "dev": "vite",

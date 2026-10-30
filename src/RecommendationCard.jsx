@@ -1,7 +1,7 @@
 import React from "react";
 import { ChevronDown, ChevronUp, Wallet, Layers, ShieldAlert } from "lucide-react";
 import { fmtMoney, SL_DISTANCE_USD, RISK_PCT_PER_DAY, TARGET_MAX_LAYERS, CAPITAL_LOT_REF_TIERS } from "./journalMath.js";
-import { mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
+import { mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge, IconBadge, GRAD } from "./CardHeader.jsx";
 
 // Tampilan kartu Rekomendasi Lot (kartu berjudul standar, sama dengan Statistik & Input Transaksi).
 // Komponen ini HANYA menampilkan hasil computeLotRecommendation yang sudah dihitung di TradingJournal;
@@ -12,14 +12,6 @@ function Svg({ size = 20, children, color = "currentColor", stroke = 2 }) {
     <svg width={size} height={size} style={{ display: "block" }} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {children}
     </svg>
-  );
-}
-
-function IconBadge({ bg, children }) {
-  return (
-    <span style={{ width: s(40, 22), height: s(40, 22), borderRadius: "50%", background: bg, color: "#FFFFFF", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.22)", flex: "0 0 auto" }}>
-      {children}
-    </span>
   );
 }
 
@@ -57,19 +49,19 @@ export default function RecommendationCard({ rec, endBalance, showRef, onToggleR
       {/* Tiga kartu angka */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: s(8, 4) }}>
         <RecoStat
-          bg="linear-gradient(135deg,#2A7BFF,#1747B8)"
+          bg={GRAD.blue}
           icon={<Layers strokeWidth={2.2} style={{ width: "55%", height: "55%", display: "block" }} />}
           label="Lot / Layer"
           value={rec.lot}
         />
         <RecoStat
-          bg="linear-gradient(135deg,#5A6CF0,#3446C2)"
+          bg={GRAD.indigo}
           icon={<Layers strokeWidth={2.2} style={{ width: "55%", height: "55%", display: "block" }} />}
           label="Max Layer"
           value={rec.layers}
         />
         <RecoStat
-          bg="linear-gradient(135deg,#FF4A5E,#D12038)"
+          bg={GRAD.red}
           icon={<ShieldAlert strokeWidth={2.2} style={{ width: "55%", height: "55%", display: "block" }} />}
           label="Budget Rugi/Hari"
           value={fmtMoney(-rec.riskBudget)}

@@ -1,7 +1,7 @@
 import React from "react";
 import { ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from "recharts";
 import { fmtMoney } from "./journalMath.js";
-import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge } from "./CardHeader.jsx";
+import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge, IconBadge, GRAD } from "./CardHeader.jsx";
 
 // Tampilan kartu Statistik. Komponen ini HANYA menampilkan angka yang sudah dihitung di TradingJournal
 // (stats + persentase harian/mingguan/bulanan/tahunan); tidak ada perhitungan baru.
@@ -12,14 +12,6 @@ function Svg({ size = 20, children, color = "currentColor", stroke = 2 }) {
     <svg width={size} height={size} style={{ display: "block" }} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {children}
     </svg>
-  );
-}
-
-function IconBadge({ bg, children }) {
-  return (
-    <span style={{ width: s(40, 22), height: s(40, 22), borderRadius: "50%", background: bg, color: "#FFFFFF", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.22)", flex: "0 0 auto" }}>
-      {children}
-    </span>
   );
 }
 
@@ -221,26 +213,26 @@ export default function StatsCard({ stats, growth, periodRows = {} }) {
           <WinRing winratePct={winratePct} winrateText={winrateText} winTrades={stats.winTrades} lossTrades={stats.lossTrades} />
           <div style={{ flex: "1 1 0", minWidth: 0, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: s(10, 4) }}>
             <MetricCard
-              bg="linear-gradient(135deg,#19D39A,#0EA574)"
+              bg={GRAD.green}
               icon={<Svg size="55%" stroke={2.4}><path d="m3 17 6-6 4 4 8-8M15 7h6v6" /></Svg>}
               label="Total Profit"
               value={fmtMoney(stats.totalProfit)}
             />
             <MetricCard
-              bg="linear-gradient(135deg,#FF4A5E,#D12038)"
+              bg={GRAD.red}
               icon={<Svg size="55%" stroke={2.4}><path d="m3 7 6 6 4-4 8 8M15 17h6v-6" /></Svg>}
               label="Total Loss"
               value={lossText}
               valueColor={stats.totalLoss > 0 ? "var(--red)" : undefined}
             />
             <MetricCard
-              bg="linear-gradient(135deg,#7A6BF5,#5340D6)"
+              bg={GRAD.indigo}
               icon={<Svg size="55%" stroke={2.4}><circle cx="7.5" cy="7.5" r="2.2" /><circle cx="16.5" cy="16.5" r="2.2" /><path d="M18 5.5 6 18.5" /></Svg>}
               label="Komisi"
               value={fmtMoney(stats.totalKomisi)}
             />
             <MetricCard
-              bg="linear-gradient(135deg,#2A8CFF,#1560D6)"
+              bg={GRAD.blue}
               icon={<Svg size="55%" stroke={2.2}><path d="M4 9h13l-3-3M20 15H7l3 3" /></Svg>}
               label="RR (Risk Reward)"
               value={rrText}

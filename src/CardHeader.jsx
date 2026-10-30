@@ -17,6 +17,25 @@ export const INNER_BG = mix("var(--surface-raised)", 55);
 export const INNER_BORDER = `1px solid ${mix(BLUE, 45)}`;
 export const INNER_LINE = INNER_BORDER;
 
+// Lencana ikon bulat berwarna (kartu angka & isian). Satu definisi untuk semua kartu.
+export function IconBadge({ bg, children }) {
+  return (
+    <span style={{ width: s(40, 22), height: s(40, 22), borderRadius: "50%", background: bg, color: "#FFFFFF", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.22)", flex: "0 0 auto" }}>
+      {children}
+    </span>
+  );
+}
+
+// Palet latar lencana ikon.
+export const GRAD = {
+  blue: "linear-gradient(135deg,#2A8CFF,#1560D6)",
+  green: "linear-gradient(135deg,#19D39A,#0EA574)",
+  purple: "linear-gradient(135deg,#9B6BF5,#6A3FD6)",
+  red: "linear-gradient(135deg,#FF4A5E,#D12038)",
+  indigo: "linear-gradient(135deg,#7A6BF5,#5340D6)",
+  teal: "linear-gradient(135deg,#2FB5A5,#16756F)",
+};
+
 export function CardShell({ ariaLabel, children, marginBottom = 20 }) {
   return (
     <div style={{ containerType: "inline-size", marginBottom }}>
