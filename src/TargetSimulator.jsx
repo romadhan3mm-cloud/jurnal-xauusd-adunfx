@@ -651,7 +651,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
 
           {/* Milestone */}
           <CardShell ariaLabel="Milestone" marginBottom={14}>
-            <CardHeader icon={<Flag size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Milestone (Dengan Target Harian di Atas)" />
+            <CardHeader icon={<Flag size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Milestone" subtitle="Dengan target harian di atas." />
             <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
@@ -677,7 +677,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
 
           {/* Cek realita */}
           <CardShell ariaLabel="Cek realita" marginBottom={14}>
-            <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Cek Realita: Kalau Tidak Semua Hari Profit" />
+            <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Cek Realita" subtitle="Kalau tidak semua hari profit." />
             <div style={{ fontSize: s(13, 9), color: "var(--muted)", lineHeight: 1.5, marginBottom: s(10, 5), textAlign: "center" }}>
               Hari rugi dianggap kena batas loss penuh, hari profit tepat di target. Persentase hari profit di bawah hanya contoh, bukan data trading kamu.
             </div>

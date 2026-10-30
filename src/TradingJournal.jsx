@@ -1425,10 +1425,9 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                   </thead>
                   <tbody>
                     {rows.map((r, i) => {
-                      // Baris biasa (bukan kartu): tanpa latar dan sudut bulat, hanya garis pemisah tipis di bawah.
+                      // Baris biasa (bukan kartu): tanpa latar, sudut bulat, maupun garis pemisah.
                       const cell = (pos, extra) => ({
                         background: "transparent",
-                        borderBottom: "1px solid var(--border)",
                         ...extra,
                       });
                       const isWeekendRow = [0, 6].includes(new Date(r.date).getDay());
@@ -1576,7 +1575,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     >
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
-                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={false} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
+                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
                         contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
@@ -1603,7 +1602,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       </defs>
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
-                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={false} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
+                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
                         contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
@@ -1624,7 +1623,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     >
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
-                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={false} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
+                      <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
                         contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
