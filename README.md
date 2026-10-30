@@ -29,6 +29,7 @@ Setiap fitur, kartu, tombol, atau layar baru **wajib** memakai standar yang suda
 
 ### Standar tombol
 - **Utama**: latar `var(--gold-grad)`, teks `#0A1628`, radius `BTN_RADIUS`, font 13px/700. (Pilihan aktif/Coba lagi di kalender dan chart: `--navy-btn-*`.)
+- **Utama lembut** (tombol aksi utama di dalam kartu, mis. Tambah Transaksi): latar `mix("var(--gold)", 14)`, garis `1.5px solid var(--gold)`, teks `var(--gold)`, radius `BTN_RADIUS`, font 13px/700. Sama dengan gaya lencana kepala kartu.
 - **Sekunder**: latar `var(--surface)`, teks `var(--muted)`, garis `1px solid var(--border)`, radius `BTN_RADIUS`, font 13px/700.
 - **Bahaya (hapus)**: latar `var(--red)`, teks putih, radius `BTN_RADIUS`, font 13px/700.
 - Tombol kecil di dalam baris/tabel boleh memakai font 11px dan padding lebih rapat; radius dan ketebalan (700) tetap sama.

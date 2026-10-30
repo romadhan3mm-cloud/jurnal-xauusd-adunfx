@@ -6,6 +6,25 @@ Aturan: perubahan baru ditambahkan di sini (bagian atas), bukan sebagai file ter
 
 ---
 
+## v1.9.87 — Tombol Tambah Transaksi dibuat lebih ringan
+
+Hanya tampilan. Menyentuh `src/TradingJournal.jsx` (gaya satu tombol), `README.md`, dan versi di `package.json`.
+
+### Alasan
+Tombol Tambah Transaksi berisi gradasi emas penuh selebar kartu sehingga terlihat pekat dan terlalu menonjol dibanding elemen lain.
+
+### Perubahan
+- Dari isi gradasi emas penuh dengan teks gelap menjadi isi emas tipis 14%, garis emas 1.5px, teks emas, ketebalan 700 (gaya sama dengan lencana kepala kartu). Tinggi minimal 42px dan lebar tidak berubah.
+- `README.md`: varian "Utama lembut" ditambahkan ke standar tombol. Tombol utama gradasi di dialog tidak berubah.
+
+### Tidak berubah
+`onClick` (`addEntry`), `title`, tata letak, jarak, teks, dan semua file lain.
+
+### Pengujian
+Hanya dibandingkan lewat gambar uji; tampilan di HP belum diuji. Alternatif bila terasa terlalu pucat: gradasi dipudarkan (emas 38% di atas warna kartu, teks `var(--text)`).
+
+---
+
 ## v1.9.86 — WASPADA di tema terang dibuat lebih hidup
 
 Hanya tampilan. Menyentuh `src/tjStyles.js` (satu nilai) dan versi di `package.json`.
