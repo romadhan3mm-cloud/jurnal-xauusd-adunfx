@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info } from "lucide-react";
+import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info, BarChart3, FileText, Flag, DollarSign } from "lucide-react";
 import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER } from "./CardHeader.jsx";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
@@ -90,21 +90,10 @@ const card = {
   marginBottom: 14,
   textAlign: "center",
 };
-const sectionTitle = {
-  fontSize: 11,
-  fontWeight: 800,
-  color: "var(--gold)",
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
-  paddingBottom: 8,
-  marginBottom: 12,
-  borderBottom: "1px solid var(--border)",
-  textAlign: "center",
-};
 const th = {
-  padding: "7px 10px",
-  fontSize: 11,
-  color: "var(--muted)",
+  padding: `${s(7, 4)} ${s(6, 3)}`,
+  fontSize: s(12, 9.5),
+  color: "color-mix(in srgb, #2A7BFF 72%, var(--text))",
   fontWeight: 800,
   textAlign: "center",
   textTransform: "uppercase",
@@ -112,8 +101,8 @@ const th = {
   whiteSpace: "nowrap",
 };
 const td = {
-  padding: "7px 10px",
-  fontSize: 13,
+  padding: `${s(7, 4)} ${s(6, 3)}`,
+  fontSize: s(13, 10),
   textAlign: "center",
   borderTop: "none",
   whiteSpace: "nowrap",
@@ -248,25 +237,14 @@ function StatusMark({ kind, active, onClick, label }) {
   );
 }
 
-function Stat({ label, value, sub, accent }) {
+// Kartu angka hasil (gaya kartu angka Statistik): ikon di atas, label, nilai, keterangan; semua rata tengah.
+function ResultTile({ icon, bg, label, value, sub, valueSize }) {
   return (
-    <div
-      style={{
-        background: "var(--surface-raised)",
-        border: "1px solid var(--border)",
-        borderRadius: 10,
-        padding: "10px 12px",
-        textAlign: "center",
-      }}
-    >
-      <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 4 }}>{label}</div>
-      <div
-        className="tj-mono"
-        style={{ fontSize: 15, fontWeight: 600, color: accent ? "var(--gold)" : "var(--text)" }}
-      >
-        {value}
-      </div>
-      {sub && <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 3 }}>{sub}</div>}
+    <div style={{ minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", borderRadius: s(14, 8), padding: `${s(12, 6)} ${s(10, 5)}`, background: INNER_BG, border: INNER_BORDER }}>
+      <IconBadge bg={bg}>{icon}</IconBadge>
+      <div style={{ ...tileLabel, marginTop: s(8, 4) }}>{label}</div>
+      <div className="tj-mono" style={{ ...tileValue, fontSize: valueSize || s(24, 14), marginTop: "auto", paddingTop: s(5, 3) }}>{value}</div>
+      {sub && <div style={{ fontSize: s(13, 8.5), color: "var(--muted)", lineHeight: 1.2, marginTop: s(3, 2), whiteSpace: "nowrap" }}>{sub}</div>}
     </div>
   );
 }
@@ -596,32 +574,32 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
       ) : (
         <>
           {/* Hasil */}
-          <div style={card}>
-            <div style={sectionTitle}>Hasil (semua hari profit)</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10 }}>
-              <Stat label="Target dalam dolar" value={fmtUsd(sim.targetUsd)} sub={`${String(Math.round(sim.targetUsd / sim.capital))}x modal`} />
-              <Stat accent label="Hari trading" value={String(sim.dayCount)} sub={`≈ ${(sim.dayCount / DAYS_PER_MONTH).toFixed(1)} bulan`} />
-              <Stat label="Perkiraan tercapai" value={fmtDate(sim.endDate)} />
-              <Stat label="Target profit hari ke-1" value={fmtUsd(sim.rows[0].target)} sub={fmtRp(sim.rows[0].target * sim.rate)} />
+          <CardShell ariaLabel="Hasil simulasi" marginBottom={14}>
+            <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Hasil (Semua Hari Profit)" />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: s(10, 4) }}>
+              <ResultTile bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<DollarSign strokeWidth={2.2} style={tileIcon} />} label="Target dalam dolar" value={fmtUsd(sim.targetUsd)} sub={`${String(Math.round(sim.targetUsd / sim.capital))}x modal`} />
+              <ResultTile bg="linear-gradient(135deg,#19D39A,#0EA574)" icon={<CalendarDays strokeWidth={2.2} style={tileIcon} />} label="Hari trading" value={String(sim.dayCount)} sub={`≈ ${(sim.dayCount / DAYS_PER_MONTH).toFixed(1)} bulan`} />
+              <ResultTile bg="linear-gradient(135deg,#9B6BF5,#6A3FD6)" icon={<Target strokeWidth={2.2} style={tileIcon} />} label="Perkiraan tercapai" value={fmtDate(sim.endDate)} valueSize={s(18, 11)} />
+              <ResultTile bg="linear-gradient(135deg,#2A8CFF,#1560D6)" icon={<TrendingUp strokeWidth={2.2} style={tileIcon} />} label="Target profit hari ke-1" value={fmtUsd(sim.rows[0].target)} sub={fmtRp(sim.rows[0].target * sim.rate)} />
             </div>
             {!sim.reached && (
-              <div style={{ fontSize: 11, color: "var(--red)", marginTop: 10, textAlign: "center" }}>
+              <div style={{ fontSize: s(12, 9), color: "var(--red)", marginTop: s(10, 5), textAlign: "center" }}>
                 Tabel harian dibatasi {MAX_DAYS} hari dan target belum tercapai di dalamnya.
               </div>
             )}
-          </div>
+          </CardShell>
 
           {/* Grafik */}
-          <div style={card}>
-            <div style={sectionTitle}>Pertumbuhan saldo ($)</div>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+          <CardShell ariaLabel="Pertumbuhan saldo" marginBottom={14}>
+            <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Pertumbuhan Saldo ($)" />
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: s(10, 5) }}>
               <button
                 onClick={() => setLogScale((v) => !v)}
                 style={{
-                  background: logScale ? "rgba(237,165,36,0.1)" : "var(--surface-raised)",
-                  border: `1px solid ${logScale ? "var(--gold-dim)" : "var(--border)"}`,
+                  background: logScale ? mix("var(--gold)", 14) : INNER_BG,
+                  border: logScale ? "1px solid var(--gold)" : INNER_BORDER,
                   color: logScale ? "var(--gold)" : "var(--muted)",
-                  borderRadius: 6, padding: "4px 12px", fontSize: 11, cursor: "pointer",
+                  borderRadius: s(10, 6), padding: `${s(6, 3)} ${s(22, 10)}`, fontSize: s(14, 9.5), fontFamily: "inherit", cursor: "pointer",
                 }}
               >
                 Skala log
@@ -630,14 +608,14 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
             <div style={{ width: "100%", height: 220 }}>
               <ResponsiveContainer>
                 <LineChart data={sim.rows} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: axisColor }} stroke="var(--border)" />
+                  <CartesianGrid stroke={mix(BLUE, 45)} strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: axisColor }} stroke={mix(BLUE, 70)} />
                   <YAxis
                     scale={logScale ? "log" : "linear"}
                     domain={logScale ? ["auto", "auto"] : [0, "auto"]}
                     allowDataOverflow
                     tick={{ fontSize: 11, fill: axisColor }}
-                    stroke="var(--border)"
+                    stroke={mix(BLUE, 70)}
                     width={52}
                     tickFormatter={(v) => (v >= 1000 ? `${Math.round(v / 1000)}k` : Math.round(v))}
                   />
@@ -647,15 +625,15 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                     formatter={(v) => [fmtUsd(v), "Saldo akhir"]}
                   />
                   <ReferenceLine y={sim.targetUsd} stroke="var(--green)" strokeDasharray="4 4" />
-                  <Line type="monotone" dataKey="end" stroke="var(--gold)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="end" stroke="var(--gold)" strokeWidth={2.4} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-          </div>
+          </CardShell>
 
-          {/* Skenario + milestone */}
-          <div style={card}>
-            <div style={sectionTitle}>Skenario target harian</div>
+          {/* Skenario */}
+          <CardShell ariaLabel="Skenario target harian" marginBottom={14}>
+            <CardHeader icon={<FileText size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Skenario Target Harian" />
             <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
@@ -677,10 +655,11 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 </tbody>
               </table>
             </div>
-          </div>
+          </CardShell>
 
-          <div style={card}>
-            <div style={sectionTitle}>Milestone (dengan target harian di atas)</div>
+          {/* Milestone */}
+          <CardShell ariaLabel="Milestone" marginBottom={14}>
+            <CardHeader icon={<Flag size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Milestone (Dengan Target Harian di Atas)" />
             <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
@@ -702,11 +681,12 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 </tbody>
               </table>
             </div>
-          </div>
+          </CardShell>
 
-          <div style={card}>
-            <div style={sectionTitle}>Cek realita: kalau tidak semua hari profit</div>
-            <div style={{ fontSize: 11, color: "var(--muted)", lineHeight: 1.5, marginBottom: 10, textAlign: "center" }}>
+          {/* Cek realita */}
+          <CardShell ariaLabel="Cek realita" marginBottom={14}>
+            <CardHeader icon={<BarChart3 size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Cek Realita: Kalau Tidak Semua Hari Profit" />
+            <div style={{ fontSize: s(13, 9), color: "var(--muted)", lineHeight: 1.5, marginBottom: s(10, 5), textAlign: "center" }}>
               Hari rugi dianggap kena batas loss penuh, hari profit tepat di target. Persentase hari profit di bawah hanya contoh, bukan data trading kamu.
             </div>
             <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
@@ -729,12 +709,12 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 </tbody>
               </table>
             </div>
-          </div>
+          </CardShell>
 
           {/* Tabel harian */}
-          <div style={card}>
-            <div style={sectionTitle}>Tabel harian</div>
-            <div style={{ fontSize: 11, color: "var(--muted)", marginBottom: 10, textAlign: "center" }}>
+          <CardShell ariaLabel="Tabel harian" marginBottom={14}>
+            <CardHeader icon={<CalendarDays size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Tabel Harian" />
+            <div style={{ fontSize: s(13, 9), color: "var(--muted)", lineHeight: 1.5, marginBottom: s(10, 5), textAlign: "center" }}>
               Tercapai:{" "}
               <span className="tj-mono" style={{ color: "var(--gold)", fontWeight: 600 }}>
                 {sim.rows.filter((r) => progress.done[r.day]).length} / {sim.rows.length}
@@ -796,8 +776,8 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 onClick={() => setShowAll((v) => !v)}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  width: "100%", marginTop: 10, padding: "8px 12px", borderRadius: 8, fontSize: 13,
-                  fontWeight: 600, border: "1px solid var(--border)", background: "var(--surface-raised)",
+                  width: "100%", marginTop: s(10, 5), padding: `${s(8, 5)} ${s(12, 6)}`, borderRadius: s(10, 6), fontSize: s(13, 10),
+                  fontWeight: 600, border: INNER_BORDER, background: INNER_BG, fontFamily: "inherit",
                   color: "var(--muted)", cursor: "pointer",
                 }}
               >
@@ -805,7 +785,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 {showAll ? "Tampilkan 30 hari pertama" : `Tampilkan semua ${sim.rows.length} hari`}
               </button>
             )}
-          </div>
+          </CardShell>
 
           <div style={{ fontSize: 11, color: "var(--muted)", lineHeight: 1.5, opacity: 0.85, marginBottom: 8, textAlign: "center" }}>
             Model compounding murni: tanpa withdraw, komisi, spread, atau slippage. Trading Senin–Jumat, libur bursa tidak dihitung. Lot per layer memakai rumus yang sama dengan rekomendasi lot di tab Jurnal.
