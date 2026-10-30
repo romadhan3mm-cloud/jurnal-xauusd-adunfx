@@ -1340,7 +1340,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
               {/* Bulan aktif (dropdown, kiri) + Bulan Baru (kanan) */}
               <div style={{ display: "flex", alignItems: "stretch", gap: 8, marginBottom: 10 }}>
-                <div style={{ flex: "1 1 0", minWidth: 0, minHeight: 42, display: "flex", alignItems: "stretch", borderRadius: s(14, 8), border: "1.5px solid var(--gold)", overflow: "hidden" }}>
+                <div style={{ flex: "1 1 0", minWidth: 0, minHeight: 42, display: "flex", alignItems: "stretch", borderRadius: s(14, 8), background: INNER_BG, border: INNER_LINE, overflow: "hidden" }}>
                   {/* Kiri: tampilkan kalender bulan aktif */}
                   <button
                     onClick={() => { setCalendarMonth(activeMonth); setCalendarOpen((v) => !v); setMonthDdOpen(false); }}
@@ -1348,9 +1348,9 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-expanded={calendarOpen}
                     aria-label="Buka kalender bulan aktif"
                     className="tj-mono"
-                    style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", background: "transparent", border: "none", color: "var(--gold)", fontSize: s(13, 10), fontWeight: 800, cursor: "pointer" }}
+                    style={{ flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", background: "transparent", border: "none", color: "var(--text)", fontSize: s(13, 10), fontWeight: 800, cursor: "pointer" }}
                   >
-                    <CalendarDays size={16} style={{ flex: "0 0 auto" }} />
+                    <CalendarDays size={16} style={{ flex: "0 0 auto", color: "var(--muted)" }} />
                     <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{monthKeyToLabel(activeMonth)}</span>
                   </button>
                   {/* Garis pemisah vertikal (warna seperti di kartu Statistik), diberi jarak dari garis tepi atas dan bawah */}
@@ -1366,7 +1366,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     aria-haspopup="listbox"
                     aria-expanded={monthDdOpen}
                     aria-label="Daftar bulan dan arsip"
-                    style={{ flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px", background: "transparent", border: "none", color: "var(--gold)", cursor: "pointer" }}
+                    style={{ flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px", background: "transparent", border: "none", color: "var(--muted)", cursor: "pointer" }}
                   >
                     <ChevronDown size={16} style={{ transform: monthDdOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
                   </button>

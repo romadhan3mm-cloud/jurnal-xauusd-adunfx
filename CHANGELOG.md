@@ -6,6 +6,26 @@ Aturan: perubahan baru ditambahkan di sini (bagian atas), bukan sebagai file ter
 
 ---
 
+## v1.9.88 — Kartu bulan aktif memakai gaya kotak dalam (bukan emas)
+
+Hanya tampilan. Menyentuh `src/TradingJournal.jsx` (gaya satu kotak) dan versi di `package.json`.
+
+### Alasan
+Kartu bulan aktif berbingkai emas dan teks emas, bersebelahan dengan tombol Tambah Transaksi yang juga emas, sehingga area itu terlihat ramai.
+
+### Perubahan
+- Kartu bulan aktif (kalender + daftar bulan) memakai gaya kotak dalam seperti kartu angka di Risk Guard: latar `INNER_BG`, garis `INNER_LINE` (biru 45%, 1px) menggantikan garis emas 1.5px.
+- Teks bulan `var(--text)`; ikon kalender dan panah `var(--muted)` (sebelumnya emas). Garis pemisah vertikal tidak berubah.
+- Emas di area ini kini hanya pada tombol Tambah Transaksi.
+
+### Tidak berubah
+Semua handler (`setCalendarOpen`, `setMonthDdOpen`, posisi menu), tata letak, ukuran, radius, tombol Bulan Baru, dan semua file lain.
+
+### Pengujian
+Sintaks JSX dicek dengan tsc; tampilan di HP belum diuji.
+
+---
+
 ## v1.9.87 — Tombol Tambah Transaksi dibuat lebih ringan
 
 Hanya tampilan. Menyentuh `src/TradingJournal.jsx` (gaya satu tombol), `README.md`, dan versi di `package.json`.
