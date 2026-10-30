@@ -7,10 +7,10 @@ import { BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHea
 // sehingga kartu ikut berganti saat tema terang/gelap diganti, sama seperti kartu lain.
 
 const TONES = {
-  safe: { main: "var(--green)", from: "var(--green)", to: "color-mix(in srgb, var(--green) 65%, #38D6F0)", glow: mix("var(--green)", 40), label: "AMAN" },
-  warning: { main: "var(--gold)", from: "var(--gold)", to: "color-mix(in srgb, var(--gold) 65%, #FFE08A)", glow: mix("var(--gold)", 40), label: "WASPADA" },
-  limit: { main: "var(--red)", from: "var(--red)", to: "color-mix(in srgb, var(--red) 65%, #FF9A8A)", glow: mix("var(--red)", 40), label: "BATAS TERCAPAI" },
-  unavailable: { main: "var(--muted)", from: "var(--muted)", to: "color-mix(in srgb, var(--muted) 65%, #9CC0F0)", glow: mix("var(--muted)", 30), label: "BELUM ADA MODAL" },
+  safe: { main: "var(--green)", from: "var(--green)", to: "color-mix(in srgb, var(--green) 65%, #38D6F0)", glow: mix("var(--green)", 40), ringGlow: mix("var(--green)", 40), ringBlur: 5, label: "AMAN" },
+  warning: { main: "var(--gold)", from: "var(--gold)", to: "color-mix(in srgb, var(--gold) 65%, #FFE08A)", glow: mix("var(--gold)", 40), ringGlow: mix("var(--gold)", 55), ringBlur: 7, label: "WASPADA" },
+  limit: { main: "var(--red)", from: "var(--red)", to: "color-mix(in srgb, var(--red) 65%, #FF9A8A)", glow: mix("var(--red)", 40), ringGlow: mix("var(--red)", 65), ringBlur: 9, label: "BATAS TERCAPAI" },
+  unavailable: { main: "var(--muted)", from: "var(--muted)", to: "color-mix(in srgb, var(--muted) 65%, #9CC0F0)", glow: mix("var(--muted)", 30), ringGlow: mix("var(--muted)", 30), ringBlur: 5, label: "BELUM ADA MODAL" },
 };
 
 function Svg({ size = 20, children, color = "currentColor", stroke = 2 }) {
@@ -56,7 +56,7 @@ function Ring({ riskGuard, tone }) {
   const gid = `rg-ring-${React.useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <div role="img" aria-label={hasLimit ? `${shown} dari batas rugi harian terpakai` : "Batas rugi harian belum tersedia"} style={{ position: "relative", width: s(140, 64), height: s(140, 64), flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%", background: INNER_BG, border: INNER_BORDER }}>
-      <svg viewBox={`0 0 ${size} ${size}`} style={{ width: "86%", height: "86%", transform: "rotate(-90deg)", filter: `drop-shadow(0 0 5px ${tone.glow})` }} aria-hidden="true">
+      <svg className="tj-rg-ring" viewBox={`0 0 ${size} ${size}`} style={{ width: "86%", height: "86%", transform: "rotate(-90deg)", "--rg-glow": tone.ringGlow, filter: `drop-shadow(0 0 ${tone.ringBlur}px ${tone.ringGlow})` }} aria-hidden="true">
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" style={{ stopColor: tone.from }} />

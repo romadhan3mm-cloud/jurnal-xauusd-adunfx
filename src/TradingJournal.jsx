@@ -1001,6 +1001,15 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               </div>
             )}
             </div>
+            <button
+              type="button"
+              className="tj-theme-toggle"
+              onClick={toggleTheme}
+              title={theme === "dark" ? "Tema Terang" : "Tema Gelap"}
+              aria-label={theme === "dark" ? "Ganti ke tema terang" : "Ganti ke tema gelap"}
+            >
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
           </div>
         </div>
 
@@ -1008,7 +1017,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         <div aria-hidden="true" style={{ height: hdrH, marginTop: "calc(-1 * env(safe-area-inset-top, 0px))" }} />
 
         {/* End Balance: di luar header, ikut tergulir; tampil di setiap menu (Jurnal / Simulasi / Chart).
-            Ikon tema terang/gelap ada di kanan baris ini. */}
+            Ikon tema terang/gelap kini ada di header, di bawah titik tiga. */}
         <div className="tj-bal">
           <div className="tj-balcard">
             {m && (
@@ -1017,15 +1026,6 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 <span className="tj-mono tj-bal-value">{fmtMoney(endBalance)}</span>
               </>
             )}
-            <button
-              type="button"
-              className="tj-bal-theme"
-              onClick={toggleTheme}
-              title={theme === "dark" ? "Tema Terang" : "Tema Gelap"}
-              aria-label={theme === "dark" ? "Ganti ke tema terang" : "Ganti ke tema gelap"}
-            >
-              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-            </button>
           </div>
         </div>
 

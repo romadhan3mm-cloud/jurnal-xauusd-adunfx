@@ -92,6 +92,8 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   transition: color 0.15s, border-color 0.15s;
 }
 .tj-theme-toggle:hover { color: var(--gold); border-color: var(--gold-dim); }
+/* Glow cincin Risk Guard: di tema terang dibuat lebih tipis supaya tidak terlihat kotor */
+.tj-root.tj-light .tj-rg-ring { filter: drop-shadow(0 0 3px var(--rg-glow)) !important; }
 .tj-hero { position: relative; padding: 18px 16px 16px; text-align: center; }
 .tj-hero-brand { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .tj-bar-actions { position: absolute; top: env(safe-area-inset-top, 0px); bottom: 0; justify-content: center; right: 16px; z-index: 30; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
