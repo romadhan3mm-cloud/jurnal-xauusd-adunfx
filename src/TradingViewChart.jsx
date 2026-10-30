@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import EconomicCalendar from "./EconomicCalendar.jsx";
 import { LineChart as ChartIcon } from "lucide-react";
 import { CardShell, CardHeader } from "./CardHeader.jsx";
+import TabSwitch from "./TabSwitch.jsx";
 
 const TIMEFRAMES = [
   { label: "M5", value: "5" },
@@ -101,19 +102,7 @@ export default function TradingViewChart({ theme = "dark" }) {
 
   return (
     <section style={{ width: "100%", color: colors.text }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: 5, borderRadius: 13, background: colors.panelAlt, border: `1px solid ${colors.border}`, marginBottom: 12 }}>
-        {[{ id: "chart", label: "Chart" }, { id: "news", label: "Berita" }].map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            aria-pressed={activeTab === tab.id}
-            style={{ padding: "10px 12px", border: `1px solid ${activeTab === tab.id ? colors.border : "transparent"}`, borderRadius: 9, background: activeTab === tab.id ? colors.panel : "transparent", color: activeTab === tab.id ? colors.text : colors.muted, fontWeight: 700, fontSize: 13, boxShadow: activeTab === tab.id ? "0 2px 7px rgba(0,0,0,.06)" : "none", cursor: "pointer" }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitch tabs={[{ id: "chart", label: "Chart" }, { id: "news", label: "Berita" }]} value={activeTab} onChange={setActiveTab} theme={theme} ariaLabel="Pilih tampilan" />
 
       {activeTab === "chart" ? (
         <CardShell ariaLabel="Chart XAU/USD" marginBottom={14}>
