@@ -1,7 +1,7 @@
 import React from "react";
 import { ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceDot } from "recharts";
 import { fmtMoney } from "./journalMath.js";
-import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge, IconBadge, GRAD } from "./CardHeader.jsx";
+import { BLUE, mix, s, INNER_BG, INNER_BORDER, CardShell, CardHeader, HeaderBadge, IconBadge, GRAD, BOX_RADIUS } from "./CardHeader.jsx";
 
 // Tampilan kartu Statistik. Komponen ini HANYA menampilkan angka yang sudah dihitung di TradingJournal
 // (stats + persentase harian/mingguan/bulanan/tahunan); tidak ada perhitungan baru.
@@ -165,7 +165,7 @@ function ProfitLossChart({ period, list }) {
             <XAxis dataKey="x" type="number" domain={[0, last.x]} ticks={ticks} tickFormatter={labelOf} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={{ stroke: mix(BLUE, 70) }} tickLine={{ stroke: mix(BLUE, 70) }} />
             <YAxis type="number" domain={[0, "auto"]} tickFormatter={moneyTick} tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={{ stroke: mix(BLUE, 70) }} tickLine={{ stroke: mix(BLUE, 70) }} width={44} />
             <Tooltip
-              contentStyle={{ background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+              contentStyle={{ background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, fontSize: 13 }}
               labelStyle={{ color: "var(--muted)", fontSize: 11 }}
               formatter={(v, name) => [fmtMoney(Number(v)), name]}
               labelFormatter={(_, payload) => payload?.[0]?.payload?.label || ""}

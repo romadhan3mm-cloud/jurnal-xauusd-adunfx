@@ -122,7 +122,7 @@ export default function TradingViewChart({ theme = "dark" }) {
                   type="button"
                   onClick={() => setTimeframe(item.value)}
                   aria-pressed={timeframe === item.value}
-                  style={{ minWidth: 34, padding: "6px 9px", border: "none", borderRadius: BTN_RADIUS, background: timeframe === item.value ? (isLight ? "#18395F" : "#E8F1FF") : "transparent", color: timeframe === item.value ? (isLight ? "#FFFFFF" : "#18395F") : colors.muted, fontSize: 11, fontWeight: 800, cursor: "pointer" }}
+                  style={{ minWidth: 34, padding: "6px 9px", border: "none", borderRadius: BTN_RADIUS, background: timeframe === item.value ? "var(--navy-btn-bg)" : "transparent", color: timeframe === item.value ? "var(--navy-btn-text)" : colors.muted, fontSize: 11, fontWeight: 800, cursor: "pointer" }}
                 >
                   {item.label}
                 </button>
@@ -143,7 +143,7 @@ export default function TradingViewChart({ theme = "dark" }) {
               {showDrawingTools ? "‹" : "›"}
             </button>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, padding: "9px 12px", borderTop: `1px solid ${colors.border}`, color: colors.muted, fontSize: 11, fontWeight: 600 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, padding: "9px 12px", borderTop: `1px solid ${colors.border}`, color: colors.muted, fontSize: 11, fontWeight: 700 }}>
             <span>Zona waktu: UTC</span>
             <span>Didukung TradingView</span>
           </div>

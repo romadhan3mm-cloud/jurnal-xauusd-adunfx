@@ -2,6 +2,41 @@
 
 Aplikasi jurnal trading mandiri (standalone), bisa diakses dari perangkat mana saja (HP, tablet, laptop), dengan sistem **login per user** — setiap orang punya akun dan datanya sendiri, tersimpan di cloud lewat **Supabase**.
 
+## ⚠️ CATATAN PENTING — baca sebelum mengubah apa pun
+
+### A. Jangan ubah yang sudah dibangun
+- **Jangan mengubah struktur maupun logic** yang sudah ada: perhitungan (`journalMath.js`, statistik, Risk Guard, Rekomendasi Lot, Simulasi), state, alur simpan/muat (`storageShim.js`, pengaman data, deteksi bentrok perangkat), auth, backup/import/export, fetch, Worker/cron, struktur komponen, nama prop, dan skema Supabase.
+- Perubahan tampilan **hanya** menyentuh gaya (style/CSS). Kalau sebuah perbaikan tampilan ternyata memaksa ubah logic atau struktur, **berhenti dan tanyakan dulu**, jangan jalan sendiri.
+- Ubah seperlunya saja (jangkauan sekecil mungkin). Jangan merapikan, mengganti nama, atau memindah kode di luar yang diminta.
+- Sebelum mengubah, cek dulu file yang disentuh dan tulis di CHANGELOG file apa saja yang disentuh dan apa yang **tidak berubah**.
+
+### B. Ikuti standar keseragaman/keselarasan
+Setiap fitur, kartu, tombol, atau layar baru **wajib** memakai standar yang sudah ada, bukan nilai baru:
+
+| Hal | Standar yang dipakai |
+|---|---|
+| Jenis font | `Inter` (dimuat 400–800 di `index.html`). Elemen form memakai `font-family: inherit`. Jangan menambah font lain. |
+| Ukuran font | **13px** teks isi, **11px** keterangan/label kecil. Judul kartu lewat `CardHeader`. Tingkat judul yang sudah ada: **15px/700** judul dialog, **18px** judul layar penuh dan angka saldo besar. Input 16px (anti-zoom iOS) jangan diubah. Jangan menambah ukuran baru (10, 12, 14px, dst.). |
+| Ketebalan font | Hanya 400–800 (batas yang dimuat Google Fonts). Teks biasa 400–500, penekanan/tombol 700, judul 800. Jangan 600, 750, atau 850. |
+| Warna | Selalu variabel tema (`var(--text)`, `--muted`, `--surface`, `--surface-raised`, `--surface-soft`, `--border`, `--gold`, `--green`, `--red`, `--info`, `--weekend`, `--amber`, `--navy-btn-*`, `--navy-sel-*`, dst.) supaya ikut tema terang/gelap. Variabel didefinisikan di `tjStyles.js` (tema gelap dan terang). Jangan hex baru kecuali terpaksa (mis. warna candle TradingView) dan beri komentar alasannya. |
+| Radius | Pakai token dari `CardHeader.jsx`: `BTN_RADIUS` (tombol berteks), `BOX_RADIUS` (kotak dalam, menu, tooltip, tombol ikon kecil, kolom input), `calc(${BOX_RADIUS} - 4px)` (isi menu), `s(20, 12)` (kartu luar dan dialog), 999 (pil/lencana). Di CSS (`tjStyles.js`) pakai token yang sama lewat `${...}`. Jangan menulis angka radius baru. Layar login (`authStyles.js`) punya skala sendiri: 8px tombol kecil, 10px input/tombol/kotak pesan. |
+| Kartu | Pakai `CardShell` + `CardHeader` (+ `HeaderBadge`, `IconBadge`, `GRAD`, `INNER_BG`, `INNER_BORDER`). Jangan membuat bentuk kartu sendiri. |
+| Ukuran proporsional | Kartu berskala lewat `s(px, min)`; ikuti pola kartu di sekitarnya. |
+| Jarak antar kartu | **14** (bawaan `CardShell`). Jangan memilih angka baru. |
+| Tombol | Tombol utama (emas), sekunder (garis `--border`), dan bahaya (merah) mengikuti gaya yang sama di seluruh aplikasi. Lihat bagian *Standar tombol* di bawah. |
+| Bahasa | Bahasa Indonesia. Judul kartu memakai Title Case ("Catatan Penting", "Cek Realita"). |
+| Tema | Setiap perubahan wajib dicek di **tema terang dan gelap**, di layar HP sempit dan lebar. |
+
+### Standar tombol
+- **Utama**: latar `var(--gold-grad)`, teks `#0A1628`, radius `BTN_RADIUS`, font 13px/700. (Pilihan aktif/Coba lagi di kalender dan chart: `--navy-btn-*`.)
+- **Sekunder**: latar `var(--surface)`, teks `var(--muted)`, garis `1px solid var(--border)`, radius `BTN_RADIUS`, font 13px/700.
+- **Bahaya (hapus)**: latar `var(--red)`, teks putih, radius `BTN_RADIUS`, font 13px/700.
+- Tombol kecil di dalam baris/tabel boleh memakai font 11px dan padding lebih rapat; radius dan ketebalan (700) tetap sama.
+
+### C. Cara mencatat perubahan
+- Tambahkan entri baru di **bagian atas `CHANGELOG.md`** (bukan file terpisah), naikkan versi di `package.json`.
+- Isi entri: file yang disentuh, perubahan, **"Tidak berubah"**, dan status pengujian (build Vite penuh dan tampilan di HP jujur ditulis kalau belum diuji).
+
 ## Cara kerja singkat
 
 - **Auth (login/daftar)**: pakai Supabase Authentication (email + password)

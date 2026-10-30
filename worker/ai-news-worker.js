@@ -13,7 +13,7 @@ const concat = (...parts) => { const out = new Uint8Array(parts.reduce((n,p)=>n+
 const slug = (s) => String(s||"event").normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,80)||"event";
 function normalizeEvent(e) { const d=new Date(e?.scheduledAt); if(!e?.eventName||Number.isNaN(d.getTime())) return null; return {id:String(e.id||`${slug(e.eventName)}-${d.toISOString()}`),eventName:String(e.eventName),scheduledAt:d.toISOString(),importance:String(e.importance||"unknown"),previous:e.previous??null,forecast:e.forecast??e.consensus??null,actual:e.actual??null,unit:e.unit??null,periodLabel:e.periodLabel??null,source:String(e.source||"XOOMAR"),sourceUrl:"https://xoomar.com/markets/api/calendar"}; }
 function calendarRequest(env){
-  const headers={accept:"application/json","user-agent":"TraderLogs-AINews/1.9.45"};
+  const headers={accept:"application/json","user-agent":"TraderLogs-AINews/1.9.84"};
   let url=CALENDAR_URL;const key=env?.XOOMAR_API_KEY;
   if(key){
     const mode=String(env.XOOMAR_KEY_MODE||"x-api-key").trim();
@@ -120,7 +120,7 @@ async function fetchFFFile(file){
   const errors=[];
   for(const host of FF_HOSTS){
     try{
-      const r=await fetch(`https://${host}/${file}`,{headers:{accept:"application/json","user-agent":"TraderLogs-AINews/1.9.45"},signal:AbortSignal.timeout(10000)});
+      const r=await fetch(`https://${host}/${file}`,{headers:{accept:"application/json","user-agent":"TraderLogs-AINews/1.9.84"},signal:AbortSignal.timeout(10000)});
       if(!r.ok){const snip=(await r.text().catch(()=>"")).replace(/\s+/g," ").trim().slice(0,100);throw new Error(`HTTP ${r.status}${snip?`: ${snip}`:""}`);}
       const p=await r.json();if(!Array.isArray(p))throw new Error("format tidak dikenali");
       return{host,items:p};

@@ -77,11 +77,11 @@ export default function RecommendationCard({ rec, endBalance, showRef, onToggleR
 
       {/* Catatan asumsi */}
       <div style={{ display: "flex", alignItems: "center", gap: s(12, 6), marginTop: s(10, 5), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: INNER_BORDER }}>
-        <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid #3AA0E0", color: "#3AA0E0", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid var(--info)", color: "var(--info)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Svg size="60%" stroke={2.4}><path d="M12 11v6M12 7.2v.1" /></Svg>
         </span>
         <div style={{ fontSize: s(11.5, 8), lineHeight: 1.4, color: "var(--muted)", minWidth: 0 }}>
-          <span style={{ color: "#3AA0E0", fontWeight: 700 }}>Asumsi:</span> SL rata-rata ${SL_DISTANCE_USD}, jatah rugi {(RISK_PCT_PER_DAY * 100).toFixed(0)}%/hari, target maks {TARGET_MAX_LAYERS} layer, 0.01 lot ≈ $1 per $1 pergerakan harga. Sesuaikan lagi kalau beda dengan gaya trading/broker kamu.
+          <span style={{ color: "var(--info)", fontWeight: 700 }}>Asumsi:</span> SL rata-rata ${SL_DISTANCE_USD}, jatah rugi {(RISK_PCT_PER_DAY * 100).toFixed(0)}%/hari, target maks {TARGET_MAX_LAYERS} layer, 0.01 lot ≈ $1 per $1 pergerakan harga. Sesuaikan lagi kalau beda dengan gaya trading/broker kamu.
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info, BarChart3, FileText, Flag, DollarSign } from "lucide-react";
-import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD, BTN_RADIUS } from "./CardHeader.jsx";
+import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD, BTN_RADIUS, BOX_RADIUS } from "./CardHeader.jsx";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
 
@@ -85,7 +85,7 @@ function lotFor(balance, lossRatio, sl, maxLayers) {
 const card = {
   background: "var(--surface-soft)",
   border: "1px solid var(--border)",
-  borderRadius: 10,
+  borderRadius: BOX_RADIUS,
   padding: 12,
   marginBottom: 14,
   textAlign: "center",
@@ -185,18 +185,18 @@ function DateField({ label, value, onChange, icon, bg }) {
   const popup = open ? (
     <>
       <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 39 }} />
-      <div role="dialog" aria-label="Kalender tanggal mulai" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(340px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 10, borderRadius: 12, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)", color: "var(--text)", fontFamily: "'Inter', sans-serif" }}>
+      <div role="dialog" aria-label="Kalender tanggal mulai" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(340px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 10, borderRadius: s(20, 12), background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)", color: "var(--text)", fontFamily: "'Inter', sans-serif" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 9 }}>
-          <button type="button" onClick={() => moveMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 28, height: 28, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 8, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={15} /></button>
-          <strong style={{ fontSize: 12, color: "var(--text)" }}>{first.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
-          <button type="button" onClick={() => moveMonth(1)} aria-label="Bulan berikutnya" style={{ width: 28, height: 28, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 8, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={15} /></button>
+          <button type="button" onClick={() => moveMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 28, height: 28, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={15} /></button>
+          <strong style={{ fontSize: 13, color: "var(--text)" }}>{first.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
+          <button type="button" onClick={() => moveMonth(1)} aria-label="Bulan berikutnya" style={{ width: 28, height: 28, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={15} /></button>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4, marginBottom: 5 }}>
-          {["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"].map((d, index) => <div key={d} style={{ textAlign: "center", fontSize: 10, color: index >= 5 ? "#A33A3A" : "var(--muted)", fontWeight: 700, padding: 3 }}>{d}</div>)}
+          {["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"].map((d, index) => <div key={d} style={{ textAlign: "center", fontSize: 11, color: index >= 5 ? "var(--weekend)" : "var(--muted)", fontWeight: 700, padding: 3 }}>{d}</div>)}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4 }}>
           {cells.map((key, i) => key ? (() => { const weekday = new Date(`${key}T12:00:00`).getDay(); const isWeekend = weekday === 0 || weekday === 6; return <button key={key} type="button" onClick={() => { onChange(key); setOpen(false); }} aria-pressed={key === value}
-            style={{ minWidth: 0, minHeight: 42, border: key === value ? "1px solid var(--gold)" : key === today ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: 8, background: key === value ? "var(--gold-grad)" : "var(--surface)", color: key === value ? "#0A1628" : isWeekend ? "#A33A3A" : "var(--text)", fontSize: 11, fontWeight: key === value ? 800 : 600, cursor: "pointer", padding: 0 }}>{Number(key.slice(-2))}</button>; })() : <span key={`empty-${i}`} />)}
+            style={{ minWidth: 0, minHeight: 42, border: key === value ? "1px solid var(--gold)" : key === today ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: BOX_RADIUS, background: key === value ? "var(--gold-grad)" : "var(--surface)", color: key === value ? "#0A1628" : isWeekend ? "var(--weekend)" : "var(--text)", fontSize: 11, fontWeight: key === value ? 800 : 700, cursor: "pointer", padding: 0 }}>{Number(key.slice(-2))}</button>; })() : <span key={`empty-${i}`} />)}
         </div>
       </div>
     </>
@@ -522,7 +522,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
 
         {/* Catatan */}
         <div style={{ display: "flex", alignItems: "center", gap: s(12, 6), marginTop: s(10, 5), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: INNER_BORDER }}>
-          <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid #3AA0E0", color: "#3AA0E0", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid var(--info)", color: "var(--info)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <Info strokeWidth={2.4} style={{ width: "60%", height: "60%", display: "block" }} />
           </span>
           <div style={{ fontSize: s(11.5, 8), lineHeight: 1.4, color: "var(--muted)", minWidth: 0, textAlign: "left" }}>
@@ -612,7 +612,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                     tickFormatter={(v) => (v >= 1000 ? `${Math.round(v / 1000)}k` : Math.round(v))}
                   />
                   <Tooltip
-                    contentStyle={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 13 }}
+                    contentStyle={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, fontSize: 13 }}
                     labelFormatter={(d) => `Hari ke-${d}`}
                     formatter={(v) => [fmtUsd(v), "Saldo akhir"]}
                   />
@@ -708,7 +708,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
             <CardHeader icon={<CalendarDays size="52%" strokeWidth={2.2} style={{ display: "block" }} />} title="Tabel Harian" />
             <div style={{ fontSize: s(13, 9), color: "var(--muted)", lineHeight: 1.5, marginBottom: s(10, 5), textAlign: "center" }}>
               Tercapai:{" "}
-              <span className="tj-mono" style={{ color: "var(--gold)", fontWeight: 600 }}>
+              <span className="tj-mono" style={{ color: "var(--gold)", fontWeight: 700 }}>
                 {sim.rows.filter((r) => progress.done[r.day]).length} / {sim.rows.length}
               </span>{" "}
               hari. Status terisi otomatis dari transaksi di Jurnal (sesuai tanggal) dan tetap bisa diubah manual. Status dan catatan tersimpan otomatis.
@@ -769,7 +769,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                   width: "100%", marginTop: s(10, 5), padding: `${s(8, 5)} ${s(12, 6)}`, borderRadius: s(10, 6), fontSize: s(13, 10),
-                  fontWeight: 600, border: INNER_BORDER, background: INNER_BG, fontFamily: "inherit",
+                  fontWeight: 700, border: INNER_BORDER, background: INNER_BG, fontFamily: "inherit",
                   color: "var(--muted)", cursor: "pointer",
                 }}
               >

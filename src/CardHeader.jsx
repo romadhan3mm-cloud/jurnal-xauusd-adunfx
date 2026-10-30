@@ -42,7 +42,7 @@ export const GRAD = {
   teal: "linear-gradient(135deg,#2FB5A5,#16756F)",
 };
 
-export function CardShell({ ariaLabel, children, marginBottom = 20 }) {
+export function CardShell({ ariaLabel, children, marginBottom = 14 }) {
   return (
     <div style={{ containerType: "inline-size", marginBottom }}>
       <section

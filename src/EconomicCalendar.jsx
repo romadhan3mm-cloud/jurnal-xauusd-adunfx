@@ -58,7 +58,7 @@ function normalizedImpact(value) {
 function importanceLabel(value) {
   const level = normalizedImpact(value);
   if (level === "high") return { label: "HIGH IMPACT", color: "var(--red)", bg: mix("var(--red)", 12) };
-  if (level === "medium") return { label: "MEDIUM IMPACT", color: "#D99A20", bg: "rgba(217,154,32,.13)" };
+  if (level === "medium") return { label: "MEDIUM IMPACT", color: "var(--amber)", bg: mix("var(--amber)", 13) };
   return { label: "LOW IMPACT", color: "#3F9B78", bg: "rgba(63,155,120,.12)" };
 }
 
@@ -135,7 +135,7 @@ export default function EconomicCalendar({ theme = "dark", afterHeader = null })
     <div style={{ width: "100%", color: colors.text, fontFamily: "inherit" }}>
       <div style={{ display: "flex", gap: 6, paddingBottom: 12, flexWrap: "wrap" }}>
         {[{ id: "all", label: "Semua jadwal" }, { id: "upcoming", label: "Akan datang" }, { id: "past", label: "Sudah rilis" }].map((item) => (
-          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? (isLight ? "#18395F" : "#6686B3") : colors.border}`, borderRadius: BTN_RADIUS, background: filter === item.id ? (isLight ? "#18395F" : "#263D5D") : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
+          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? "var(--navy-sel-border)" : colors.border}`, borderRadius: BTN_RADIUS, background: filter === item.id ? "var(--navy-sel-bg)" : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
         ))}
       </div>
 
@@ -143,7 +143,7 @@ export default function EconomicCalendar({ theme = "dark", afterHeader = null })
         <div role="alert" style={{ border: `1px solid ${colors.border}`, borderRadius: BOX_RADIUS, background: colors.panelAlt, padding: 14, marginBottom: 10 }}>
           <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 5 }}>Kalender belum tersedia</div>
           <div style={{ fontSize: 11, lineHeight: 1.5, color: colors.muted, marginBottom: 10 }}>{error}</div>
-          <button type="button" onClick={() => loadCalendar()} style={{ border: 0, borderRadius: BTN_RADIUS, background: isLight ? "#18395F" : "#E8F1FF", color: isLight ? "#FFFFFF" : "#18395F", padding: "8px 12px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>Coba lagi</button>
+          <button type="button" onClick={() => loadCalendar()} style={{ border: 0, borderRadius: BTN_RADIUS, background: "var(--navy-btn-bg)", color: "var(--navy-btn-text)", padding: "8px 12px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>Coba lagi</button>
         </div>
       )}
 

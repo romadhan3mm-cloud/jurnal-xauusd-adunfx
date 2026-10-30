@@ -86,7 +86,7 @@ export default function RiskGuardCard({ riskGuard }) {
   const pnlColor = pnlPositive ? "var(--green)" : "var(--red)";
 
   return (
-    <div style={{ containerType: "inline-size", marginBottom: 16 }}>
+    <div style={{ containerType: "inline-size", marginBottom: 14 }}>
     <section
       aria-label="Risk Guard"
       style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${status === "limit" ? "var(--red)" : status === "warning" ? "var(--gold)" : status === "safe" ? "var(--green)" : "var(--border)"}` }}
@@ -155,7 +155,7 @@ export default function RiskGuardCard({ riskGuard }) {
 
       {/* Catatan */}
       <div style={{ display: "flex", alignItems: "center", gap: s(12, 6), marginTop: s(14, 7), borderRadius: s(14, 8), padding: `${s(10, 5)} ${s(12, 6)}`, background: INNER_BG, border: INNER_BORDER }}>
-        <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid #3AA0E0", color: "#3AA0E0", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ flex: "0 0 auto", width: s(30, 18), height: s(30, 18), borderRadius: "50%", border: "2px solid var(--info)", color: "var(--info)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Svg size="60%" stroke={2.4}><path d="M12 11v6M12 7.2v.1" /></Svg>
         </span>
         <div style={{ fontSize: s(11.5, 8), lineHeight: 1.4, color: "var(--muted)", minWidth: 0 }}>

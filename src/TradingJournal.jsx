@@ -7,7 +7,7 @@ import TargetSimulator from "./TargetSimulator.jsx";
 import RiskGuardCard from "./RiskGuardCard.jsx";
 import StatsCard from "./StatsCard.jsx";
 import RecommendationCard from "./RecommendationCard.jsx";
-import { CardShell, CardHeader, HeaderBadge, BLUE, mix, s, INNER_LINE, INNER_BG } from "./CardHeader.jsx";
+import { CardShell, CardHeader, HeaderBadge, BLUE, mix, s, INNER_LINE, INNER_BG, BTN_RADIUS, BOX_RADIUS } from "./CardHeader.jsx";
 import Splash from "./Splash.jsx";
 import { LogoLockup, PageBackdrop, saveThemeLocal, getThemeLocal, hasThemeLocal, needsLookReset } from "./Brand.jsx";
 import { ResponsiveContainer, LineChart, Line, BarChart, Bar, AreaChart, Area, Cell, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
@@ -754,14 +754,14 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
           <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
             <button
               onClick={loadJournal}
-              style={{ background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: 7, padding: "9px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+              style={{ background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: BTN_RADIUS, padding: "9px 22px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
             >
               Coba lagi
             </button>
             {onLogout && (
               <button
                 onClick={onLogout}
-                style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 7, padding: "9px 22px", fontSize: 13, cursor: "pointer" }}
+                style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "9px 22px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
               >
                 Keluar
               </button>
@@ -896,8 +896,8 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
       {confirmDeleteFor === key && (
         <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontSize: 11, color: "var(--text)" }}>Hapus permanen? Data tidak bisa dikembalikan.</span>
-          <button onClick={() => deleteMonthPermanent(key)} style={{ background: "var(--red)", color: "#fff", border: "none", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Ya</button>
-          <button onClick={() => setConfirmDeleteFor(null)} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 6, padding: "5px 10px", fontSize: 11, cursor: "pointer" }}>Batal</button>
+          <button onClick={() => deleteMonthPermanent(key)} style={{ background: "var(--red)", color: "#fff", border: "none", borderRadius: BTN_RADIUS, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Ya</button>
+          <button onClick={() => setConfirmDeleteFor(null)} style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Batal</button>
         </div>
       )}
     </div>
@@ -915,7 +915,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
           />
           <button
             onClick={createMonth}
-            style={{ background: "var(--gold-grad)", color: "#0A1628", fontSize: 13, fontWeight: 600, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer" }}
+            style={{ background: "var(--gold-grad)", color: "#0A1628", fontSize: 13, fontWeight: 700, padding: "6px 14px", borderRadius: BTN_RADIUS, border: "none", cursor: "pointer" }}
           >
             Buat Bulan Ini
           </button>
@@ -941,7 +941,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             {!saving && saveError && (
               <button
                 onClick={() => { setSaving(true); writeNow(); }}
-                style={{ fontSize: 11, color: "var(--red)", background: "none", border: "1px solid var(--red)", borderRadius: 6, padding: "2px 7px", cursor: "pointer" }}
+                style={{ fontSize: 11, fontWeight: 700, color: "var(--red)", background: "none", border: "1px solid var(--red)", borderRadius: BTN_RADIUS, padding: "2px 7px", cursor: "pointer" }}
                 title="Perubahan terakhir belum tersimpan ke server. Ketuk untuk mencoba lagi."
               >
                 Gagal menyimpan · Coba lagi
@@ -978,13 +978,13 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                             <button
                               disabled={loggingOut}
                               onClick={() => handleLogout(logoutUnsaved)}
-                              style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: 6, padding: "7px 0", fontSize: 11, fontWeight: 600, cursor: "pointer", opacity: loggingOut ? 0.6 : 1 }}
+                              style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: BTN_RADIUS, padding: "7px 0", fontSize: 11, fontWeight: 700, cursor: "pointer", opacity: loggingOut ? 0.6 : 1 }}
                             >
                               {loggingOut ? "Menyimpan…" : logoutUnsaved ? "Tetap keluar" : "Ya, Keluar"}
                             </button>
                             <button
                               onClick={() => { setConfirmLogout(false); setLogoutUnsaved(false); }}
-                              style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 6, padding: "7px 0", fontSize: 11, cursor: "pointer" }}
+                              style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "7px 0", fontSize: 11, fontWeight: 700, cursor: "pointer" }}
                             >
                               Batal
                             </button>
@@ -1080,7 +1080,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={false} tickLine={false} width={44} tickFormatter={(v) => `${v.toFixed(0)}%`} />
                     <ReferenceLine y={0} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.6} />
                     <Tooltip
-                      contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
+                      contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: BOX_RADIUS, fontSize: 13 }}
                       labelStyle={{ color: chartColors.tooltipLabel, fontSize: 11 }}
                       formatter={(v) => [`${Number(v).toFixed(2)}%`, "Growth"]}
                       labelFormatter={(label, payload) => payload?.[0]?.payload?.fullLabel || label}
@@ -1132,14 +1132,14 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         {/* Kalender pilih tanggal: muncul saat bulan diklik (tidak lagi di dalam kartu Input Transaksi) */}
       {calendarOpen && <>
         <div onClick={() => setCalendarOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 39 }} />
-        <div role="dialog" aria-label="Kalender pilih tanggal" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(360px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 12, borderRadius: 16, background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)" }}>
+        <div role="dialog" aria-label="Kalender pilih tanggal" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(360px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 12, borderRadius: s(20, 12), background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 12 }}>
-            <button type="button" onClick={() => changeCalendarMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={17} /></button>
-            <strong style={{ fontSize: 14, color: "var(--text)" }}>{calendarFirstDay.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
-            <button type="button" onClick={() => changeCalendarMonth(1)} aria-label="Bulan berikutnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: 10, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={17} /></button>
+            <button type="button" onClick={() => changeCalendarMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={17} /></button>
+            <strong style={{ fontSize: 13, color: "var(--text)" }}>{calendarFirstDay.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
+            <button type="button" onClick={() => changeCalendarMonth(1)} aria-label="Bulan berikutnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={17} /></button>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4, marginBottom: 5 }}>
-            {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((day, index) => <div key={day} style={{ textAlign: "center", padding: "5px 0", color: index >= 5 ? "#A33A3A" : "var(--muted)", fontSize: 10, fontWeight: 700 }}>{day}</div>)}
+            {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((day, index) => <div key={day} style={{ textAlign: "center", padding: "5px 0", color: index >= 5 ? "var(--weekend)" : "var(--muted)", fontSize: 11, fontWeight: 700 }}>{day}</div>)}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 3 }}>
             {calendarCells.map((key, i) => {
@@ -1150,12 +1150,12 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               const dayNum = Number(key.slice(-2));
               const weekday = new Date(`${key}T12:00:00`).getDay();
               const isWeekend = weekday === 0 || weekday === 6;
-              return <button key={key} type="button" onClick={() => chooseCalendarDate(key)} aria-label={`${dayNum} ${calendarFirstDay.toLocaleDateString("id-ID", { month: "long" })}`} aria-pressed={isSelected} style={{ minWidth: 0, minHeight: 42, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, border: isSelected ? "1px solid var(--gold)" : isToday ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: 9, background: isSelected ? "var(--gold-grad)" : "var(--surface)", color: isSelected ? "#0A1628" : isWeekend ? "#A33A3A" : "var(--text)", fontSize: 12, fontWeight: isSelected ? 800 : 600, cursor: "pointer", padding: 0 }}>
+              return <button key={key} type="button" onClick={() => chooseCalendarDate(key)} aria-label={`${dayNum} ${calendarFirstDay.toLocaleDateString("id-ID", { month: "long" })}`} aria-pressed={isSelected} style={{ minWidth: 0, minHeight: 42, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, border: isSelected ? "1px solid var(--gold)" : isToday ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: BOX_RADIUS, background: isSelected ? "var(--gold-grad)" : "var(--surface)", color: isSelected ? "#0A1628" : isWeekend ? "var(--weekend)" : "var(--text)", fontSize: 13, fontWeight: isSelected ? 800 : 700, cursor: "pointer", padding: 0 }}>
                 {dayNum}<span style={{ width: 4, height: 4, borderRadius: "50%", background: hasEntry ? (isSelected ? "#686868" : "#8B8B85") : "transparent" }} />
               </button>;
             })}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)", color: "var(--muted)", fontSize: 10 }}><span><span style={{ color: "#8B8B85" }}>●</span> sudah ada transaksi</span><span>▢ terpilih = emas</span></div>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)", color: "var(--muted)", fontSize: 11 }}><span><span style={{ color: "#8B8B85" }}>●</span> sudah ada transaksi</span><span>▢ terpilih = emas</span></div>
           {addNote && <div style={{ marginTop: 8, textAlign: "center", color: "var(--muted)", fontSize: 11 }}>{addNote}</div>}
         </div>
       </>}
@@ -1174,7 +1174,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 zIndex: 41,
                 background: "var(--surface-raised)",
                 border: "1px solid var(--border)",
-                borderRadius: 8,
+                borderRadius: BOX_RADIUS,
                 overflow: "hidden",
                 minWidth: 180,
                 boxShadow: "0 10px 24px rgba(0,0,0,0.5)",
@@ -1184,8 +1184,8 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 <div style={{ padding: 10 }}>
                   <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 8 }}>Hapus permanen? Data tidak bisa dikembalikan.</div>
                   <div style={{ display: "flex", gap: 6 }}>
-                    <button onClick={() => { deleteMonthPermanent(menuOpenFor); setMonthDdOpen(false); }} style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: 6, padding: "6px 0", fontSize: 11, cursor: "pointer" }}>Ya, Hapus</button>
-                    <button onClick={() => setConfirmDeleteFor(null)} style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 6, padding: "6px 0", fontSize: 11, cursor: "pointer" }}>Batal</button>
+                    <button onClick={() => { deleteMonthPermanent(menuOpenFor); setMonthDdOpen(false); }} style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: BTN_RADIUS, padding: "6px 0", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Ya, Hapus</button>
+                    <button onClick={() => setConfirmDeleteFor(null)} style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "6px 0", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Batal</button>
                   </div>
                 </div>
               ) : (
@@ -1215,7 +1215,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             <div
               role="listbox"
               aria-label="Pilih bulan"
-              style={{ position: "fixed", top: monthDdPos.top, left: monthDdPos.left, minWidth: Math.max(monthDdPos.width, 260), maxWidth: "calc(100vw - 24px)", maxHeight: "50vh", overflowY: "auto", zIndex: 37, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}
+              style={{ position: "fixed", top: monthDdPos.top, left: monthDdPos.left, minWidth: Math.max(monthDdPos.width, 260), maxWidth: "calc(100vw - 24px)", maxHeight: "50vh", overflowY: "auto", zIndex: 37, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}
             >
               {order.filter((key) => !months[key]?.archived).map((key) => {
                 const isActive = activeMonth === key;
@@ -1226,7 +1226,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       aria-selected={isActive}
                       onClick={() => { setActiveMonth(key); setCalendarMonth(key); setCalendarOpen(true); setMonthDdOpen(false); }}
                       className="tj-mono"
-                      style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "11px 12px", background: "none", border: "none", color: isActive ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: isActive ? 800 : 600, cursor: "pointer", textAlign: "left", whiteSpace: "nowrap" }}
+                      style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "11px 12px", background: "none", border: "none", color: isActive ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: isActive ? 800 : 700, cursor: "pointer", textAlign: "left", whiteSpace: "nowrap" }}
                     >
                       <CalendarDays size={15} />
                       {monthKeyToLabel(key)}
@@ -1260,19 +1260,19 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {!m && (
-          <div style={{ textAlign: "center", padding: "50px 20px", color: "var(--muted)", fontSize: 13, border: "1px dashed var(--border)", borderRadius: 12 }}>
+          <div style={{ textAlign: "center", padding: "50px 20px", color: "var(--muted)", fontSize: 13, border: "1px dashed var(--border)", borderRadius: BOX_RADIUS }}>
             Belum ada jurnal bulan. Klik "+ Bulan Baru" untuk mulai.
             <div style={{ marginTop: 14, display: "flex", justifyContent: "center" }}>
               <button
                 onClick={() => setNewMonthOpen((v) => !v)}
-                style={{ whiteSpace: "nowrap", padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, border: "1px dashed var(--border)", background: "transparent", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+                style={{ whiteSpace: "nowrap", padding: "7px 14px", borderRadius: BTN_RADIUS, fontSize: 13, fontWeight: 700, border: "1px dashed var(--border)", background: "transparent", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
               >
                 <Plus size={14} /> Bulan Baru
               </button>
             </div>
             {newMonthForm && <div style={{ marginTop: 14, textAlign: "left" }}>{newMonthForm}</div>}
             {archivedKeys.length > 0 && (
-              <div style={{ marginTop: 14, textAlign: "left", border: "1px solid var(--border)", borderRadius: 10 }}>
+              <div style={{ marginTop: 14, textAlign: "left", border: "1px solid var(--border)", borderRadius: BOX_RADIUS }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 12px 2px", fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
                   <Archive size={11} /> Arsip ({archivedKeys.length})
                 </div>
@@ -1299,7 +1299,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       aria-label="Export dan Backup"
                       aria-haspopup="menu"
                       aria-expanded={txMenuOpen}
-                      style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: 6, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 24, height: 22, background: "none", border: "none", borderRadius: BOX_RADIUS, color: "var(--muted)", opacity: 0.7, cursor: "pointer", padding: 0 }}
                     >
                       <MoreHorizontal size={16} />
                     </button>
@@ -1313,7 +1313,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                     {txMenuOpen && (
                       <>
                         <div onClick={() => setTxMenuOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 20 }} />
-                        <div role="menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 190, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
+                        <div role="menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 190, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
                           {[
                             [Download, "Export Excel", () => { setTxMenuOpen(false); openExport(); }],
                             [Download, "Backup Data (.json)", () => { setTxMenuOpen(false); handleBackupExport(); }],
@@ -1323,7 +1323,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                               key={label}
                               role="menuitem"
                               onClick={onClick}
-                              style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", background: "none", border: "none", borderRadius: 6, color: "var(--text)", fontSize: 13, cursor: "pointer", textAlign: "left" }}
+                              style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", background: "none", border: "none", borderRadius: `calc(${BOX_RADIUS} - 4px)`, color: "var(--text)", fontSize: 13, cursor: "pointer", textAlign: "left" }}
                             >
                               <Icon size={13} /> {label}
                             </button>
@@ -1373,7 +1373,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 </div>
                 <button
                   onClick={() => setNewMonthOpen((v) => !v)}
-                  style={{ whiteSpace: "nowrap", padding: "7px 14px", borderRadius: 8, fontSize: s(13, 10), fontWeight: 600, border: "1px dashed var(--border)", background: "transparent", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+                  style={{ whiteSpace: "nowrap", padding: "7px 14px", borderRadius: BTN_RADIUS, fontSize: s(13, 10), fontWeight: 700, border: "1px dashed var(--border)", background: "transparent", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
                 >
                   <Plus size={14} /> Bulan Baru
                 </button>
@@ -1484,7 +1484,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                             style={{ width: 72, textAlign: "center" }}
                           />
                         </td>
-                        <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), fontWeight: 600, textAlign: "center" })}>{fmtMoney(r.end)}</td>
+                        <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), fontWeight: 700, textAlign: "center" })}>{fmtMoney(r.end)}</td>
                         <td style={cell("last", { padding: `${s(10, 5)} ${s(6, 3)}`, textAlign: "center" })}>
                           <button onClick={() => deleteEntry(r.id)} style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", display: "inline-flex" }}>
                             <Trash2 size={13} />
@@ -1544,7 +1544,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       {balanceMenuOpen && (
                         <>
                           <div onClick={() => setBalanceMenuOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 20 }} />
-                          <div role="menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 170, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 9, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
+                          <div role="menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)", zIndex: 30, minWidth: 170, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, padding: 4, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}>
                             <div style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", padding: "6px 10px 4px" }}>Tampilan grafik</div>
                             {[["line", "Garis"], ["bar", "Batang"], ["area", "Area"]].map(([key, label]) => (
                               <button
@@ -1552,7 +1552,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                                 role="menuitemradio"
                                 aria-checked={balanceChartType === key}
                                 onClick={() => { setBalanceChartType(key); setBalanceMenuOpen(false); }}
-                                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: balanceChartType === key ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: 6, color: balanceChartType === key ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer", textAlign: "left" }}
+                                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 10px", background: balanceChartType === key ? "rgba(237,165,36,0.1)" : "none", border: "none", borderRadius: `calc(${BOX_RADIUS} - 4px)`, color: balanceChartType === key ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "left" }}
                               >
                                 {label}
                                 {balanceChartType === key && <Check size={13} />}
@@ -1578,7 +1578,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
-                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
+                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: BOX_RADIUS, fontSize: 13 }}
                         labelStyle={{ color: chartColors.tooltipLabel, fontSize: 11 }}
                         itemStyle={{ color: "#EDA524" }}
                         formatter={(v) => [`$${Number(v).toFixed(2)}`, "Balance"]}
@@ -1605,7 +1605,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
-                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
+                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: BOX_RADIUS, fontSize: 13 }}
                         labelStyle={{ color: chartColors.tooltipLabel, fontSize: 11 }}
                         itemStyle={{ color: "#EDA524" }}
                         formatter={(v) => [`$${Number(v).toFixed(2)}`, "Balance"]}
@@ -1626,7 +1626,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
-                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: 8, fontSize: 13 }}
+                        contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: BOX_RADIUS, fontSize: 13 }}
                         labelStyle={{ color: chartColors.tooltipLabel, fontSize: 11 }}
                         itemStyle={{ color: "#EDA524" }}
                         formatter={(v) => [`$${Number(v).toFixed(2)}`, "Balance"]}
@@ -1695,7 +1695,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             style={{
               background: "var(--surface-raised)",
               border: "1px solid var(--border)",
-              borderRadius: 12,
+              borderRadius: s(20, 12),
               padding: 22,
               maxWidth: 380,
               width: "100%",
@@ -1713,11 +1713,11 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               const rowStyle = { display: "flex", justifyContent: "space-between", fontSize: 13, padding: "3px 0" };
               return (
                 <>
-                  <p style={{ fontSize: 12, color: "var(--muted)", margin: "0 0 10px", wordBreak: "break-all" }}>
+                  <p style={{ fontSize: 11, color: "var(--muted)", margin: "0 0 10px", wordBreak: "break-all" }}>
                     {pendingImport.fileName}
                     {imp.exportedAt ? ` · dibuat ${new Date(imp.exportedAt).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })}` : ""}
                   </p>
-                  <div style={{ border: "1px solid var(--border)", borderRadius: 8, padding: "6px 12px", marginBottom: 12 }}>
+                  <div style={{ border: "1px solid var(--border)", borderRadius: BOX_RADIUS, padding: "6px 12px", marginBottom: 12 }}>
                     <div style={rowStyle}><span style={{ color: "var(--muted)" }}>Bulan baru</span><strong style={{ color: "var(--text)" }}>{sm.newMonths}</strong></div>
                     <div style={rowStyle}><span style={{ color: "var(--muted)" }}>Bulan yang ditambah entri</span><strong style={{ color: "var(--text)" }}>{sm.mergedMonths}</strong></div>
                     <div style={rowStyle}><span style={{ color: "var(--muted)" }}>Entri baru ditambahkan</span><strong style={{ color: "var(--green)" }}>{sm.newEntries}</strong></div>
@@ -1741,13 +1741,13 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
               <button
                 onClick={confirmImport}
                 disabled={pendingImport.summary.newEntries === 0 && pendingImport.summary.newMonths === 0}
-                style={{ flex: 1, background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: 7, padding: "9px 0", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: pendingImport.summary.newEntries === 0 && pendingImport.summary.newMonths === 0 ? 0.4 : 1 }}
+                style={{ flex: 1, background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: pendingImport.summary.newEntries === 0 && pendingImport.summary.newMonths === 0 ? 0.4 : 1 }}
               >
                 Ya, Gabungkan & Import
               </button>
               <button
                 onClick={() => setPendingImport(null)}
-                style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 7, padding: "9px 0", fontSize: 13, cursor: "pointer" }}
+                style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
               >
                 Batal
               </button>
@@ -1762,24 +1762,24 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         const activeCount = order.length - archivedCount;
         const allCount = exportDialog.includeArchived ? order.length : activeCount;
         const canExport = exportDialog.scope === "month" || allCount > 0;
-        const optStyle = (on) => ({ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: on ? "rgba(237,165,36,0.1)" : "var(--surface)", border: `1px solid ${on ? "var(--gold-dim)" : "var(--border)"}`, borderRadius: 8, padding: "10px 12px", marginBottom: 8, cursor: "pointer", color: "var(--text)" });
+        const optStyle = (on) => ({ display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", background: on ? "rgba(237,165,36,0.1)" : "var(--surface)", border: `1px solid ${on ? "var(--gold-dim)" : "var(--border)"}`, borderRadius: BTN_RADIUS, padding: "10px 12px", marginBottom: 8, cursor: "pointer", color: "var(--text)" });
         return (
           <div style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setExportDialog(null)}>
-            <div onClick={(e) => e.stopPropagation()} style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, padding: 22, maxWidth: 380, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: s(20, 12), padding: 22, maxWidth: 380, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <Download size={16} color="var(--gold)" />
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "var(--text)" }}>Export Excel</h3>
               </div>
               <button style={optStyle(exportDialog.scope === "month")} onClick={() => setExportDialog({ ...exportDialog, scope: "month" })}>
                 <span style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>Bulan ini saja</div>
+                  <div style={{ fontSize: 13, fontWeight: 700 }}>Bulan ini saja</div>
                   <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{activeMonth ? monthKeyToLabel(activeMonth) : ""} · 1 sheet</div>
                 </span>
                 {exportDialog.scope === "month" && <Check size={14} color="var(--gold)" />}
               </button>
               <button style={optStyle(exportDialog.scope === "all")} onClick={() => setExportDialog({ ...exportDialog, scope: "all" })}>
                 <span style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>Semua bulan</div>
+                  <div style={{ fontSize: 13, fontWeight: 700 }}>Semua bulan</div>
                   <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{allCount} bulan · 1 sheet per bulan</div>
                 </span>
                 {exportDialog.scope === "all" && <Check size={14} color="var(--gold)" />}
@@ -1798,13 +1798,13 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 <button
                   onClick={confirmExport}
                   disabled={!canExport}
-                  style={{ flex: 1, background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: 7, padding: "9px 0", fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: canExport ? 1 : 0.4 }}
+                  style={{ flex: 1, background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: canExport ? 1 : 0.4 }}
                 >
                   Export
                 </button>
                 <button
                   onClick={() => setExportDialog(null)}
-                  style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: 7, padding: "9px 0", fontSize: 13, cursor: "pointer" }}
+                  style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
                 >
                   Batal
                 </button>
@@ -1817,7 +1817,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
       {/* Bentrok antar-perangkat: versi di server lebih baru daripada yang kita lihat */}
       {conflict && (
         <div style={{ position: "fixed", inset: 0, zIndex: 110, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, padding: 22, maxWidth: 400, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: s(20, 12), padding: 22, maxWidth: 400, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
             <h3 style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 700, color: "var(--text)" }}>Data berubah di perangkat lain</h3>
             <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5, margin: "0 0 14px" }}>
               Jurnal ini sudah disimpan dari perangkat lain setelah terakhir kamu muat, jadi perubahan di sini belum dikirim supaya tidak saling menimpa. Pilih cara menyelesaikannya:
@@ -1831,9 +1831,9 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 key={key}
                 disabled={resolving}
                 onClick={() => resolveConflict(key)}
-                style={{ width: "100%", textAlign: "left", background: bg, color, border, borderRadius: 8, padding: "10px 12px", marginBottom: 8, cursor: "pointer", opacity: resolving ? 0.6 : 1 }}
+                style={{ width: "100%", textAlign: "left", background: bg, color, border, borderRadius: BTN_RADIUS, padding: "10px 12px", marginBottom: 8, cursor: "pointer", opacity: resolving ? 0.6 : 1 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
                 <div style={{ fontSize: 11, opacity: 0.8, marginTop: 2 }}>{hint}</div>
               </button>
             ))}
@@ -1844,7 +1844,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
       {/* Ringkasan setelah "Gabungkan": bagian dari perangkat ini yang tidak ikut digabung */}
       {mergeNotice && (
         <div style={{ position: "fixed", inset: 0, zIndex: 110, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: 12, padding: 22, maxWidth: 400, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: s(20, 12), padding: 22, maxWidth: 400, width: "100%", boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }}>
             <h3 style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 700, color: "var(--text)" }}>Penggabungan selesai</h3>
             <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5 }}>
               {mergeNotice.newEntries > 0 && <p style={{ margin: "0 0 8px" }}>{mergeNotice.newEntries} entri dari perangkat ini ditambahkan.</p>}
@@ -1861,7 +1861,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
             </div>
             <button
               onClick={() => setMergeNotice(null)}
-              style={{ width: "100%", background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: 8, padding: "10px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+              style={{ width: "100%", background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: BTN_RADIUS, padding: "10px 12px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
             >
               Mengerti
             </button>
@@ -1875,7 +1875,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
           style={{
             position: "fixed", left: 12, right: 12, bottom: "calc(16px + env(safe-area-inset-bottom))", zIndex: 90,
             maxWidth: 420, margin: "0 auto", background: "var(--surface-raised)", border: "1px solid var(--border)",
-            borderRadius: 10, padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
+            borderRadius: BOX_RADIUS, padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
             boxShadow: "0 12px 30px rgba(0,0,0,0.45)",
           }}
         >

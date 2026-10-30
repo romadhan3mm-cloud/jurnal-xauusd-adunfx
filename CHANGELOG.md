@@ -2,6 +2,45 @@
 Satu file untuk semua catatan perubahan. Entri terbaru di atas; entri tahap awal AI News (tanpa nomor versi) ada di bagian paling bawah.
 Aturan: perubahan baru ditambahkan di sini (bagian atas), bukan sebagai file terpisah.
 
+> ⚠️ **Catatan penting:** jangan mengubah struktur maupun logic yang sudah dibangun (perhitungan, state, simpan/muat, auth, backup, Worker, skema). Perubahan tampilan hanya menyentuh gaya dan wajib mengikuti standar keseragaman (font Inter, 13px/11px, warna `var(--…)`, radius `BTN_RADIUS`/`BOX_RADIUS`, `CardShell`/`CardHeader`, standar tombol). Aturan lengkap ada di bagian "CATATAN PENTING" di `README.md`. Tiap entri harus memuat "Tidak berubah" dan status pengujian.
+
+---
+
+## v1.9.84 — Catatan penting keselarasan; radius, warna, jarak, judul, font diseragamkan
+
+Hanya tampilan dan dokumentasi. Hasil audit keselarasan (perkiraan awal 76%) dikerjakan per poin. Menyentuh `README.md`, `CHANGELOG.md`, `package.json`, `src/TradingJournal.jsx`, `src/tjStyles.js`, `src/journalWidgets.jsx`, `src/authStyles.js`, `src/CardHeader.jsx`, `src/RiskGuardCard.jsx`, `src/StatsCard.jsx`, `src/TargetSimulator.jsx`, `src/AINews.jsx`, `src/EconomicCalendar.jsx`, `src/TradingViewChart.jsx`, `src/RecommendationCard.jsx`, dan `worker/ai-news-worker.js` (hanya teks user-agent).
+
+### 0. Catatan penting
+- `README.md`: bagian baru "CATATAN PENTING" (jangan ubah struktur/logic; tabel standar font, warna, radius, kartu, tombol, jarak, bahasa, tema; cara mencatat perubahan). Pengingat singkat di kepala `CHANGELOG.md`.
+
+### 1. Tombol
+- Tombol dialog/konfirmasi/putus-putus/pilihan di `TradingJournal.jsx` memakai `BTN_RADIUS` (menggantikan 6/7/8) dan ketebalan 700. `.tj-export-btn` mengikuti (13px/700).
+
+### 2. Radius
+- `TradingJournal.jsx`: kotak, menu, tooltip, tombol ikon kecil, tanggal kalender, toast → `BOX_RADIUS`; isi menu → `calc(BOX_RADIUS - 4px)`; dialog → `s(20, 12)`.
+- `tjStyles.js` (impor `BTN_RADIUS`/`BOX_RADIUS`), `journalWidgets.jsx`, `TargetSimulator.jsx`, `StatsCard.jsx` ikut token yang sama.
+- `authStyles.js`: 9px → 8px (tombol tutup), kotak pesan 8px → 10px (satu skala login: 8 tombol kecil, 10 sisanya). Desain pil/14px tema terang tidak diubah.
+
+### 3. Warna
+- Variabel tema baru di `tjStyles.js` (gelap dan terang, nilai warna sama seperti sebelumnya): `--info`, `--weekend`, `--amber`, `--navy-btn-bg/-text`, `--navy-sel-bg/-border`. Menggantikan hex `#3AA0E0`, `#A33A3A`, `#D99A20` dan `#18395F/#E8F1FF/#263D5D/#6686B3` (percabangan `isLight`) di kalender, chart, AI News, kartu Rekomendasi, Risk Guard, Simulasi, Jurnal.
+
+### 4. Jarak dan judul
+- Jarak antar kartu 14: bawaan `CardShell` 20 → 14, `RiskGuardCard` 16 → 14.
+- Judul kartu Title Case: "Analisis Fundamental AI", "Pengingat Otomatis & iPhone", "Catatan Penting".
+
+### 5. Font
+- 10px → 11px, 12px/14px → 13px pada label hari dan tanggal kalender, keterangan, tooltip Statistik. Ketebalan 600 → 700 di seluruh sumber (termasuk bar tab bawah, tombol Masuk, judul login).
+- Tingkat judul 15px (dialog) dan 18px (layar penuh/saldo) dibiarkan dan kini tertulis di standar.
+
+### 6. Kosmetik
+- Teks user-agent Worker `1.9.45` → `1.9.84`.
+
+### Tidak berubah
+Semua logic, state, handler, perhitungan, penyimpanan, auth, backup, fetch, skema Supabase, struktur komponen, dan props. Warna aktual di kedua tema sama (hanya dipindah ke variabel). Gradasi emas, warna merek Splash/Brand, warna candle TradingView, dan overlay debug `viewportGap.js` tidak diubah. Radius 999 dan `s(14, 8)` yang sudah standar dibiarkan.
+
+### Pengujian
+Sintaks JSX semua file dicek dengan tsc (tanpa error sintaks); isi `tjStyles.js` dievaluasi dan variabel/token terpasang. Build Vite penuh tidak bisa dijalankan di lingkungan ini (registri npm tidak terjangkau); tampilan di HP belum diuji. Perlu dicek di perangkat: (a) `BTN_RADIUS`/`BOX_RADIUS` di luar kartu (dialog, menu) mengikuti lebar layar; (b) ketebalan 700 pada bar tab bawah dan tabel tidak membuat teks turun baris; (c) jarak antar kartu 14 di tab Jurnal terasa pas.
+
 ---
 
 ## v1.9.83 — Glow cincin Risk Guard menyesuaikan status

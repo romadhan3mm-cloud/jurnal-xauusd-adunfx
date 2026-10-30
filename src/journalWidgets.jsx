@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Check } from "lucide-react";
+import { BOX_RADIUS } from "./CardHeader.jsx";
 // Komponen kecil untuk tampilan jurnal: ring statistik, daftar baris statistik, tagline yang bisa diedit.
 
 // Ring persentase: bagian terisi = fill, sisanya = track. center = teks di tengah, sub = label kecil.
@@ -35,7 +36,7 @@ export function StatRing({ pct, center, sub, fill = "var(--green)", track = "var
       />
       {/* Konten dibatasi ke lebar bagian dalam lingkaran supaya teks tidak menabrak ring; label panjang (mis. "Porsi profit") turun ke baris kedua */}
       <div style={{ position: "relative", textAlign: "center", lineHeight: 1.15, maxWidth: Math.round(size * 0.64) }}>
-        <div className="tj-mono" style={{ fontSize: size > 100 ? 24 : 17, fontWeight: 600, color: centerColor }}>{center}</div>
+        <div className="tj-mono" style={{ fontSize: size > 100 ? 24 : 17, fontWeight: 700, color: centerColor }}>{center}</div>
         <div style={{ fontSize: size > 100 ? 11 : 9.5, lineHeight: 1.2, color: "var(--muted)", textTransform: "uppercase", letterSpacing: size > 100 ? "0.04em" : "0.02em", marginTop: 2, overflowWrap: "break-word" }}>{sub}</div>
         {subNode}
       </div>
@@ -49,7 +50,7 @@ export function StatRowList({ items }) {
       {items.map(([label, val, color], i) => (
         <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, paddingBottom: i < items.length - 1 ? 6 : 0 }}>
           <span style={{ fontSize: 11, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</span>
-          <span className="tj-mono" style={{ fontSize: 15, fontWeight: 600, color }}>{val}</span>
+          <span className="tj-mono" style={{ fontSize: 15, fontWeight: 700, color }}>{val}</span>
         </div>
       ))}
     </div>
@@ -100,7 +101,7 @@ export function EditableTagline({ value, onSave, small = false }) {
             color: "var(--text)",
             background: "var(--surface-raised)",
             border: "1px solid var(--gold-dim)",
-            borderRadius: 6,
+            borderRadius: BOX_RADIUS,
             padding: "5px 8px",
             outline: "none",
             boxSizing: "border-box",
@@ -117,7 +118,7 @@ export function EditableTagline({ value, onSave, small = false }) {
             onTouchStart={(e) => e.preventDefault()}
             onClick={commit}
             aria-label="Simpan tagline"
-            style={{ width: 32, height: 32, flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: 7, cursor: "pointer" }}
+            style={{ width: 32, height: 32, flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--gold-grad)", color: "#0A1628", border: "none", borderRadius: BOX_RADIUS, cursor: "pointer" }}
           >
             <Check size={16} />
           </button>
