@@ -94,11 +94,11 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
 .tj-theme-toggle:hover { color: var(--gold); border-color: var(--gold-dim); }
 .tj-hero { position: relative; padding: 18px 16px 16px; text-align: center; }
 .tj-hero-brand { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.tj-bar-actions { position: absolute; top: env(safe-area-inset-top, 0px); bottom: 0; justify-content: center; right: 28px; z-index: 30; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.tj-bar-actions { position: absolute; top: env(safe-area-inset-top, 0px); bottom: 0; justify-content: center; right: 16px; z-index: 30; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .tj-bar-row { display: flex; align-items: center; gap: 8px; }
 .tj-bar-actions .tj-theme-toggle { width: 28px; height: 28px; border: none; background: transparent; }
 .tj-bar-actions .tj-theme-toggle:hover { border-color: transparent; background: transparent; }
-.tj-hdr { position: fixed; top: 0; left: 0; right: 0; max-width: 1180px; margin: 0 auto; box-sizing: border-box; z-index: 25; padding: calc(env(safe-area-inset-top, 0px) + 16px) 28px 16px; background: transparent; border-bottom: none; }
+.tj-hdr { position: fixed; top: 0; left: 0; right: 0; max-width: 1180px; margin: 0 auto; box-sizing: border-box; z-index: 25; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 16px; background: transparent; border-bottom: none; }
 .tj-hdr::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: -12px; -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 12px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 12px), transparent 100%); left: 50%; width: 100vw; transform: translateX(-50%); background: transparent; pointer-events: none; transition: background 0.2s; }
 .tj-hdr.tj-pinned::before { background: rgba(10, 22, 40, 0.55); background: linear-gradient(180deg, rgb(7, 24, 50) 0, rgba(7, 24, 50, 0) 16px), color-mix(in srgb, var(--bg) 40%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .tj-root.tj-light .tj-hdr.tj-pinned::before { background: rgba(235, 242, 251, 0.6); background: linear-gradient(180deg, rgb(235, 242, 251) 0, rgba(235, 242, 251, 0) 16px), color-mix(in srgb, var(--bg) 42%, transparent); }

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import EconomicCalendar from "./EconomicCalendar.jsx";
+import { LineChart as ChartIcon } from "lucide-react";
+import { CardShell, CardHeader } from "./CardHeader.jsx";
 
 const TIMEFRAMES = [
   { label: "M5", value: "5" },
@@ -114,15 +116,15 @@ export default function TradingViewChart({ theme = "dark" }) {
       </div>
 
       {activeTab === "chart" ? (
-        <div style={{ borderRadius: 16, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}`, boxShadow: "0 5px 18px rgba(0,0,0,.07)" }}>
+        <CardShell ariaLabel="Chart XAU/USD" marginBottom={14}>
+          <CardHeader
+            icon={<ChartIcon size="52%" strokeWidth={2.2} style={{ display: "block" }} />}
+            title="XAU/USD"
+            subtitle="Emas · OANDA"
+          />
+        <div style={{ borderRadius: 14, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}` }}>
           <div style={{ padding: "12px 12px 9px", background: colors.panel }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.3 }}>XAU/USD</div>
-                <div style={{ color: colors.muted, fontSize: 11, marginTop: 2 }}>Emas · OANDA</div>
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               {TIMEFRAMES.map((item) => (
                 <button
@@ -156,11 +158,9 @@ export default function TradingViewChart({ theme = "dark" }) {
             <span>Didukung TradingView</span>
           </div>
         </div>
+        </CardShell>
       ) : (
-        <div style={{ borderRadius: 14, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}`, padding: "8px 10px 0" }}>
-          <div style={{ padding: "8px 4px 10px", fontSize: 12, fontWeight: 800 }}>Kalender ekonomi</div>
-          <EconomicCalendar theme={theme} />
-        </div>
+        <EconomicCalendar theme={theme} />
       )}
     </section>
   );

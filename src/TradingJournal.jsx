@@ -926,7 +926,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
     <div className={`tj-root ${theme === "light" ? "tj-light" : ""}`}>
       <style>{FONTS_CSS}</style>
       <PageBackdrop light={theme === "light"} />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1180, margin: "0 auto", padding: "0 28px 48px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1180, margin: "0 auto", padding: "0 16px 48px" }}>
         {/* Header + tab menu + End Balance: menempel di atas saat halaman di-scroll */}
         {/* Header menempel: logo + tagline, lalu End Balance + tombol aksi — ukurannya tetap, tidak berubah saat di-scroll */}
         <div ref={hdrRef} className={`tj-hdr ${hdrPinned ? "tj-pinned" : ""}`}>
@@ -1413,7 +1413,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
 
               {/* Entries table */}
               <div className="tj-scrollbar" style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px" }}>
+                <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0 }}>
                   <thead>
                     <tr style={{ background: "transparent" }}>
                       {["No", "Tanggal", "Start", "Target 3%", "Loss -4%", "Profit ($)", "Loss ($)", "Komisi ($)", "WD ($)", "End Balance", ""].map((h) => (
@@ -1425,14 +1425,10 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                   </thead>
                   <tbody>
                     {rows.map((r, i) => {
-                      // Tiap baris tampil sebagai kartu bulat: sel pertama/terakhir memegang sudut dan garis tepi.
+                      // Baris biasa (bukan kartu): tanpa latar dan sudut bulat, hanya garis pemisah tipis di bawah.
                       const cell = (pos, extra) => ({
-                        background: INNER_BG,
-                        borderTop: INNER_LINE,
-                        borderBottom: INNER_LINE,
-                        borderLeft: pos === "first" ? INNER_LINE : "none",
-                        borderRight: pos === "last" ? INNER_LINE : "none",
-                        borderRadius: pos === "first" ? `${s(14, 8)} 0 0 ${s(14, 8)}` : pos === "last" ? `0 ${s(14, 8)} ${s(14, 8)} 0` : 0,
+                        background: "transparent",
+                        borderBottom: "1px solid var(--border)",
                         ...extra,
                       });
                       const isWeekendRow = [0, 6].includes(new Date(r.date).getDay());
@@ -1440,12 +1436,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       <tr key={r.id}>
                         <td className="tj-mono" style={cell("first", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), color: "var(--muted)", textAlign: "center" })}>{i + 1}</td>
                         <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), whiteSpace: "nowrap", textAlign: "center", color: isWeekendRow ? "var(--red)" : undefined })}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                            <span aria-hidden="true" style={{ width: s(28, 18), height: s(28, 18), borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", color: BLUE, background: mix(BLUE, 14), border: `1.5px solid ${mix(BLUE, 60)}`, flex: "0 0 auto" }}>
-                              <CalendarDays size={14} />
-                            </span>
-                            {fmtDate(r.date)}
-                          </span>
+                          {fmtDate(r.date)}
                         </td>
                         <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), color: "var(--muted)", textAlign: "center" })}>{fmtMoney(r.start)}</td>
                         <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), color: "var(--green)", opacity: 0.85, textAlign: "center" })}>{fmtMoney(r.target)}</td>

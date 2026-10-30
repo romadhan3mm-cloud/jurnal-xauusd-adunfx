@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Download, ChevronDown, ChevronUp, RotateCcw, CalendarDays, ChevronLeft, ChevronRight, Check, X, Settings, Coins, Target, Percent, TrendingUp, ShieldAlert, ArrowLeftRight, Layers, Info, BarChart3, FileText, Flag, DollarSign } from "lucide-react";
-import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHeader.jsx";
+import { CardShell, CardHeader, BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD, BTN_RADIUS } from "./CardHeader.jsx";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine } from "recharts";
 import * as XLSX from "xlsx";
 
@@ -537,7 +537,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
             disabled={!!sim.errors.length}
             style={{
               flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: s(7, 3),
-              background: "transparent", border: "1.5px solid var(--gold)", color: "var(--gold)", borderRadius: 999,
+              background: "transparent", border: "1.5px solid var(--gold)", color: "var(--gold)", borderRadius: BTN_RADIUS,
               fontSize: s(14, 9), fontWeight: 800, fontFamily: "inherit", padding: `${s(10, 5)} ${s(8, 4)}`, whiteSpace: "nowrap",
               cursor: sim.errors.length ? "not-allowed" : "pointer", opacity: sim.errors.length ? 0.5 : 1,
             }}
@@ -548,7 +548,7 @@ export default function TargetSimulator({ theme = "dark", journalDays = {} }) {
             onClick={() => setForm({ ...DEFAULTS, startDate: nextMonday() })}
             style={{
               flex: "1 1 0", minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: s(7, 3),
-              background: "transparent", border: `1.5px solid ${mix(BLUE, 60)}`, color: "var(--text)", borderRadius: 999,
+              background: "transparent", border: `1.5px solid ${mix(BLUE, 60)}`, color: "var(--text)", borderRadius: BTN_RADIUS,
               fontSize: s(14, 9), fontWeight: 800, fontFamily: "inherit", padding: `${s(10, 5)} ${s(8, 4)}`, whiteSpace: "nowrap", cursor: "pointer",
             }}
           >

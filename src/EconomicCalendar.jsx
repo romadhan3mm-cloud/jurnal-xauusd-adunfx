@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { CalendarClock, RefreshCw } from "lucide-react";
+import { CardShell, CardHeader, HeaderBadge, s } from "./CardHeader.jsx";
 
 const WORKER_URL = "/api/ai-news/events";
 const XOOMAR_URL = "https://xoomar.com/api/markets/calendar";
@@ -115,20 +117,24 @@ export default function EconomicCalendar({ theme = "dark" }) {
   });
 
   return (
-    <div style={{ width: "100%", color: colors.text, fontFamily: "inherit", paddingBottom: 12 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "8px 2px 12px" }}>
-        <div>
-          <div style={{ fontSize: 15, fontWeight: 800 }}>Kalender Ekonomi AS</div>
-          <div style={{ fontSize: 11, color: colors.muted, marginTop: 3 }}>Jadwal rilis data penting untuk XAU/USD · WIB</div>
-        </div>
-        <button type="button" onClick={() => loadCalendar()} disabled={loading} style={{ border: `1px solid ${colors.border}`, borderRadius: 8, background: colors.panelAlt, color: colors.text, padding: "7px 10px", fontSize: 11, fontWeight: 700, cursor: loading ? "wait" : "pointer", opacity: loading ? .65 : 1 }}>
-          {loading ? "Memuat…" : "Muat ulang"}
-        </button>
-      </div>
-
+    <CardShell ariaLabel="Kalender Ekonomi AS" marginBottom={14}>
+      <CardHeader
+        icon={<CalendarClock size="52%" strokeWidth={2.2} style={{ display: "block" }} />}
+        title="Kalender Ekonomi AS"
+        subtitle="Jadwal rilis data penting untuk XAU/USD · WIB"
+        badge={
+          <HeaderBadge
+            onClick={() => { if (!loading) loadCalendar(); }}
+            ariaLabel="Muat ulang kalender"
+            icon={<RefreshCw strokeWidth={2.4} style={{ width: s(16, 9), height: s(16, 9), display: "block" }} />}
+            label={loading ? "MEMUAT…" : "MUAT ULANG"}
+          />
+        }
+      />
+    <div style={{ width: "100%", color: colors.text, fontFamily: "inherit" }}>
       <div style={{ display: "flex", gap: 6, paddingBottom: 12, flexWrap: "wrap" }}>
         {[{ id: "all", label: "Semua jadwal" }, { id: "upcoming", label: "Akan datang" }, { id: "past", label: "Sudah rilis" }].map((item) => (
-          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? (isLight ? "#18395F" : "#6686B3") : colors.border}`, borderRadius: 999, background: filter === item.id ? (isLight ? "#18395F" : "#263D5D") : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 10, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
+          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? (isLight ? "#18395F" : "#6686B3") : colors.border}`, borderRadius: 8, background: filter === item.id ? (isLight ? "#18395F" : "#263D5D") : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 10, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
         ))}
       </div>
 
@@ -185,5 +191,6 @@ export default function EconomicCalendar({ theme = "dark" }) {
       </div>
       <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}{enrichment?.status === "stale" ? `Angka FF berasal dari salinan lama (${formatEventTime(enrichment.fetchedAt)} WIB) karena sumber sedang membatasi permintaan. ` : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
     </div>
+    </CardShell>
   );
 }

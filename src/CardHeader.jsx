@@ -13,6 +13,9 @@ export const s = (px, min) => {
   return min ? `max(${min}px, ${v})` : v;
 };
 
+// Radius standar tombol aksi (persegi bulat). Lencana status dan lencana kepala kartu tetap pil.
+export const BTN_RADIUS = s(14, 8);
+
 export const INNER_BG = mix("var(--surface-raised)", 55);
 export const INNER_BORDER = `1px solid ${mix(BLUE, 45)}`;
 export const INNER_LINE = INNER_BORDER;
