@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { CalendarClock, RefreshCw } from "lucide-react";
-import { CardShell, CardHeader, HeaderBadge, s } from "./CardHeader.jsx";
+import { CardShell, CardHeader, HeaderBadge, s, mix, BTN_RADIUS, BOX_RADIUS } from "./CardHeader.jsx";
 
 const WORKER_URL = "/api/ai-news/events";
 const XOOMAR_URL = "https://xoomar.com/api/markets/calendar";
@@ -24,7 +24,7 @@ function formatEventTime(value) {
 }
 
 function FFTag() {
-  return <span title="Sumber: Forex Factory" style={{ marginLeft: 4, fontSize: 8, fontWeight: 800, opacity: 0.65 }}>FF</span>;
+  return <span title="Sumber: Forex Factory" style={{ marginLeft: 4, fontSize: 11, fontWeight: 800, opacity: 0.65 }}>FF</span>;
 }
 
 // Prefer the Worker (merged XOOMAR + Forex Factory, cached, API key). Fall back to XOOMAR directly.
@@ -57,12 +57,12 @@ function normalizedImpact(value) {
 
 function importanceLabel(value) {
   const level = normalizedImpact(value);
-  if (level === "high") return { label: "HIGH IMPACT", color: "#EF5B50", bg: "rgba(239,91,80,.12)" };
+  if (level === "high") return { label: "HIGH IMPACT", color: "var(--red)", bg: mix("var(--red)", 12) };
   if (level === "medium") return { label: "MEDIUM IMPACT", color: "#D99A20", bg: "rgba(217,154,32,.13)" };
   return { label: "LOW IMPACT", color: "#3F9B78", bg: "rgba(63,155,120,.12)" };
 }
 
-export default function EconomicCalendar({ theme = "dark" }) {
+export default function EconomicCalendar({ theme = "dark", afterHeader = null }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -71,11 +71,11 @@ export default function EconomicCalendar({ theme = "dark" }) {
   const [enrichment, setEnrichment] = useState(null);
   const isLight = theme === "light";
   const colors = {
-    panel: isLight ? "#FFFFFF" : "#10213B",
-    panelAlt: isLight ? "#F5F8FC" : "#142945",
-    border: isLight ? "#DCE5F0" : "#263D5D",
-    text: isLight ? "#193452" : "#EDF4FF",
-    muted: isLight ? "#718198" : "#9CAEC6",
+    panel: "var(--surface)",
+    panelAlt: "var(--surface-raised)",
+    border: "var(--border)",
+    text: "var(--text)",
+    muted: "var(--muted)",
   };
 
   const loadCalendar = useCallback(async (quiet = false) => {
@@ -131,25 +131,26 @@ export default function EconomicCalendar({ theme = "dark" }) {
           />
         }
       />
+      {afterHeader}
     <div style={{ width: "100%", color: colors.text, fontFamily: "inherit" }}>
       <div style={{ display: "flex", gap: 6, paddingBottom: 12, flexWrap: "wrap" }}>
         {[{ id: "all", label: "Semua jadwal" }, { id: "upcoming", label: "Akan datang" }, { id: "past", label: "Sudah rilis" }].map((item) => (
-          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? (isLight ? "#18395F" : "#6686B3") : colors.border}`, borderRadius: 8, background: filter === item.id ? (isLight ? "#18395F" : "#263D5D") : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 10, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
+          <button key={item.id} type="button" onClick={() => setFilter(item.id)} aria-pressed={filter === item.id} style={{ border: `1px solid ${filter === item.id ? (isLight ? "#18395F" : "#6686B3") : colors.border}`, borderRadius: BTN_RADIUS, background: filter === item.id ? (isLight ? "#18395F" : "#263D5D") : "transparent", color: filter === item.id ? "#FFFFFF" : colors.muted, padding: "6px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>{item.label}</button>
         ))}
       </div>
 
       {error && (
-        <div role="alert" style={{ border: `1px solid ${colors.border}`, borderRadius: 10, background: colors.panelAlt, padding: 14, marginBottom: 10 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 5 }}>Kalender belum tersedia</div>
+        <div role="alert" style={{ border: `1px solid ${colors.border}`, borderRadius: BOX_RADIUS, background: colors.panelAlt, padding: 14, marginBottom: 10 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 5 }}>Kalender belum tersedia</div>
           <div style={{ fontSize: 11, lineHeight: 1.5, color: colors.muted, marginBottom: 10 }}>{error}</div>
-          <button type="button" onClick={() => loadCalendar()} style={{ border: 0, borderRadius: 7, background: isLight ? "#18395F" : "#E8F1FF", color: isLight ? "#FFFFFF" : "#18395F", padding: "8px 12px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>Coba lagi</button>
+          <button type="button" onClick={() => loadCalendar()} style={{ border: 0, borderRadius: BTN_RADIUS, background: isLight ? "#18395F" : "#E8F1FF", color: isLight ? "#FFFFFF" : "#18395F", padding: "8px 12px", fontSize: 11, fontWeight: 800, cursor: "pointer" }}>Coba lagi</button>
         </div>
       )}
 
-      {loading && events.length === 0 && !error && <div style={{ padding: "36px 12px", textAlign: "center", color: colors.muted, fontSize: 12 }}>Memuat jadwal rilis data ekonomi…</div>}
+      {loading && events.length === 0 && !error && <div style={{ padding: "36px 12px", textAlign: "center", color: colors.muted, fontSize: 13 }}>Memuat jadwal rilis data ekonomi…</div>}
 
       {!loading && !error && visibleEvents.length === 0 && (
-        <div style={{ padding: "32px 12px", textAlign: "center", color: colors.muted, fontSize: 12 }}>Tidak ada rilis untuk filter ini pada rentang data yang tersedia.</div>
+        <div style={{ padding: "32px 12px", textAlign: "center", color: colors.muted, fontSize: 13 }}>Tidak ada rilis untuk filter ini pada rentang data yang tersedia.</div>
       )}
 
       <div style={{ display: "grid", gap: 8 }}>
@@ -157,27 +158,27 @@ export default function EconomicCalendar({ theme = "dark" }) {
           const impact = importanceLabel(event.importance);
           const isReleased = Boolean(event.actual !== null && event.actual !== undefined && event.actual !== "");
           return (
-            <article key={`${event.source || "us"}-${event.scheduledAt}-${event.eventName}-${index}`} style={{ border: `1px solid ${colors.border}`, borderRadius: 11, background: colors.panel, padding: "11px 12px" }}>
+            <article key={`${event.source || "us"}-${event.scheduledAt}-${event.eventName}-${index}`} style={{ border: `1px solid ${colors.border}`, borderRadius: BOX_RADIUS, background: colors.panel, padding: "11px 12px" }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, lineHeight: 1.4, overflowWrap: "anywhere" }}>{event.eventName || "Rilis ekonomi AS"}</div>
-                  <div style={{ fontSize: 10, color: colors.muted, marginTop: 4 }}>{formatEventTime(event.scheduledAt)} WIB</div>
-                  {event.periodLabel && <div style={{ fontSize: 10, color: colors.muted, marginTop: 3 }}>Periode: {event.periodLabel}</div>}
+                  <div style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.4, overflowWrap: "anywhere" }}>{event.eventName || "Rilis ekonomi AS"}</div>
+                  <div style={{ fontSize: 11, color: colors.muted, marginTop: 4 }}>{formatEventTime(event.scheduledAt)} WIB</div>
+                  {event.periodLabel && <div style={{ fontSize: 11, color: colors.muted, marginTop: 3 }}>Periode: {event.periodLabel}</div>}
                 </div>
-                <span style={{ flexShrink: 0, borderRadius: 999, background: impact.bg, color: impact.color, padding: "4px 7px", fontSize: 9, fontWeight: 800 }}>{impact.label}</span>
+                <span style={{ flexShrink: 0, borderRadius: 999, background: impact.bg, color: impact.color, padding: "4px 7px", fontSize: 11, fontWeight: 800 }}>{impact.label}</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginTop: 11 }}>
-                <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>PREVIOUS</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.previous, event.previousSource ? "" : event.unit)}{event.previousSource && <FFTag />}</div>
+                <div style={{ borderRadius: BOX_RADIUS, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, color: colors.muted, marginBottom: 4 }}>PREVIOUS</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.previous, event.previousSource ? "" : event.unit)}{event.previousSource && <FFTag />}</div>
                 </div>
-                <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>FORECAST</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.forecast ?? event.consensus ?? event.estimate, event.forecastSource ? "" : event.unit)}{event.forecastSource && <FFTag />}</div>
+                <div style={{ borderRadius: BOX_RADIUS, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, color: colors.muted, marginBottom: 4 }}>FORECAST</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.forecast ?? event.consensus ?? event.estimate, event.forecastSource ? "" : event.unit)}{event.forecastSource && <FFTag />}</div>
                 </div>
-                <div style={{ borderRadius: 8, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, color: colors.muted, marginBottom: 4 }}>ACTUAL {isReleased ? "· DIRILIS" : "· MENUNGGU"}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: isReleased ? impact.color : colors.text, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.actual, event.actualSource ? "" : event.unit)}{event.actualSource && <FFTag />}</div>
+                <div style={{ borderRadius: BOX_RADIUS, padding: "8px 7px", background: colors.panelAlt, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, color: colors.muted, marginBottom: 4 }}>ACTUAL {isReleased ? "· DIRILIS" : "· MENUNGGU"}</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: isReleased ? impact.color : colors.text, fontVariantNumeric: "tabular-nums", overflowWrap: "anywhere" }}>{formatFigure(event.actual, event.actualSource ? "" : event.unit)}{event.actualSource && <FFTag />}</div>
                 </div>
               </div>
             </article>
@@ -185,11 +186,11 @@ export default function EconomicCalendar({ theme = "dark" }) {
         })}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", padding: "12px 2px 0", fontSize: 9, color: colors.muted }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", padding: "12px 2px 0", fontSize: 11, color: colors.muted }}>
         <span>Data: <a href="https://xoomar.com/markets/api/calendar" target="_blank" rel="noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>XOOMAR</a> · jadwal sumber resmi AS</span>
         <span>{updatedAt ? `Diperbarui ${formatEventTime(updatedAt)}` : ""}</span>
       </div>
-      <div style={{ fontSize: 9, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}{enrichment?.status === "stale" ? `Angka FF berasal dari salinan lama (${formatEventTime(enrichment.fetchedAt)} WIB) karena sumber sedang membatasi permintaan. ` : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
+      <div style={{ fontSize: 11, color: colors.muted, lineHeight: 1.45, padding: "6px 2px 0" }}>Hanya High dan Medium Impact ditampilkan. Forecast dan Previous yang kosong dari XOOMAR dilengkapi dari Forex Factory bila tersedia (ditandai FF); Actual muncul setelah rilis. Nilai yang tidak tersedia ditandai —. {enrichment?.status === "unavailable" ? "Forex Factory sedang tidak tersedia, jadi Forecast bisa kosong. " : ""}{enrichment?.status === "stale" ? `Angka FF berasal dari salinan lama (${formatEventTime(enrichment.fetchedAt)} WIB) karena sumber sedang membatasi permintaan. ` : ""}Waktu ditampilkan dalam WIB dan jadwal dapat berubah mengikuti pengumuman lembaga resmi.</div>
     </div>
     </CardShell>
   );

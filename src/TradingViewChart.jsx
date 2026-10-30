@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import EconomicCalendar from "./EconomicCalendar.jsx";
 import { LineChart as ChartIcon } from "lucide-react";
-import { CardShell, CardHeader } from "./CardHeader.jsx";
+import { CardShell, CardHeader, BTN_RADIUS, BOX_RADIUS } from "./CardHeader.jsx";
 import TabSwitch from "./TabSwitch.jsx";
 
 const TIMEFRAMES = [
@@ -93,17 +93,17 @@ export default function TradingViewChart({ theme = "dark" }) {
   }, [timeframe, activeTab, isLight, showDrawingTools]);
 
   const colors = {
-    panel: isLight ? "#FFFFFF" : "#10213B",
-    panelAlt: isLight ? "#F5F8FC" : "#142945",
-    border: isLight ? "#DCE5F0" : "#263D5D",
-    text: isLight ? "#193452" : "#EDF4FF",
-    muted: isLight ? "#718198" : "#9CAEC6",
+    panel: "var(--surface)",
+    panelAlt: "var(--surface-raised)",
+    border: "var(--border)",
+    text: "var(--text)",
+    muted: "var(--muted)",
   };
+
+  const tabSwitch = <TabSwitch tabs={[{ id: "chart", label: "Chart" }, { id: "news", label: "Berita" }]} value={activeTab} onChange={setActiveTab} theme={theme} ariaLabel="Pilih tampilan" />;
 
   return (
     <section style={{ width: "100%", color: colors.text }}>
-      <TabSwitch tabs={[{ id: "chart", label: "Chart" }, { id: "news", label: "Berita" }]} value={activeTab} onChange={setActiveTab} theme={theme} ariaLabel="Pilih tampilan" />
-
       {activeTab === "chart" ? (
         <CardShell ariaLabel="Chart XAU/USD" marginBottom={14}>
           <CardHeader
@@ -111,7 +111,8 @@ export default function TradingViewChart({ theme = "dark" }) {
             title="XAU/USD"
             subtitle="Emas · OANDA"
           />
-        <div style={{ borderRadius: 14, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}` }}>
+          {tabSwitch}
+        <div style={{ borderRadius: BOX_RADIUS, overflow: "hidden", background: colors.panel, border: `1px solid ${colors.border}` }}>
           <div style={{ padding: "12px 12px 9px", background: colors.panel }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
@@ -121,7 +122,7 @@ export default function TradingViewChart({ theme = "dark" }) {
                   type="button"
                   onClick={() => setTimeframe(item.value)}
                   aria-pressed={timeframe === item.value}
-                  style={{ minWidth: 34, padding: "6px 9px", border: "none", borderRadius: 7, background: timeframe === item.value ? (isLight ? "#18395F" : "#E8F1FF") : "transparent", color: timeframe === item.value ? (isLight ? "#FFFFFF" : "#18395F") : colors.muted, fontSize: 10, fontWeight: 800, cursor: "pointer" }}
+                  style={{ minWidth: 34, padding: "6px 9px", border: "none", borderRadius: BTN_RADIUS, background: timeframe === item.value ? (isLight ? "#18395F" : "#E8F1FF") : "transparent", color: timeframe === item.value ? (isLight ? "#FFFFFF" : "#18395F") : colors.muted, fontSize: 11, fontWeight: 800, cursor: "pointer" }}
                 >
                   {item.label}
                 </button>
@@ -137,19 +138,19 @@ export default function TradingViewChart({ theme = "dark" }) {
               aria-label={showDrawingTools ? "Sembunyikan alat gambar" : "Tampilkan alat gambar"}
               aria-pressed={showDrawingTools}
               title={showDrawingTools ? "Sembunyikan alat gambar" : "Tampilkan alat gambar"}
-              style={{ position: "absolute", zIndex: 5, left: 0, top: "50%", transform: "translateY(-50%)", width: 24, height: 54, padding: 0, border: `1px solid ${colors.border}`, borderLeft: 0, borderRadius: "0 9px 9px 0", background: showDrawingTools ? (isLight ? "#E8F1FF" : "#263D5D") : colors.panelAlt, color: colors.text, fontSize: 20, lineHeight: 1, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.14)" }}
+              style={{ position: "absolute", zIndex: 5, left: 0, top: "50%", transform: "translateY(-50%)", width: 24, height: 54, padding: 0, border: `1px solid ${colors.border}`, borderLeft: 0, borderRadius: `0 ${BTN_RADIUS} ${BTN_RADIUS} 0`, background: showDrawingTools ? (isLight ? "#E8F1FF" : "#263D5D") : colors.panelAlt, color: colors.text, fontSize: 20, lineHeight: 1, fontWeight: 700, cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,.14)" }}
             >
               {showDrawingTools ? "‹" : "›"}
             </button>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, padding: "9px 12px", borderTop: `1px solid ${colors.border}`, color: colors.muted, fontSize: 9, fontWeight: 600 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, padding: "9px 12px", borderTop: `1px solid ${colors.border}`, color: colors.muted, fontSize: 11, fontWeight: 600 }}>
             <span>Zona waktu: UTC</span>
             <span>Didukung TradingView</span>
           </div>
         </div>
         </CardShell>
       ) : (
-        <EconomicCalendar theme={theme} />
+        <EconomicCalendar theme={theme} afterHeader={tabSwitch} />
       )}
     </section>
   );

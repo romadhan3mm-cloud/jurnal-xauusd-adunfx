@@ -74,7 +74,7 @@ export default function Splash({ light = true, instant = false, message = "Mulai
         <div style={{ width: 120, height: 3, borderRadius: 3, overflow: "hidden", background: light ? "rgba(0,36,83,0.10)" : "rgba(255,255,255,0.14)", animation: a(0.5) }}>
           <div className="tl-splash-bar" />
         </div>
-        <div aria-live="polite" style={{ minHeight: 18, marginTop: -4, fontSize: 12.5, color: tag, opacity: slow ? 1 : 0, transition: "opacity .4s" }}>
+        <div aria-live="polite" style={{ minHeight: 18, marginTop: -4, fontSize: 13, color: tag, opacity: slow ? 1 : 0, transition: "opacity .4s" }}>
           {slow ? "Koneksi lambat, masih mencoba…" : ""}
         </div>
       </div>
