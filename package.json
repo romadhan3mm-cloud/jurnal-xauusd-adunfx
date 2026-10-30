@@ -1,7 +1,7 @@
 {
   "name": "traderlogs",
   "private": true,
-  "version": "1.9.72",
+  "version": "1.9.73",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,5 +19,11 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "vite": "^5.4.1"
+  },
+  "overrides": {
+    "rollup": "4.34.8"
+  },
+  "resolutions": {
+    "rollup": "4.34.8"
   }
 }
