@@ -48,6 +48,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
   const [menuOpenFor, setMenuOpenFor] = useState(null);
   const [menuPos, setMenuPos] = useState(null);
   const [confirmDeleteFor, setConfirmDeleteFor] = useState(null);
+  const [pendingDeleteEntry, setPendingDeleteEntry] = useState(null); // { id, date } — konfirmasi hapus transaksi
   const [newMonthOpen, setNewMonthOpen] = useState(false);
   const [newMonthBalance, setNewMonthBalance] = useState("100");
   const [monthDdOpen, setMonthDdOpen] = useState(false); // dropdown bulan aktif di kartu Input Transaksi
@@ -1371,7 +1372,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                         </td>
                         <td className="tj-mono" style={cell("mid", { padding: `${s(10, 5)} ${s(6, 3)}`, fontSize: s(13, 10), fontWeight: 700, textAlign: "center" })}>{fmtMoney(r.end)}</td>
                         <td style={cell("last", { padding: `${s(10, 5)} ${s(6, 3)}`, textAlign: "center" })}>
-                          <button onClick={() => deleteEntry(r.id)} style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", display: "inline-flex" }}>
+                          <button onClick={() => setPendingDeleteEntry({ id: r.id, date: r.date })} aria-label="Hapus transaksi" style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", display: "inline-flex" }}>
                             <Trash2 size={13} />
                           </button>
                         </td>
@@ -1563,6 +1564,56 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
       </nav>
 
       {/* Modal konfirmasi Import Backup — muncul setelah file .json dipilih & valid */}
+      {pendingDeleteEntry && (
+        <div
+          onClick={() => setPendingDeleteEntry(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100,
+            background: "rgba(0,0,0,0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "var(--surface-raised)",
+              border: "1px solid var(--border)",
+              borderRadius: s(20, 12),
+              padding: 22,
+              maxWidth: 340,
+              width: "100%",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <Trash2 size={16} color="var(--red)" />
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "var(--text)" }}>Hapus transaksi?</h3>
+            </div>
+            <p style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.5, margin: "0 0 16px" }}>
+              Transaksi tanggal <strong style={{ color: "var(--text)" }}>{fmtDate(pendingDeleteEntry.date)}</strong> akan dihapus dan tidak bisa dikembalikan.
+            </p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => { deleteEntry(pendingDeleteEntry.id); setPendingDeleteEntry(null); }}
+                style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+              >
+                Ya, Hapus
+              </button>
+              <button
+                onClick={() => setPendingDeleteEntry(null)}
+                style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "9px 0", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {pendingImport && (
         <div
           style={{
