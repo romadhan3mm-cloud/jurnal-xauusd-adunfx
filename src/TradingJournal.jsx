@@ -23,7 +23,11 @@ import { MAX_IMPORT_BYTES, parseBackupText, mergeJournals, sanitizeJournal, buil
 const APP_VERSION = __APP_VERSION__;
 const APP_CREATED_YEAR = 2026;
 
+// Garis grid horizontal tanpa garis paling bawah: garis itu berimpit dengan sumbu X dan terlihat putus-putus.
+const gridWithoutBottom = (p) => (isBottomGridLine(p) ? null : <line key={p.key} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} stroke={p.stroke} strokeDasharray={p.strokeDasharray} />);
+
 import { FONTS_CSS } from "./tjStyles.js";
+import { isBottomGridLine } from "./chartUtils.js";
 import {
   MAX_ROWS, RISK_PCT_PER_DAY, SL_DISTANCE_USD, TARGET_MAX_LAYERS, CAPITAL_LOT_REF_TIERS,
   fmtMoney, formatMoneyInputValue, parseMoneyInputValue, fmtDate, fmtDayKey,
@@ -1454,7 +1458,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       ]}
                       margin={{ top: 6, right: 14, left: 0, bottom: 0 }}
                     >
-                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} horizontal={gridWithoutBottom} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
@@ -1481,7 +1485,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                           <stop offset="95%" stopColor="#EDA524" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} horizontal={gridWithoutBottom} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
@@ -1502,7 +1506,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       ]}
                       margin={{ top: 6, right: 14, left: 0, bottom: 0 }}
                     >
-                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+                      <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} horizontal={gridWithoutBottom} />
                       <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
