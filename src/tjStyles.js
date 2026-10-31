@@ -12,6 +12,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
   --border: #223A5E;
   --border-inner: var(--border); /* garis kotak dalam Risk Guard (tema gelap: sama dengan --border) */
   --text: #F2F5FA;
+  --glass-blur: 6px; /* tingkat blur latar kartu dan header (satu nilai bersama) */
   --muted: #8A9BB5;
   --gold: #EDA524;
   --gold-dim: #9A6F1C;
@@ -111,7 +112,7 @@ html, body { overscroll-behavior: none; overflow-x: clip; -webkit-text-size-adju
 .tj-bar-actions .tj-theme-toggle:hover { border-color: transparent; background: transparent; }
 .tj-hdr { position: fixed; top: 0; left: 0; right: 0; max-width: 1180px; margin: 0 auto; box-sizing: border-box; z-index: 25; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 16px; background: transparent; border-bottom: none; }
 .tj-hdr::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: -12px; -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 12px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc(100% - 12px), transparent 100%); left: 50%; width: 100vw; transform: translateX(-50%); background: transparent; pointer-events: none; transition: background 0.2s; }
-.tj-hdr.tj-pinned::before { background: rgba(10, 22, 40, 0.55); background: linear-gradient(180deg, rgb(7, 24, 50) 0, rgba(7, 24, 50, 0) 16px), color-mix(in srgb, var(--bg) 40%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.tj-hdr.tj-pinned::before { background: rgba(10, 22, 40, 0.55); background: linear-gradient(180deg, rgb(7, 24, 50) 0, rgba(7, 24, 50, 0) 16px), color-mix(in srgb, var(--bg) 40%, transparent); -webkit-backdrop-filter: blur(var(--glass-blur, 6px)); backdrop-filter: blur(var(--glass-blur, 6px)); }
 .tj-root.tj-light .tj-hdr.tj-pinned::before { background: rgba(235, 242, 251, 0.6); background: linear-gradient(180deg, rgb(235, 242, 251) 0, rgba(235, 242, 251, 0) 16px), color-mix(in srgb, var(--bg) 42%, transparent); }
 .tj-bal { padding: 22px 0 0; }
 .tj-balcard { display: flex; align-items: baseline; justify-content: flex-start; gap: 8px; padding: 2px 2px; }

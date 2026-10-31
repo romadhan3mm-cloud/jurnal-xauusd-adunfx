@@ -46,7 +46,7 @@ export const GRAD = {
 // Dipasang sebagai anak pertama (bukan filter pada kartu) agar elemen fixed/absolute di dalam kartu tidak berubah perilakunya.
 // Kartu pemakainya wajib punya `position: relative` dan `isolation: isolate`.
 export function GlassLayer() {
-  return <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: -1, borderRadius: "inherit", pointerEvents: "none", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" }} />;
+  return <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: -1, borderRadius: "inherit", pointerEvents: "none", WebkitBackdropFilter: "blur(var(--glass-blur, 6px))", backdropFilter: "blur(var(--glass-blur, 6px))" }} />;
 }
 
 export function CardShell({ ariaLabel, children, marginBottom = 14 }) {
