@@ -1082,10 +1082,10 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                 </div>
                 <ResponsiveContainer width="100%" height={170}>
                   <BarChart data={compareData} margin={{ top: 6, right: 14, left: 0, bottom: 0 }}>
-                    <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
-                    <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={false} tickLine={false} width={44} tickFormatter={(v) => `${v.toFixed(0)}%`} />
-                    <ReferenceLine y={0} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.6} />
+                    <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} horizontal={gridWithoutBottom} />
+                    <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
+                    <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={44} tickFormatter={(v) => `${v.toFixed(0)}%`} />
+                    <ReferenceLine y={0} stroke={chartColors.tick} strokeOpacity={0.45} />
                     <Tooltip
                       contentStyle={{ background: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: BOX_RADIUS, fontSize: 13 }}
                       labelStyle={{ color: chartColors.tooltipLabel, fontSize: 11 }}
