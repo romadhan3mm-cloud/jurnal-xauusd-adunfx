@@ -6,6 +6,9 @@ import AINews from "./AINews.jsx";
 import TargetSimulator from "./TargetSimulator.jsx";
 import RiskGuardCard from "./RiskGuardCard.jsx";
 import StatsCard from "./StatsCard.jsx";
+import CalendarPopover from "./CalendarPopover.jsx";
+import MonthActionMenu from "./MonthActionMenu.jsx";
+import MonthDropdown from "./MonthDropdown.jsx";
 import RecommendationCard from "./RecommendationCard.jsx";
 import { CardShell, CardHeader, HeaderBadge, BLUE, mix, s, INNER_LINE, INNER_BG, BTN_RADIUS, BOX_RADIUS } from "./CardHeader.jsx";
 import Splash from "./Splash.jsx";
@@ -1130,134 +1133,12 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
         )}
 
         {/* Kalender pilih tanggal: muncul saat bulan diklik (tidak lagi di dalam kartu Input Transaksi) */}
-      {calendarOpen && <>
-        <div onClick={() => setCalendarOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 39 }} />
-        <div role="dialog" aria-label="Kalender pilih tanggal" style={{ position: "fixed", top: "50%", left: "50%", right: "auto", transform: "translate(-50%, -50%)", width: "min(360px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)", boxSizing: "border-box", zIndex: 40, padding: 12, borderRadius: s(20, 12), background: "var(--surface-raised, var(--surface))", border: "1px solid var(--border)", boxShadow: "0 14px 35px rgba(0,0,0,.22)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 12 }}>
-            <button type="button" onClick={() => changeCalendarMonth(-1)} aria-label="Bulan sebelumnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronLeft size={17} /></button>
-            <strong style={{ fontSize: 13, color: "var(--text)" }}>{calendarFirstDay.toLocaleDateString("id-ID", { month: "long", year: "numeric" })}</strong>
-            <button type="button" onClick={() => changeCalendarMonth(1)} aria-label="Bulan berikutnya" style={{ width: 32, height: 32, display: "grid", placeItems: "center", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, background: "var(--surface-soft)", color: "var(--text)", cursor: "pointer" }}><ChevronRight size={17} /></button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 4, marginBottom: 5 }}>
-            {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((day, index) => <div key={day} style={{ textAlign: "center", padding: "5px 0", color: index >= 5 ? "var(--weekend)" : "var(--muted)", fontSize: 11, fontWeight: 700 }}>{day}</div>)}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 3 }}>
-            {calendarCells.map((key, i) => {
-              if (!key) return <div key={`empty-${i}`} style={{ minHeight: 35 }} />;
-              const isSelected = key === selectedDate;
-              const hasEntry = transactionDateKeys.has(key);
-              const isToday = key === todayKey;
-              const dayNum = Number(key.slice(-2));
-              const weekday = new Date(`${key}T12:00:00`).getDay();
-              const isWeekend = weekday === 0 || weekday === 6;
-              return <button key={key} type="button" onClick={() => chooseCalendarDate(key)} aria-label={`${dayNum} ${calendarFirstDay.toLocaleDateString("id-ID", { month: "long" })}`} aria-pressed={isSelected} style={{ minWidth: 0, minHeight: 42, position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, border: isSelected ? "1px solid var(--gold)" : isToday ? "1px solid var(--gold-dim)" : "1px solid var(--border)", borderRadius: BOX_RADIUS, background: isSelected ? "var(--gold-grad)" : "var(--surface)", color: isSelected ? "#0A1628" : isWeekend ? "var(--weekend)" : "var(--text)", fontSize: 13, fontWeight: isSelected ? 800 : 700, cursor: "pointer", padding: 0 }}>
-                {dayNum}<span style={{ width: 4, height: 4, borderRadius: "50%", background: hasEntry ? (isSelected ? "#686868" : "#8B8B85") : "transparent" }} />
-              </button>;
-            })}
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border)", color: "var(--muted)", fontSize: 11 }}><span><span style={{ color: "#8B8B85" }}>●</span> sudah ada transaksi</span><span>▢ terpilih = emas</span></div>
-          {addNote && <div style={{ marginTop: 8, textAlign: "center", color: "var(--muted)", fontSize: 11 }}>{addNote}</div>}
-        </div>
-      </>}
+      {calendarOpen && <CalendarPopover addNote={addNote} calendarCells={calendarCells} calendarFirstDay={calendarFirstDay} changeCalendarMonth={changeCalendarMonth} chooseCalendarDate={chooseCalendarDate} selectedDate={selectedDate} setCalendarOpen={setCalendarOpen} todayKey={todayKey} transactionDateKeys={transactionDateKeys} />}
 
-        {menuOpenFor && menuPos && (
-          <>
-            <div
-              onClick={() => { setMenuOpenFor(null); setConfirmDeleteFor(null); }}
-              style={{ position: "fixed", inset: 0, zIndex: 40 }}
-            />
-            <div
-              style={{
-                position: "fixed",
-                top: menuPos.top,
-                left: menuPos.left,
-                zIndex: 41,
-                background: "var(--surface-raised)",
-                border: "1px solid var(--border)",
-                borderRadius: BOX_RADIUS,
-                overflow: "hidden",
-                minWidth: 180,
-                boxShadow: "0 10px 24px rgba(0,0,0,0.5)",
-              }}
-            >
-              {confirmDeleteFor === menuOpenFor ? (
-                <div style={{ padding: 10 }}>
-                  <div style={{ fontSize: 11, color: "var(--text)", marginBottom: 8 }}>Hapus permanen? Data tidak bisa dikembalikan.</div>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    <button onClick={() => { deleteMonthPermanent(menuOpenFor); setMonthDdOpen(false); }} style={{ flex: 1, background: "var(--red)", color: "#fff", border: "none", borderRadius: BTN_RADIUS, padding: "6px 0", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Ya, Hapus</button>
-                    <button onClick={() => setConfirmDeleteFor(null)} style={{ flex: 1, background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: BTN_RADIUS, padding: "6px 0", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>Batal</button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <button
-                    onClick={() => { archiveMonth(menuOpenFor); setMonthDdOpen(false); }}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", background: "none", border: "none", color: "var(--text)", fontSize: 13, cursor: "pointer", textAlign: "left" }}
-                  >
-                    <Archive size={13} /> Arsipkan
-                  </button>
-                  <button
-                    onClick={() => setConfirmDeleteFor(menuOpenFor)}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", background: "none", border: "none", color: "var(--red)", fontSize: 13, cursor: "pointer", textAlign: "left", borderTop: "1px solid var(--border)" }}
-                  >
-                    <Trash2 size={13} /> Hapus Permanen
-                  </button>
-                </>
-              )}
-            </div>
-          </>
-        )}
+        {menuOpenFor && menuPos && <MonthActionMenu archiveMonth={archiveMonth} confirmDeleteFor={confirmDeleteFor} deleteMonthPermanent={deleteMonthPermanent} menuOpenFor={menuOpenFor} menuPos={menuPos} setConfirmDeleteFor={setConfirmDeleteFor} setMenuOpenFor={setMenuOpenFor} setMonthDdOpen={setMonthDdOpen} />}
 
         {/* Dropdown bulan aktif (panel melayang agar tidak terpotong kartu) */}
-        {monthDdOpen && monthDdPos && (
-          <>
-            <div onClick={() => setMonthDdOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 36 }} />
-            <div
-              role="listbox"
-              aria-label="Pilih bulan"
-              style={{ position: "fixed", top: monthDdPos.top, left: monthDdPos.left, minWidth: Math.max(monthDdPos.width, 260), maxWidth: "calc(100vw - 24px)", maxHeight: "50vh", overflowY: "auto", zIndex: 37, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: BOX_RADIUS, boxShadow: "0 10px 24px rgba(0,0,0,0.35)" }}
-            >
-              {order.filter((key) => !months[key]?.archived).map((key) => {
-                const isActive = activeMonth === key;
-                return (
-                  <div key={key} style={{ display: "flex", alignItems: "stretch", background: isActive ? mix("var(--gold)", 10) : "transparent" }}>
-                    <button
-                      role="option"
-                      aria-selected={isActive}
-                      onClick={() => { setActiveMonth(key); setCalendarMonth(key); setCalendarOpen(true); setMonthDdOpen(false); }}
-                      className="tj-mono"
-                      style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "11px 12px", background: "none", border: "none", color: isActive ? "var(--gold)" : "var(--text)", fontSize: 13, fontWeight: isActive ? 800 : 700, cursor: "pointer", textAlign: "left", whiteSpace: "nowrap" }}
-                    >
-                      <CalendarDays size={15} />
-                      {monthKeyToLabel(key)}
-                      {isActive && <Check size={14} style={{ marginLeft: "auto" }} />}
-                    </button>
-                    <button
-                      aria-label={`Menu ${monthKeyToLabel(key)}`}
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        setMenuPos({ top: rect.bottom + 6, left: Math.max(12, rect.right - 180) });
-                        setMenuOpenFor(menuOpenFor === key ? null : key);
-                        setConfirmDeleteFor(null);
-                      }}
-                      style={{ padding: "0 12px", background: "none", border: "none", color: "var(--muted)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-                    >
-                      <MoreVertical size={14} />
-                    </button>
-                  </div>
-                );
-              })}
-              {archivedKeys.length > 0 && (
-                <div style={{ borderTop: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 12px 2px", fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--muted)" }}>
-                    <Archive size={11} /> Arsip ({archivedKeys.length})
-                  </div>
-                  {archiveItems}
-                </div>
-              )}
-            </div>
-          </>
-        )}
+        {monthDdOpen && monthDdPos && <MonthDropdown activeMonth={activeMonth} archiveItems={archiveItems} archivedKeys={archivedKeys} menuOpenFor={menuOpenFor} monthDdPos={monthDdPos} months={months} order={order} setActiveMonth={setActiveMonth} setCalendarMonth={setCalendarMonth} setCalendarOpen={setCalendarOpen} setConfirmDeleteFor={setConfirmDeleteFor} setMenuOpenFor={setMenuOpenFor} setMenuPos={setMenuPos} setMonthDdOpen={setMonthDdOpen} />}
 
         {!m && (
           <div style={{ textAlign: "center", padding: "50px 20px", color: "var(--muted)", fontSize: 13, border: "1px dashed var(--border)", borderRadius: BOX_RADIUS }}>
@@ -1574,7 +1455,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       margin={{ top: 6, right: 14, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
+                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
@@ -1601,7 +1482,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                         </linearGradient>
                       </defs>
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
+                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip
@@ -1622,7 +1503,7 @@ export default function TradingJournalApp({ userEmail, onLogout } = {}) {
                       margin={{ top: 6, right: 14, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.grid }} tickLine={false} />
+                      <XAxis dataKey="label" tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} />
                       <YAxis tick={{ fill: chartColors.tick, fontSize: 11 }} axisLine={{ stroke: chartColors.tick, strokeOpacity: 0.45 }} tickLine={false} width={54} tickFormatter={(v) => `$${v.toFixed(0)}`} />
                       <ReferenceLine y={m.initialBalance} stroke={chartColors.refLine} strokeDasharray="3 3" strokeOpacity={0.5} />
                       <Tooltip

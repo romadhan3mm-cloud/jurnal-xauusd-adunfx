@@ -1,6 +1,6 @@
 import React from "react";
 import { fmtMoney } from "./journalMath.js";
-import { BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD } from "./CardHeader.jsx";
+import { BLUE, mix, s, INNER_BG, INNER_BORDER, IconBadge, GRAD, GlassLayer } from "./CardHeader.jsx";
 
 // Tampilan Risk Guard. Komponen ini HANYA menampilkan data dari computeDailyRiskGuard; tidak ada perhitungan baru.
 // Semua warna memakai variabel tema (--surface-soft, --border, --text, --muted, --green, --gold, --red, ...)
@@ -89,8 +89,9 @@ export default function RiskGuardCard({ riskGuard }) {
     <div style={{ containerType: "inline-size", marginBottom: 14 }}>
     <section
       aria-label="Risk Guard"
-      style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${status === "limit" ? "var(--red)" : status === "warning" ? "var(--warn)" : status === "safe" ? "var(--green)" : "var(--border)"}` }}
+      style={{ position: "relative", isolation: "isolate", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: `1.5px solid ${status === "limit" ? "var(--red)" : status === "warning" ? "var(--warn)" : status === "safe" ? "var(--green)" : "var(--border)"}` }}
     >
+      <GlassLayer />
       {/* Header */}
       <div style={{ display: "flex", flexWrap: "nowrap", alignItems: "center", gap: s(10, 5), paddingBottom: s(12, 6), marginBottom: s(14, 7), borderBottom: `1px solid ${mix(BLUE, 55)}` }}>
         <ShieldIcon status={status} />

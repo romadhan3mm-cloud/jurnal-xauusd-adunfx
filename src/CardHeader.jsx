@@ -42,13 +42,21 @@ export const GRAD = {
   teal: "linear-gradient(135deg,#2FB5A5,#16756F)",
 };
 
+// Lapisan blur halus di belakang isi kartu (latar kartu tetap --surface-soft).
+// Dipasang sebagai anak pertama (bukan filter pada kartu) agar elemen fixed/absolute di dalam kartu tidak berubah perilakunya.
+// Kartu pemakainya wajib punya `position: relative` dan `isolation: isolate`.
+export function GlassLayer() {
+  return <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: -1, borderRadius: "inherit", pointerEvents: "none", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" }} />;
+}
+
 export function CardShell({ ariaLabel, children, marginBottom = 14 }) {
   return (
     <div style={{ containerType: "inline-size", marginBottom }}>
       <section
         aria-label={ariaLabel}
-        style={{ position: "relative", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: "1px solid var(--border)" }}
+        style={{ position: "relative", isolation: "isolate", borderRadius: s(20, 12), overflow: "hidden", padding: s(16, 8), color: "var(--text)", background: "var(--surface-soft)", border: "1px solid var(--border)" }}
       >
+        <GlassLayer />
         {children}
       </section>
     </div>
